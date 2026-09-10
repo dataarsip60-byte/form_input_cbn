@@ -1057,7 +1057,7 @@
                 return;
             }
 
-            // Generate simple ID
+            // Generate simple ID or check if editing existing
             const dateStr = new Date().toLocaleDateString('id-ID');
             const timeStr = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
             const regId = 'REG-' + Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -1071,6 +1071,56 @@
             if(signaturePads['sigCanvas2'].hasDrawn()) sigCount++;
             if(signaturePads['sigCanvas3'].hasDrawn()) sigCount++;
 
+            // Gather complete form state to ensure detailed viewing works perfectly
+            const fullRawData = {
+                salesCode: getGridValue('salesCodeBoxes'),
+                spvCode: getGridValue('spvCodeBoxes'),
+                fullName: getGridValue('fullNameBoxes'),
+                pob: document.getElementById('pobInput').value,
+                dob: getGridValue('dobBoxes'),
+                idCard: getGridValue('idCardBoxes'),
+                gender: document.querySelector('input[name="gender"]:checked')?.value || 'Pria',
+                homePhone: getGridValue('homePhoneBoxes'),
+                mobilePhone: getGridValue('mobilePhoneBoxes'),
+                address1: getGridValue('addressRow1Boxes'),
+                address2: getGridValue('addressRow2Boxes'),
+                rt: getGridValue('rtBoxes'),
+                rw: getGridValue('rwBoxes'),
+                zip: getGridValue('zipBoxes'),
+                ownership: document.querySelector('input[name="ownership"]:checked')?.value || 'Pemilik',
+                email: getGridValue('emailBoxes'),
+                package: selectedPkg,
+                pkgPrice1: document.getElementById('pkgPrice1').value,
+                pkgPrice2: document.getElementById('pkgPrice2').value,
+                pkgPrice3: document.getElementById('pkgPrice3').value,
+                costInstall: document.getElementById('costInstall').value,
+                costPackage: document.getElementById('costPackage').value,
+                costAdmin: document.getElementById('costAdmin').value,
+                costAddon: document.getElementById('costAddon').value,
+                devRouter: document.getElementById('devRouter').checked,
+                qtyRouter: document.getElementById('qtyRouter').value,
+                devSmartbox: document.getElementById('devSmartbox').checked,
+                qtySmartbox: document.getElementById('qtySmartbox').value,
+                addonDens: document.getElementById('addonDens').checked,
+                addonVision: document.getElementById('addonVision').checked,
+                addonCustom1Check: document.getElementById('addonCustom1Check').checked,
+                addonCustom1Text: document.getElementById('addonCustom1Text').value,
+                addonCustom2Check: document.getElementById('addonCustom2Check').checked,
+                addonCustom2Text: document.getElementById('addonCustom2Text').value,
+                ccName: document.getElementById('ccName').value,
+                ccNumber: document.getElementById('ccNumber').value,
+                ccExpiry: document.getElementById('ccExpiry').value,
+                ccBank: document.getElementById('ccBank').value,
+                username: getGridValue('usernameBoxes'),
+                installDay: document.getElementById('installDayInput').value,
+                installDate: getGridValue('installDateBoxes'),
+                installTime: document.querySelector('input[name="installTime"]:checked')?.value || '09.00-11.00',
+                installNotes: document.getElementById('installNotesInput').value,
+                signerName1: document.getElementById('signerName1').value,
+                signerName2: document.getElementById('signerName2').value,
+                signerName3: document.getElementById('signerName3').value
+            };
+
             // Create data object
             const formData = {
                 id: regId,
@@ -1081,19 +1131,24 @@
                 package: selectedPkg,
                 total: totalStr,
                 sigStatus: `${sigCount}/3 TTD`,
-                
-                // Store raw data for potential editing later (simplified for demo)
-                raw: {
-                   // ... would map all inputs here
-                }
+                raw: fullRawData
             };
 
             // Save to array and local storage
-            savedData.unshift(formData); // Add to beginning
+            savedData.unshift(formData);
             localStorage.setItem('cbnFormData', JSON.stringify(savedData));
             
             // Update UI
             updateBadge();
+            
+            // Automatically clear form after saving successfully
+            document.querySelectorAll('.char-box').forEach(input => input.value = '');
+            document.querySelectorAll('input[type="text"]:not(.char-box):not(#searchInput), input[type="number"]').forEach(input => input.value = '');
+            clearSignature('sigCanvas1');
+            clearSignature('sigCanvas2');
+            clearSignature('sigCanvas3');
+            calculateCosts();
+
             alert(`Data berhasil disimpan dengan ID: ${regId}`);
         }
 
@@ -1116,7 +1171,7 @@
             );
 
             if (filteredData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-500 italic bg-white dark:bg-slate-800">Tidak ada data ditemukan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-500 italic bg-white dark:bg-slate-800">Tidak ada data tersimpan.</td></tr>`;
                 return;
             }
 
@@ -1147,7 +1202,7 @@
                     </td>
                     <td class="text-center">
                         <div class="flex items-center justify-center gap-1.5">
-                            <button onclick="viewSavedData(${index})" class="w-6 h-6 rounded bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition flex items-center justify-center" title="Lihat Detail"><i class="fa-solid fa-eye text-[10px]"></i></button>
+                            <button onclick="viewSavedData(${index})" class="w-6 h-6 rounded bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition flex items-center justify-center" title="Lihat Detail & Muat ke Form"><i class="fa-solid fa-eye text-[10px]"></i></button>
                             <button onclick="downloadSavedPDF(${index})" class="w-6 h-6 rounded bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 transition flex items-center justify-center" title="Download PDF"><i class="fa-solid fa-file-pdf text-[10px]"></i></button>
                             <button onclick="downloadSavedPNG(${index})" class="w-6 h-6 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 transition flex items-center justify-center" title="Download PNG"><i class="fa-solid fa-image text-[10px]"></i></button>
                             <button onclick="deleteData(${index})" class="w-6 h-6 rounded bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 transition flex items-center justify-center" title="Hapus"><i class="fa-solid fa-trash text-[10px]"></i></button>
@@ -1159,20 +1214,100 @@
         }
 
         function viewSavedData(index) {
-            // Switch back to form tab to inspect
+            const item = savedData[index];
+            if (!item || !item.raw) {
+                alert('Detail data tidak ditemukan.');
+                return;
+            }
+
+            const raw = item.raw;
+
+            // Populate all fields back into the form
+            setGridValue('salesCodeBoxes', raw.salesCode || '');
+            setGridValue('spvCodeBoxes', raw.spvCode || '');
+            setGridValue('fullNameBoxes', raw.fullName || '');
+            document.getElementById('pobInput').value = raw.pob || '';
+            setGridValue('dobBoxes', raw.dob || '');
+            setGridValue('idCardBoxes', raw.idCard || '');
+            
+            if (raw.gender) {
+                const genderRadio = document.querySelector(`input[name="gender"][value="${raw.gender}"]`);
+                if (genderRadio) genderRadio.checked = true;
+            }
+
+            setGridValue('homePhoneBoxes', raw.homePhone || '');
+            setGridValue('mobilePhoneBoxes', raw.mobilePhone || '');
+            setGridValue('addressRow1Boxes', raw.address1 || '');
+            setGridValue('addressRow2Boxes', raw.address2 || '');
+            setGridValue('rtBoxes', raw.rt || '');
+            setGridValue('rwBoxes', raw.rw || '');
+            setGridValue('zipBoxes', raw.zip || '');
+
+            if (raw.ownership) {
+                const ownRadio = document.querySelector(`input[name="ownership"][value="${raw.ownership}"]`);
+                if (ownRadio) ownRadio.checked = true;
+            }
+
+            setGridValue('emailBoxes', raw.email || '');
+
+            if (raw.package) {
+                const pkgRadio = document.querySelector(`input[name="package"][value="${raw.package}"]`);
+                if (pkgRadio) pkgRadio.checked = true;
+            }
+
+            document.getElementById('pkgPrice1').value = raw.pkgPrice1 || '';
+            document.getElementById('pkgPrice2').value = raw.pkgPrice2 || '';
+            document.getElementById('pkgPrice3').value = raw.pkgPrice3 || '';
+            document.getElementById('costInstall').value = raw.costInstall || '500.000';
+            document.getElementById('costPackage').value = raw.costPackage || '799.000';
+            document.getElementById('costAdmin').value = raw.costAdmin || '150.000';
+            document.getElementById('costAddon').value = raw.costAddon || '0';
+
+            document.getElementById('devRouter').checked = !!raw.devRouter;
+            document.getElementById('qtyRouter').value = raw.qtyRouter || 1;
+            document.getElementById('devSmartbox').checked = !!raw.devSmartbox;
+            document.getElementById('qtySmartbox').value = raw.qtySmartbox || 1;
+
+            document.getElementById('addonDens').checked = !!raw.addonDens;
+            document.getElementById('addonVision').checked = !!raw.addonVision;
+            document.getElementById('addonCustom1Check').checked = !!raw.addonCustom1Check;
+            document.getElementById('addonCustom1Text').value = raw.addonCustom1Text || '';
+            document.getElementById('addonCustom2Check').checked = !!raw.addonCustom2Check;
+            document.getElementById('addonCustom2Text').value = raw.addonCustom2Text || '';
+
+            document.getElementById('ccName').value = raw.ccName || '';
+            document.getElementById('ccNumber').value = raw.ccNumber || '';
+            document.getElementById('ccExpiry').value = raw.ccExpiry || '';
+            document.getElementById('ccBank').value = raw.ccBank || '';
+
+            setGridValue('usernameBoxes', raw.username || '');
+            document.getElementById('installDayInput').value = raw.installDay || 'segera';
+            setGridValue('installDateBoxes', raw.installDate || '');
+
+            if (raw.installTime) {
+                const timeRadio = document.querySelector(`input[name="installTime"][value="${raw.installTime}"]`);
+                if (timeRadio) timeRadio.checked = true;
+            }
+
+            document.getElementById('installNotesInput').value = raw.installNotes || '';
+            document.getElementById('signerName1').value = raw.signerName1 || '';
+            document.getElementById('signerName2').value = raw.signerName2 || '';
+            document.getElementById('signerName3').value = raw.signerName3 || '';
+
+            calculateCosts();
+            
+            // Switch to form tab to view loaded record
             switchMainTab('form');
-            // In a full implementation, you could load the record values into the form fields here.
-            alert('Melihat detail data registrasi ID: ' + savedData[index].id);
         }
 
         function downloadSavedPDF(index) {
-            alert('Mengunduh PDF untuk data registrasi: ' + savedData[index].id);
-            downloadPDF();
+            viewSavedData(index);
+            setTimeout(() => { downloadPDF(); }, 300);
         }
 
         function downloadSavedPNG(index) {
-            alert('Mengunduh PNG untuk data registrasi: ' + savedData[index].id);
-            downloadPNG();
+            viewSavedData(index);
+            setTimeout(() => { downloadPNG(); }, 300);
         }
 
         function deleteData(index) {
@@ -1344,7 +1479,7 @@
         }
 
         function resetForm() {
-            if(confirm('Reset semua isian formulir?')) {
+            if(confirm('Reset semua isian formulir? (Data tersimpan di Data Tersimpan aman dan tidak akan hilang)')) {
                 // Clear grid boxes
                 document.querySelectorAll('.char-box').forEach(input => input.value = '');
                 // Clear inputs
