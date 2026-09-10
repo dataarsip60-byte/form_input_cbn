@@ -673,7 +673,9 @@
                         <button type="button" onclick="clearSignature('sigCanvas1')" class="absolute bottom-1 right-1 text-[8px] bg-slate-200/80 hover:bg-red-100 text-slate-600 hover:text-red-600 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity no-print z-10"><i class="fa-solid fa-eraser"></i> Hapus</button>
                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 text-[10px] italic z-0 no-print" id="sigPlaceholder1"><i class="fa-solid fa-pen-nib mr-1"></i> Area tanda tangan</div>
                     </div>
-                    <div class="font-bold text-[9px] border-b border-slate-400 inline-block px-4 pb-1 mb-1 min-w-[120px]" id="sigName1"></div>
+                    <div class="my-1.5">
+                        <input type="text" id="signerName1" placeholder="( Nama Jelas / Manual )" class="w-full text-center border-b border-dashed border-slate-400 dark:border-slate-500 outline-none focus:border-solid focus:border-cbn-blue text-[10px] font-bold pb-0.5 bg-transparent uppercase">
+                    </div>
                     <div class="text-[9px] font-bold">Tanda tangan pelanggan</div>
                     <div class="text-[7px] text-slate-400 italic font-normal">Customer signature</div>
                 </div>
@@ -685,7 +687,9 @@
                         <button type="button" onclick="clearSignature('sigCanvas2')" class="absolute bottom-1 right-1 text-[8px] bg-slate-200/80 hover:bg-red-100 text-slate-600 hover:text-red-600 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity no-print z-10"><i class="fa-solid fa-eraser"></i> Hapus</button>
                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 text-[10px] italic z-0 no-print" id="sigPlaceholder2"><i class="fa-solid fa-pen-nib mr-1"></i> Area tanda tangan</div>
                     </div>
-                    <div class="font-bold text-[9px] border-b border-slate-400 inline-block px-4 pb-1 mb-1 min-w-[120px]"></div>
+                    <div class="my-1.5">
+                        <input type="text" id="signerName2" placeholder="( Nama Jelas / Manual )" class="w-full text-center border-b border-dashed border-slate-400 dark:border-slate-500 outline-none focus:border-solid focus:border-cbn-blue text-[10px] font-bold pb-0.5 bg-transparent uppercase">
+                    </div>
                     <div class="text-[9px] font-bold">Tanda tangan sales</div>
                     <div class="text-[7px] text-slate-400 italic font-normal">Sales signature</div>
                 </div>
@@ -697,7 +701,9 @@
                         <button type="button" onclick="clearSignature('sigCanvas3')" class="absolute bottom-1 right-1 text-[8px] bg-slate-200/80 hover:bg-red-100 text-slate-600 hover:text-red-600 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity no-print z-10"><i class="fa-solid fa-eraser"></i> Hapus</button>
                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 text-[10px] italic z-0 no-print" id="sigPlaceholder3"><i class="fa-solid fa-pen-nib mr-1"></i> Area tanda tangan</div>
                     </div>
-                    <div class="font-bold text-[9px] border-b border-slate-400 inline-block px-4 pb-1 mb-1 min-w-[120px]"></div>
+                    <div class="my-1.5">
+                        <input type="text" id="signerName3" placeholder="( Nama Jelas / Manual )" class="w-full text-center border-b border-dashed border-slate-400 dark:border-slate-500 outline-none focus:border-solid focus:border-cbn-blue text-[10px] font-bold pb-0.5 bg-transparent uppercase">
+                    </div>
                     <div class="text-[9px] font-bold">Tanda tangan SPV</div>
                     <div class="text-[7px] text-slate-400 italic font-normal">Supervisor signature</div>
                 </div>
@@ -919,7 +925,11 @@
         }
         
         function updateSignatureName() {
-            document.getElementById('sigName1').textContent = getGridValue('fullNameBoxes');
+            // Auto-fill customer name if empty or match full name grid
+            const customerNameInput = document.getElementById('signerName1');
+            if (customerNameInput && !customerNameInput.value) {
+                customerNameInput.value = getGridValue('fullNameBoxes');
+            }
         }
 
         // Form Calculations
@@ -1330,7 +1340,11 @@
             setGridValue('installDateBoxes', '');
             document.getElementById('installNotesInput').value = 'regular promo july 2026-nab';
             
-            updateSignatureName();
+            // Fill Signer Names sample data
+            document.getElementById('signerName1').value = 'BUDI SANTOSO';
+            document.getElementById('signerName2').value = 'AHMAD FAUZI';
+            document.getElementById('signerName3').value = 'HENDRA WIJAYA';
+
             calculateCosts();
         }
 
@@ -1349,7 +1363,6 @@
                 clearSignature('sigCanvas2');
                 clearSignature('sigCanvas3');
                 
-                updateSignatureName();
                 calculateCosts();
             }
         }
