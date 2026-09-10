@@ -47,7 +47,7 @@
             color: #f1f5f9;
         }
 
-        /* Character Box Styling for Grid Inputs - Explicitly visible & bold */
+        /* Character Box Styling for Grid Inputs - Explicitly visible & bold, flexible case */
         .char-box {
             width: 18px;
             height: 22px;
@@ -64,7 +64,7 @@
             justify-content: center;
             margin-right: 1px;
             margin-bottom: 2px;
-            /* Removed global text-transform: uppercase; */
+            /* Removed global text-transform: uppercase; to allow flexible lowercase/uppercase/numbers */
         }
 
         .char-box:focus {
@@ -544,9 +544,9 @@
                                 <tr class="border-b border-slate-200 dark:border-slate-700">
                                     <td class="py-1.5 text-slate-600 dark:text-slate-400">Biaya Paket</td>
                                     <td class="py-1.5 text-right">
-                                        <div class="flex items-center justify-between border border-slate-300 bg-slate-100 dark:bg-slate-700 rounded px-1">
+                                        <div class="flex items-center justify-between border border-slate-300 bg-white dark:bg-slate-800 rounded px-1">
                                             <span class="text-[8px] text-slate-400 font-normal">Rp</span>
-                                            <input type="text" id="costPackage" value="799.000" class="w-full text-right outline-none bg-transparent py-0.5 text-cbn-blue" readonly>
+                                            <input type="text" id="costPackage" value="799.000" class="w-full text-right outline-none bg-transparent py-0.5 text-cbn-blue" oninput="calculateCosts()">
                                         </div>
                                     </td>
                                 </tr>
@@ -562,9 +562,9 @@
                                 <tr class="border-b-2 border-slate-400 dark:border-slate-600">
                                     <td class="py-1.5 text-slate-600 dark:text-slate-400">Biaya Add-on</td>
                                     <td class="py-1.5 text-right">
-                                        <div class="flex items-center justify-between border border-slate-300 bg-slate-100 dark:bg-slate-700 rounded px-1">
+                                        <div class="flex items-center justify-between border border-slate-300 bg-white dark:bg-slate-800 rounded px-1">
                                             <span class="text-[8px] text-slate-400 font-normal">Rp</span>
-                                            <input type="text" id="costAddon" value="0" class="w-full text-right outline-none bg-transparent py-0.5" readonly>
+                                            <input type="text" id="costAddon" value="0" class="w-full text-right outline-none bg-transparent py-0.5" oninput="calculateCosts()">
                                         </div>
                                     </td>
                                 </tr>
@@ -846,8 +846,8 @@
             
             gridContainers.forEach(container => {
                 const count = parseInt(container.getAttribute('data-grid-count'));
-                const isEmail = container.id === 'emailBoxes'; // specific logic if needed
-                const isUsername = container.id === 'usernameBoxes'; // Flexible case for username
+                const isEmail = container.id === 'emailBoxes'; 
+                const isUsername = container.id === 'usernameBoxes'; 
                 
                 for (let i = 0; i < count; i++) {
                     const input = document.createElement('input');
@@ -855,10 +855,10 @@
                     input.maxLength = 1;
                     input.className = 'char-box';
                     
-                    // Add specific classes/logic based on container ID
-                    if (!isEmail && !isUsername) {
-                        input.classList.add('uppercase'); // Force visual uppercase for non-email and non-username boxes
-                        input.oninput = function() { this.value = this.value.toUpperCase(); }
+                    // Allow flexible input (uppercase, lowercase, numbers without forcing uppercase)
+                    input.oninput = function() { 
+                        // Keeps exact characters as typed by user (flexible: upper, lower, numbers)
+                        this.value = this.value; 
                     }
 
                     // Navigation logic between boxes
@@ -876,8 +876,6 @@
                             const prev = this.previousElementSibling;
                             if (prev && prev.classList.contains('char-box')) {
                                 prev.focus();
-                                // Optional: clear prev box on backspace
-                                // prev.value = '';
                             }
                         } else if (e.key === 'ArrowLeft') {
                             const prev = this.previousElementSibling;
@@ -936,39 +934,19 @@
         function calculateCosts() {
             // 1. Get Package Price text value directly
             const selectedPkgRadio = document.querySelector('input[name="package"]:checked');
-            let pkgInputVal = '';
-            if(selectedPkgRadio) {
-                // Determine which package is selected and grab its input value
-                if(selectedPkgRadio.value === 'CBN Fiber') pkgInputVal = document.getElementById('pkgPrice1').value;
-                else if(selectedPkgRadio.value === 'CBN Fiber Safe') pkgInputVal = document.getElementById('pkgPrice2').value;
-                else if(selectedPkgRadio.value === 'CBN Fiber Pro') pkgInputVal = document.getElementById('pkgPrice3').value;
-            }
+            let pkgInputVal = document.getElementById('costPackage').value;
             
             // Try parsing numeric value if possible for totals, or 0 if text/empty
             let pkgPrice = parseIDR(pkgInputVal);
-            
-            // Update cost package input in the detail table
-            document.getElementById('costPackage').value = pkgInputVal;
 
             // 2. Get Fixed Costs
             let installCost = parseIDR(document.getElementById('costInstall').value);
             let adminCost = parseIDR(document.getElementById('costAdmin').value);
 
-            // 3. Calculate Add-ons
-            let addonCost = 0;
-            if (document.getElementById('devRouter').checked) {
-                let qty = parseInt(document.getElementById('qtyRouter').value) || 1;
-                addonCost += (150000 * qty);
-            }
-            if (document.getElementById('devSmartbox').checked) {
-                let qty = parseInt(document.getElementById('qtySmartbox').value) || 1;
-                addonCost += (200000 * qty);
-            }
-            if (document.getElementById('addonDens').checked) addonCost += 45000;
-            if (document.getElementById('addonVision').checked) addonCost += 65000;
-            
-            // Update Add-on input visually
-            document.getElementById('costAddon').value = formatIDR(addonCost);
+            // 3. Calculate Add-ons (allow manual editing or auto calculation override)
+            let addonCost = parseIDR(document.getElementById('costAddon').value);
+            // If user just checked/unchecked items or loaded sample, we can check if addon input was modified or initialize it.
+            // To make it fully editable while keeping functionality: we read from #costAddon input directly.
 
             // 4. Calculate Totals
             let subtotal = installCost + pkgPrice + adminCost + addonCost;
@@ -1270,22 +1248,37 @@
                 return;
             }
             
-            // Format data for excel
+            // Format data with full header attributes for excel export
             const wsData = savedData.map(item => ({
                 'ID Registrasi': item.id,
-                'Tanggal': item.date,
-                'Nama Pelanggan': item.customerName,
+                'Tanggal Pendaftaran': item.date,
                 'Kode Sales': item.salesCode,
-                'No. Identitas': item.idCard,
-                'Paket Dipilih': item.package,
+                'Kode SPV': item.raw?.spvCode || '-',
+                'Nama Lengkap Pelanggan': item.customerName,
+                'Tempat Lahir': item.raw?.pob || '-',
+                'Tanggal Lahir': item.raw?.dob || '-',
+                'Nomor Identitas (KTP)': item.idCard,
+                'Jenis Kelamin': item.raw?.gender || '-',
+                'Telepon Rumah': item.raw?.homePhone || '-',
+                'Telepon Selular': item.raw?.mobilePhone || '-',
+                'Alamat Pemasangan': item.raw?.address1 || '-',
+                'Detail Alamat': item.raw?.address2 || '-',
+                'RT': item.raw?.rt || '-',
+                'RW': item.raw?.rw || '-',
+                'Kode Pos': item.raw?.zip || '-',
+                'Status Kepemilikan': item.raw?.ownership || '-',
+                'Email': item.raw?.email || '-',
+                'Paket Layanan': item.package,
+                'Metode Pembayaran CC': item.raw?.ccName ? 'Kartu Kredit' : 'Regular',
+                'Status Tanda Tangan': item.sigStatus,
                 'Total Pembayaran': item.total
             }));
 
             const ws = XLSX.utils.json_to_sheet(wsData);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Data Pendaftaran");
+            XLSX.utils.book_append_sheet(wb, ws, "Data Pendaftaran Lengkap");
             
-            XLSX.writeFile(wb, "Data_Pendaftaran_CBN.xlsx");
+            XLSX.writeFile(wb, "Data_Pendaftaran_CBN_Full_Header.xlsx");
         }
 
 
@@ -1316,10 +1309,12 @@
             
             document.querySelector('input[name="package"][value="CBN Fiber Pro"]').checked = true;
             
-            // Set sample text values for package prices
+            // Set sample values for editable cost fields
             document.getElementById('pkgPrice1').value = '399.000';
             document.getElementById('pkgPrice2').value = '499.000';
             document.getElementById('pkgPrice3').value = '799.000';
+            document.getElementById('costPackage').value = '799.000';
+            document.getElementById('costAddon').value = '415.000';
             
             document.getElementById('devRouter').checked = true;
             document.getElementById('qtyRouter').value = 1;
