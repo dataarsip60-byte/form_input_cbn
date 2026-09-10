@@ -373,7 +373,7 @@
                                 <div class="font-bold text-slate-900 flex items-center justify-between">
                                     <span>CBN Fiber</span>
                                     <span class="text-cbn-blue font-semibold flex items-center gap-1">
-                                        Rp <input type="number" id="pkgPrice1" value="299000" class="pkg-price-input w-24 border border-slate-300 rounded px-1 text-right font-extrabold text-cbn-blue bg-white" oninput="updatePackagePrice()">/bln
+                                        <input type="text" id="pkgPrice1" value="" class="pkg-price-input w-24 border border-slate-300 rounded px-1 text-right font-extrabold text-cbn-blue bg-white" oninput="updatePackagePrice()">
                                     </span>
                                 </div>
                                 <div class="text-[8px] text-slate-500" data-i18n="pkg1Desc">Koneksi Internet Fiber Optic Cepat & Stabil.</div>
@@ -385,7 +385,7 @@
                                 <div class="font-bold text-slate-900 flex items-center justify-between">
                                     <span>CBN Fiber Safe</span>
                                     <span class="text-cbn-blue font-semibold flex items-center gap-1">
-                                        Rp <input type="number" id="pkgPrice2" value="399000" class="pkg-price-input w-24 border border-slate-300 rounded px-1 text-right font-extrabold text-cbn-blue bg-white" oninput="updatePackagePrice()">/bln
+                                        <input type="text" id="pkgPrice2" value="" class="pkg-price-input w-24 border border-slate-300 rounded px-1 text-right font-extrabold text-cbn-blue bg-white" oninput="updatePackagePrice()">
                                     </span>
                                 </div>
                                 <div class="text-[8px] text-slate-500" data-i18n="pkg2Desc">Paket internet dilengkapi perlindungan keamanan ekstra.</div>
@@ -397,7 +397,7 @@
                                 <div class="font-bold text-slate-900 flex items-center justify-between">
                                     <span>CBN Fiber Pro</span>
                                     <span class="text-cbn-blue font-semibold flex items-center gap-1">
-                                        Rp <input type="number" id="pkgPrice3" value="599000" class="pkg-price-input w-24 border border-slate-300 rounded px-1 text-right font-extrabold text-cbn-blue bg-white" oninput="updatePackagePrice()">/bln
+                                        <input type="text" id="pkgPrice3" value="" class="pkg-price-input w-24 border border-slate-300 rounded px-1 text-right font-extrabold text-cbn-blue bg-white" oninput="updatePackagePrice()">
                                     </span>
                                 </div>
                                 <div class="text-[8px] text-slate-500" data-i18n="pkg3Desc">Koneksi internet premium dengan bandwidth khusus.</div>
@@ -978,19 +978,9 @@
             const pkgEl = document.querySelector('input[name="package"]:checked');
             if (!pkgEl) return;
             
-            const p1 = parseFloat(document.getElementById('pkgPrice1')?.value) || 299000;
-            const p2 = parseFloat(document.getElementById('pkgPrice2')?.value) || 399000;
-            const p3 = parseFloat(document.getElementById('pkgPrice3')?.value) || 599000;
-
-            const pkgPrices = {
-                'CBN Fiber': p1,
-                'CBN Fiber Safe': p2,
-                'CBN Fiber Pro': p3
-            };
-            const price = pkgPrices[pkgEl.value] || p1;
-            const costPkgEl = document.getElementById('costPackage');
-            if (costPkgEl) costPkgEl.value = price;
-            calculateTotalCost();
+            // Karena sekarang bisa huruf/angka, kita tidak bisa langsung parseFloat.
+            // Biarkan input "Biaya Paket" pada "PERINCIAN BIAYA" diisi manual oleh user.
+            // Script ini dikosongkan agar tidak menimpa nilai "Biaya Paket" yang mungkin sudah diisi.
         }
 
         function calculateTotalCost() {
