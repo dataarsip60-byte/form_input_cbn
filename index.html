@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulir Pendaftaran Layanan CBN</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -27,7 +26,7 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- html2canvas Library for Direct PNG & PDF Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- html2pdf Library for Direct PDF Downloading -->
@@ -50,12 +49,12 @@
 
         /* Character Box Styling for Grid Inputs - Explicitly visible & bold */
         .char-box {
-            width: 20px;
-            height: 24px;
+            width: 18px;
+            height: 22px;
             text-align: center;
             border: 1px solid #94a3b8 !important;
-            border-radius: 3px;
-            font-size: 13px;
+            border-radius: 2px;
+            font-size: 12px;
             font-weight: 800 !important;
             background-color: #ffffff !important;
             color: #020617 !important;
@@ -64,39 +63,45 @@
             align-items: center;
             justify-content: center;
             margin-right: 1px;
-        }
-        
-        .char-box-uppercase {
-            text-transform: uppercase;
+            margin-bottom: 2px;
+            /* Removed global text-transform: uppercase; */
         }
 
         .char-box:focus {
             border-color: #005691 !important;
             box-shadow: 0 0 0 2px rgba(0, 86, 145, 0.2);
-            background-color: #f8fafc !important;
+            background-color: #e0f2fe !important;
         }
+        
         body.dark .char-box {
             background-color: #1e293b !important;
-            border-color: #64748b !important;
-            color: #ffffff !important;
+            border-color: #475569 !important;
+            color: #f8fafc !important;
         }
 
-        /* General Input Fields - Bold & Clear */
-        input[type="text"], input[type="number"], select {
+        /* General Input Fields */
+        input[type="text"]:not(.char-box), input[type="number"], select {
             font-weight: 700 !important;
             color: #020617 !important;
-            font-size: 13px !important; /* Unified font size to match character boxes / top inputs */
+            font-size: 11px !important;
+            background-color: transparent;
         }
-        body.dark input[type="text"], body.dark input[type="number"], body.dark select {
-            color: #ffffff !important;
+        body.dark input[type="text"]:not(.char-box), body.dark input[type="number"], body.dark select {
+            color: #f8fafc !important;
         }
 
-        /* Package Price Input specific styling for uniform font weight & size */
+        /* Package Price Input */
         .pkg-price-input {
             font-size: 11px !important;
             font-weight: 800 !important;
+            background-color: white !important;
+        }
+        body.dark .pkg-price-input {
+            background-color: #334155 !important;
+            color: white !important;
         }
 
+        /* Print Media Queries */
         @media print {
             .no-print {
                 display: none !important;
@@ -119,20 +124,21 @@
                 border-color: #000000 !important;
                 background-color: #ffffff !important;
             }
+            /* Hide empty rows in print if needed, but usually keep structure */
         }
 
         /* Signature Box Container */
         .sig-box-container {
             border: 1px solid #cbd5e1;
-            border-radius: 0.375rem;
+            border-radius: 4px;
             background-color: #ffffff;
             position: relative;
-            height: 70px;
+            height: 80px;
             overflow: hidden;
             cursor: crosshair;
         }
         body.dark .sig-box-container {
-            background-color: #0f172a;
+            background-color: #1e293b;
             border-color: #475569;
         }
         .sig-canvas {
@@ -140,22 +146,35 @@
             height: 100%;
             display: block;
         }
+        
+        /* Table Styles for Tab 2 */
+        .data-table th { background-color: #f8fafc; color: #475569; font-size: 11px; text-transform: uppercase; font-weight: 700; padding: 10px; border-bottom: 2px solid #e2e8f0;}
+        .data-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 12px; }
+        body.dark .data-table th { background-color: #0f172a; color: #94a3b8; border-color: #334155; }
+        body.dark .data-table td { border-color: #334155; }
+        
+        /* Tab content visibility */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Hide scrollbar for grid boxes */
+        .grid-container { display: flex; flex-wrap: wrap; }
     </style>
 </head>
 <body class="py-6 px-2 sm:px-4">
 
-    <div class="max-w-4xl mx-auto mb-4 no-print space-y-3">
-        <!-- Top Header & Tab Switcher -->
-        <div class="bg-white p-3 sm:p-4 rounded-xl shadow-md border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+    <div class="max-w-5xl mx-auto mb-4 no-print space-y-3">
+        <!-- Top Header & Global Actions -->
+        <div class="bg-white dark:bg-slate-800 p-3 sm:p-4 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3">
                 <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-cbn-blue text-white font-bold text-base shadow-sm">
                     <i class="fa-solid fa-file-signature"></i>
                 </span>
                 <div>
-                    <h1 class="font-bold text-slate-800 text-sm sm:text-base leading-tight" data-i18n="appTitle">Sistem Pendaftaran Layanan CBN</h1>
-                    <p class="text-[11px] text-slate-500" data-i18n="appSubtitle">Pengisian Formulir & Manajemen Data Digital</p>
+                    <h1 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base leading-tight">Sistem Pendaftaran Layanan CBN</h1>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Pengisian Formulir & Manajemen Data Digital</p>
                 </div>
-                <!-- Status Badge Sinkronisasi Cloud Database -->
+                <!-- Status Badge -->
                 <div class="ml-2 text-[10px] px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold flex items-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-database text-emerald-600"></i> Memori Lokal Aktif
                 </div>
@@ -163,42 +182,41 @@
 
             <!-- Global Action Utilities (Lang & Theme Toggle) -->
             <div class="flex items-center gap-2">
-                <!-- Language Toggle -->
-                <button onclick="toggleLanguage()" id="langToggleBtn" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200" title="Ubah Bahasa / Change Language">
-                    <i class="fa-solid fa-globe text-cbn-blue"></i> <span id="currentLangLabel">ID</span>
+                <button onclick="toggleLanguage()" id="langToggleBtn" class="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-600" title="Ubah Bahasa / Change Language">
+                    <i class="fa-solid fa-globe text-cbn-blue dark:text-blue-400"></i> <span id="currentLangLabel">ID</span>
                 </button>
-                <!-- Dark Mode Toggle -->
-                <button onclick="toggleDarkMode()" id="themeToggleBtn" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs transition border border-slate-200" title="Ubah Mode Tampilan">
-                    <i id="themeIcon" class="fa-solid fa-moon text-cbn-blue"></i>
+                <button onclick="toggleDarkMode()" id="themeToggleBtn" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs transition border border-slate-200 dark:border-slate-600" title="Ubah Mode Tampilan">
+                    <i id="themeIcon" class="fa-solid fa-moon text-cbn-blue dark:text-blue-400"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Main Navigation Tabs -->
-        <div class="bg-white p-2 rounded-xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-2">
-            <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold w-full sm:w-auto overflow-x-auto">
-                <button id="navTabForm" onclick="switchMainTab('form')" class="px-3.5 py-2 rounded-lg bg-white text-cbn-blue shadow-sm transition flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-pen-to-square"></i> <span data-i18n="tabForm">Formulir</span>
+        <!-- Main Navigation Tabs & Form Actions -->
+        <div class="bg-white dark:bg-slate-800 p-2 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-2">
+            <!-- Tabs -->
+            <div class="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold w-full sm:w-auto overflow-x-auto">
+                <button id="navTabForm" onclick="switchMainTab('form')" class="px-4 py-2 rounded-lg bg-white dark:bg-slate-700 text-cbn-blue dark:text-white shadow-sm transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-pen-to-square"></i> <span>Formulir</span>
                 </button>
-                <button id="navTabSaved" onclick="switchMainTab('saved')" class="px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-2 relative whitespace-nowrap">
-                    <i class="fa-solid fa-database"></i> <span data-i18n="tabSaved">Data Tersimpan</span>
+                <button id="navTabSaved" onclick="switchMainTab('saved')" class="px-4 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-2 relative whitespace-nowrap">
+                    <i class="fa-solid fa-database"></i> <span>Data Tersimpan</span>
                     <span id="savedCountBadge" class="bg-cbn-blue text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">0</span>
                 </button>
-                <button id="navTabDashboard" onclick="switchMainTab('dashboard')" class="px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-2 relative whitespace-nowrap">
-                    <i class="fa-solid fa-chart-pie"></i> <span data-i18n="tabDashboard">Dashboard & Analitik</span>
+                <button id="navTabDashboard" onclick="switchMainTab('dashboard')" class="px-4 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-2 relative whitespace-nowrap">
+                    <i class="fa-solid fa-chart-pie"></i> <span>Dashboard & Analitik</span>
                 </button>
             </div>
 
-            <!-- Quick Status Badge -->
+            <!-- Form Action Buttons (Visible only on Form tab) -->
             <div id="formActionBar" class="flex flex-wrap items-center gap-2">
                 <button onclick="saveFormData()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition flex items-center gap-1.5 text-xs whitespace-nowrap">
-                    <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="btnSave">Simpan Data</span>
+                    <i class="fa-solid fa-floppy-disk"></i> <span>Simpan Data</span>
                 </button>
                 <button onclick="fillSampleData()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm transition flex items-center gap-1.5 text-xs whitespace-nowrap">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="btnSample">Isi Sample</span>
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Isi Sample</span>
                 </button>
-                <button onclick="refreshFormData()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg transition flex items-center gap-1.5 text-xs whitespace-nowrap" title="Reset Formulir">
-                    <i class="fa-solid fa-arrows-rotate text-cbn-blue"></i>
+                <button onclick="resetForm()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-medium rounded-lg transition flex items-center gap-1.5 text-xs whitespace-nowrap border border-slate-200 dark:border-slate-600" title="Reset Formulir">
+                    <i class="fa-solid fa-arrows-rotate text-cbn-blue dark:text-blue-400"></i>
                 </button>
                 <button onclick="downloadPDF()" class="px-3 py-1.5 bg-cbn-blue hover:bg-cbn-darkBlue text-white font-medium rounded-lg shadow-sm transition flex items-center gap-1.5 text-xs whitespace-nowrap">
                     <i class="fa-solid fa-file-pdf"></i> PDF (1 Halaman)
@@ -210,257 +228,262 @@
         </div>
     </div>
 
-    <div id="tabFormContent">
+    <!-- TAB 1: FORMULIR -->
+    <div id="tabForm" class="tab-content active">
         <!-- MAIN FORM CONTAINER (A4 Sheet Simulation) -->
-        <div id="formPrintArea" class="print-container max-w-4xl mx-auto bg-white p-5 sm:p-7 rounded-lg shadow-xl border border-slate-300 text-slate-800 relative text-[10px] leading-tight">
+        <div id="formPrintArea" class="print-container max-w-[850px] mx-auto bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-lg shadow-xl border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 relative text-[10px] leading-tight font-medium">
             
             <!-- FORM HEADER & LOGO -->
-            <div class="flex justify-between items-start border-b-2 border-cbn-blue pb-3 mb-3">
+            <div class="flex justify-between items-start border-b-2 border-cbn-blue pb-3 mb-4">
                 <div>
                     <div class="flex items-center gap-2 mb-1">
-                        <span class="font-extrabold text-2xl text-cbn-blue tracking-wider">CBN</span>
-                        <span class="text-[10px] text-slate-500 font-semibold border-l border-slate-300 pl-2">Cyberindo Aditama</span>
+                        <span class="font-extrabold text-3xl text-cbn-blue tracking-wider">CBN</span>
+                        <span class="text-[11px] text-slate-500 font-semibold border-l-2 border-slate-300 pl-2 ml-1">Cyberindo Aditama</span>
                     </div>
-                    <h2 class="font-bold text-sm text-slate-900 tracking-wide" data-i18n="formTitle">FORMULIR PENDAFTARAN LAYANAN</h2>
-                    <p class="italic text-[9px] text-slate-500">SERVICE APPLICATION FORM</p>
+                    <h2 class="font-extrabold text-[13px] text-slate-900 dark:text-white tracking-wide mt-2">FORMULIR PENDAFTARAN LAYANAN</h2>
+                    <p class="italic text-[9px] text-slate-500 font-normal">SERVICE APPLICATION FORM</p>
                 </div>
                 
-                <div class="text-right space-y-1">
-                    <div class="flex items-center justify-end gap-1">
-                        <span class="font-bold text-[9px]" data-i18n="labelSalesCode">KODE SALES:</span>
-                        <div id="salesCodeBoxes" data-grid-count="10" class="flex gap-0.5"></div>
+                <div class="text-right space-y-1.5 pt-2">
+                    <div class="flex items-center justify-end gap-2">
+                        <span class="font-bold text-[9px] text-slate-700 dark:text-slate-300">KODE SALES:</span>
+                        <div id="salesCodeBoxes" data-grid-count="9" class="grid-container"></div>
                     </div>
-                    <div class="flex items-center justify-end gap-1">
-                        <span class="font-bold text-[9px]" data-i18n="labelSpvCode">KODE SPV:</span>
-                        <div id="spvCodeBoxes" data-grid-count="10" class="flex gap-0.5"></div>
+                    <div class="flex items-center justify-end gap-2">
+                        <span class="font-bold text-[9px] text-slate-700 dark:text-slate-300">KODE SPV:</span>
+                        <div id="spvCodeBoxes" data-grid-count="9" class="grid-container"></div>
                     </div>
                 </div>
             </div>
 
             <!-- 1. DATA PELANGGAN / CUSTOMER DATA -->
-            <div class="mb-3">
-                <div class="bg-cbn-blue text-white px-2 py-1 font-bold text-[10px] flex justify-between items-center rounded-t">
-                    <span data-i18n="secCustomer">DATA PELANGGAN / CUSTOMER DATA</span>
+            <div class="mb-4">
+                <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px] flex justify-between items-center rounded-t">
+                    <span>DATA PELANGGAN / CUSTOMER DATA</span>
                 </div>
-                <div class="border-x border-b border-slate-300 p-2 bg-slate-50/50 space-y-2">
+                <div class="border-x border-b border-cbn-blue p-2 bg-slate-50/50 dark:bg-slate-900/50 space-y-2">
                     
                     <!-- Nama Pelanggan -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                        <div class="w-44">
-                            <span class="font-bold block" data-i18n="labelFullName">NAMA PELANGGAN</span>
-                            <span class="italic text-[8px] text-slate-500">Full Name</span>
+                    <div class="flex items-start gap-1">
+                        <div class="w-40 pt-1 flex-shrink-0">
+                            <span class="font-bold block text-slate-800 dark:text-slate-200">NAMA PELANGGAN</span>
+                            <span class="italic text-[8px] text-slate-500 font-normal">Full Name</span>
                         </div>
-                        <div id="fullNameBoxes" data-grid-count="30" class="flex flex-wrap gap-0.5"></div>
+                        <div id="fullNameBoxes" data-grid-count="32" class="grid-container flex-1"></div>
                     </div>
 
                     <!-- Tempat / Tanggal Lahir -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                        <div class="w-44">
-                            <span class="font-bold block" data-i18n="labelDob">TEMPAT/TANGGAL LAHIR</span>
-                            <span class="italic text-[8px] text-slate-500">Place/Date of birth</span>
+                    <div class="flex items-center gap-1">
+                        <div class="w-40 flex-shrink-0">
+                            <span class="font-bold block text-slate-800 dark:text-slate-200">TEMPAT/TANGGAL LAHIR</span>
+                            <span class="italic text-[8px] text-slate-500 font-normal">Place/Date of birth</span>
                         </div>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <input type="text" id="pobInput" placeholder="KOTA LAHIR" class="border border-slate-400 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase w-28 outline-none focus:border-cbn-blue">
+                        <div class="flex flex-wrap items-center gap-2 flex-1">
+                            <input type="text" id="pobInput" placeholder="KOTA" class="border border-slate-400 dark:border-slate-600 rounded px-1.5 py-1 text-[10px] font-bold uppercase w-32 outline-none focus:border-cbn-blue">
                             <span class="text-[8px] text-slate-400 italic">dd/mm/yyyy</span>
-                            <div id="dobBoxes" data-grid-count="8" class="flex gap-0.5"></div>
+                            <div id="dobBoxes" data-grid-count="8" class="grid-container"></div>
                         </div>
                     </div>
 
                     <!-- Nomor Identitas & Jenis Kelamin -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                        <div class="w-44">
-                            <span class="font-bold block" data-i18n="labelIdCard">NOMOR IDENTITAS</span>
-                            <span class="italic text-[8px] text-slate-500">ID Card No.</span>
+                    <div class="flex flex-wrap items-center gap-1">
+                        <div class="w-40 flex-shrink-0">
+                            <span class="font-bold block text-slate-800 dark:text-slate-200">NOMOR IDENTITAS</span>
+                            <span class="italic text-[8px] text-slate-500 font-normal">ID Card No.</span>
                         </div>
-                        <div class="flex flex-wrap items-center justify-between flex-1 gap-2">
-                            <div id="idCardBoxes" data-grid-count="16" class="flex gap-0.5"></div>
-                            <div class="flex items-center gap-3 bg-white px-2 py-0.5 border border-slate-300 rounded">
-                                <span class="font-bold text-[9px]"><span data-i18n="labelGender">JENIS KELAMIN</span> <span class="italic font-normal text-slate-500">Gender</span>:</span>
-                                <label class="inline-flex items-center gap-1 cursor-pointer">
-                                    <input type="radio" name="gender" value="Pria" class="accent-cbn-blue"> <span data-i18n="genderMale">Pria</span> <span class="text-slate-400 italic">Male</span>
-                                </label>
-                                <label class="inline-flex items-center gap-1 cursor-pointer">
-                                    <input type="radio" name="gender" value="Wanita" class="accent-cbn-blue"> <span data-i18n="genderFemale">Wanita</span> <span class="text-slate-400 italic">Female</span>
-                                </label>
-                            </div>
+                        <div id="idCardBoxes" data-grid-count="16" class="grid-container"></div>
+                        
+                        <div class="flex items-center gap-3 bg-white dark:bg-slate-800 px-3 py-1 border border-slate-300 dark:border-slate-600 rounded ml-4">
+                            <span class="font-bold text-[9px] text-slate-800 dark:text-slate-200">JENIS KELAMIN <span class="italic font-normal text-slate-500">Gender</span>:</span>
+                            <label class="inline-flex items-center gap-1 cursor-pointer">
+                                <input type="radio" name="gender" value="Pria" class="accent-cbn-blue" checked> <span class="font-bold">Pria</span> <span class="text-slate-400 italic font-normal">Male</span>
+                            </label>
+                            <label class="inline-flex items-center gap-1 cursor-pointer">
+                                <input type="radio" name="gender" value="Wanita" class="accent-cbn-blue"> <span class="font-bold">Wanita</span> <span class="text-slate-400 italic font-normal">Female</span>
+                            </label>
                         </div>
                     </div>
 
                     <!-- Telepon Rumah & Telepon Selular -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                        <div class="w-44">
-                            <span class="font-bold block" data-i18n="labelHomePhone">TELEPON RUMAH</span>
-                            <span class="italic text-[8px] text-slate-500">Home Phone</span>
+                    <div class="flex flex-wrap items-center gap-1">
+                        <div class="w-40 flex-shrink-0">
+                            <span class="font-bold block text-slate-800 dark:text-slate-200">TELEPON RUMAH</span>
+                            <span class="italic text-[8px] text-slate-500 font-normal">Home Phone</span>
                         </div>
-                        <div class="flex flex-wrap items-center justify-between flex-1 gap-2">
-                            <div id="homePhoneBoxes" data-grid-count="12" class="flex gap-0.5"></div>
-                            <div class="flex items-center gap-1.5">
-                                <div>
-                                    <span class="font-bold block" data-i18n="labelMobilePhone">TELEPON SELULAR</span>
-                                    <span class="italic text-[8px] text-slate-500">Mobile Phone</span>
-                                </div>
-                                <div id="mobilePhoneBoxes" data-grid-count="12" class="flex gap-0.5"></div>
+                        <div id="homePhoneBoxes" data-grid-count="12" class="grid-container"></div>
+                        
+                        <div class="flex items-center gap-2 ml-4">
+                            <div class="flex-shrink-0">
+                                <span class="font-bold block text-slate-800 dark:text-slate-200">TELEPON SELULAR</span>
+                                <span class="italic text-[8px] text-slate-500 font-normal">Mobile Phone</span>
                             </div>
+                            <div id="mobilePhoneBoxes" data-grid-count="13" class="grid-container"></div>
                         </div>
                     </div>
 
-                    <p class="text-[7.5px] text-slate-500 italic border-t border-slate-200 pt-1 mt-1" data-i18n="noteIdMatch">
+                    <p class="text-[7.5px] text-slate-500 italic border-t border-slate-200 dark:border-slate-700 pt-1 mt-1">
                         * Data yang tercantum harus sesuai dengan ID identitas pelanggan yang berlaku. / The data declared above must match with valid ID card.
                     </p>
                 </div>
             </div>
 
             <!-- 2. ALAMAT PEMASANGAN / INSTALLATION ADDRESS -->
-            <div class="mb-3">
-                <div class="bg-cbn-blue text-white px-2 py-1 font-bold text-[10px] flex justify-between items-center rounded-t">
-                    <span data-i18n="secAddress">ALAMAT PEMASANGAN / INSTALLATION ADDRESS</span>
+            <div class="mb-4">
+                <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px] flex justify-between items-center rounded-t">
+                    <span>ALAMAT PEMASANGAN / INSTALLATION ADDRESS</span>
                 </div>
-                <div class="border-x border-b border-slate-300 p-2 bg-slate-50/50 space-y-2">
-                    <div class="flex flex-col sm:flex-row items-start justify-between gap-1">
-                        <div class="w-44">
-                            <span class="font-bold block" data-i18n="labelInstallAddress">ALAMAT PEMASANGAN</span>
-                            <span class="italic text-[8px] text-slate-500">Installation Address</span>
+                <div class="border-x border-b border-cbn-blue p-2 bg-slate-50/50 dark:bg-slate-900/50 space-y-2">
+                    
+                    <div class="flex items-start gap-1">
+                        <div class="w-40 pt-1 flex-shrink-0">
+                            <span class="font-bold block text-slate-800 dark:text-slate-200">ALAMAT PEMASANGAN</span>
+                            <span class="italic text-[8px] text-slate-500 font-normal">Installation Address</span>
                         </div>
-                        <div class="space-y-1 flex-1">
-                            <div id="addressRow1Boxes" data-grid-count="35" class="flex flex-wrap gap-0.5"></div>
-                            <div class="flex flex-wrap items-center justify-between gap-1">
-                                <div id="addressRow2Boxes" data-grid-count="20" class="flex flex-wrap gap-0.5"></div>
-                                <div class="flex items-center gap-1">
-                                    <span class="font-bold text-[8px]">RT</span>
-                                    <div id="rtBoxes" data-grid-count="3" class="flex gap-0.5"></div>
-                                    <span class="font-bold text-[8px]">RW</span>
-                                    <div id="rwBoxes" data-grid-count="3" class="flex gap-0.5"></div>
-                                    <span class="font-bold text-[8px] ml-1"><span data-i18n="labelZip">KODE POS</span> <span class="italic text-slate-500">Zip Code</span></span>
-                                    <div id="zipBoxes" data-grid-count="5" class="flex gap-0.5"></div>
+                        <div class="flex-1">
+                            <div id="addressRow1Boxes" data-grid-count="32" class="grid-container mb-1"></div>
+                            <div class="flex items-center gap-1">
+                                <div id="addressRow2Boxes" data-grid-count="20" class="grid-container"></div>
+                                <div class="flex items-center gap-1 ml-2">
+                                    <span class="font-bold text-[9px]">RT</span>
+                                    <div id="rtBoxes" data-grid-count="3" class="grid-container"></div>
+                                    <span class="font-bold text-[9px] ml-1">RW</span>
+                                    <div id="rwBoxes" data-grid-count="3" class="grid-container"></div>
+                                    <span class="font-bold text-[9px] ml-2 block leading-none">KODE POS <br><span class="italic text-slate-500 font-normal text-[7px]">Zip Code</span></span>
+                                    <div id="zipBoxes" data-grid-count="5" class="grid-container ml-1"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200 pt-1">
-                        <div class="w-44">
-                            <span class="font-bold block" data-i18n="labelOwnership">STATUS KEPEMILIKAN</span>
-                            <span class="italic text-[8px] text-slate-500">Ownership Status</span>
+                    <div class="flex items-center gap-1 border-t border-slate-200 dark:border-slate-700 pt-1.5">
+                        <div class="w-40 flex-shrink-0">
+                            <span class="font-bold block text-slate-800 dark:text-slate-200">STATUS KEPEMILIKAN</span>
+                            <span class="italic text-[8px] text-slate-500 font-normal">Ownership Status</span>
                         </div>
                         <div class="flex items-center gap-6 flex-1">
                             <label class="inline-flex items-center gap-1 cursor-pointer">
-                                <input type="radio" name="ownership" value="Pemilik" class="accent-cbn-blue"> <span data-i18n="ownerYes">Pemilik</span> <span class="text-slate-400 italic">Owner</span>
+                                <input type="radio" name="ownership" value="Pemilik" class="accent-cbn-blue" checked> <span class="font-bold">Pemilik</span> <span class="text-slate-400 italic font-normal">Owner</span>
                             </label>
                             <label class="inline-flex items-center gap-1 cursor-pointer">
-                                <input type="radio" name="ownership" value="Penyewa" class="accent-cbn-blue"> <span data-i18n="ownerNo">Penyewa</span> <span class="text-slate-400 italic">Renter</span>
+                                <input type="radio" name="ownership" value="Penyewa" class="accent-cbn-blue"> <span class="font-bold">Penyewa</span> <span class="text-slate-400 italic font-normal">Renter</span>
                             </label>
                         </div>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200 pt-1">
-                        <div class="w-44">
-                            <span class="font-bold block" data-i18n="labelEmail">ALAMAT EMAIL</span>
-                            <span class="italic text-[8px] text-slate-500">Email Address</span>
+                    <div class="flex items-center gap-1 border-t border-slate-200 dark:border-slate-700 pt-1.5">
+                        <div class="w-40 flex-shrink-0">
+                            <span class="font-bold block text-slate-800 dark:text-slate-200">ALAMAT EMAIL</span>
+                            <span class="italic text-[8px] text-slate-500 font-normal">Email Address</span>
                         </div>
-                        <div id="emailBoxes" data-grid-count="35" class="flex flex-wrap gap-0.5"></div>
+                        <div id="emailBoxes" data-grid-count="32" class="grid-container flex-1"></div>
                     </div>
                 </div>
             </div>
 
             <!-- 3. SERVICE PACKAGES & ADDITIONAL SERVICES GRID -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+            <div class="grid grid-cols-2 gap-3 mb-4">
                 
                 <!-- LEFT: PILIHAN PAKET LAYANAN -->
-                <div class="border border-slate-300 rounded overflow-hidden flex flex-col justify-between">
-                    <div class="bg-cbn-blue text-white px-2 py-1 font-bold text-[10px]" data-i18n="secPackage">
+                <div class="border border-cbn-blue rounded overflow-hidden flex flex-col">
+                    <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px]">
                         PILIHAN PAKET LAYANAN / SERVICE PACKAGE OPTIONS
                     </div>
-                    <div class="p-2 space-y-2 text-[9px] flex-1">
-                        <label class="flex items-start gap-2 p-1.5 rounded hover:bg-slate-50 cursor-pointer border border-slate-200">
-                            <input type="radio" name="package" value="CBN Fiber" checked class="mt-0.5 accent-cbn-blue" onchange="updatePackagePrice()">
-                            <div class="flex-1">
-                                <div class="font-bold text-slate-900 flex items-center justify-between">
-                                    <span>CBN Fiber</span>
-                                    <span class="text-cbn-blue font-semibold flex items-center gap-1">
-                                        <input type="text" id="pkgPrice1" value="" class="pkg-price-input w-24 border border-slate-300 rounded px-1 text-right font-extrabold text-cbn-blue bg-white" oninput="updatePackagePrice()">
-                                    </span>
+                    <div class="p-3 space-y-3 bg-white dark:bg-slate-800 flex-1 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <!-- Package 1 -->
+                            <label class="flex items-center justify-between p-2 rounded cursor-pointer border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700">
+                                <div class="flex items-center gap-2">
+                                    <input type="radio" name="package" value="CBN Fiber" class="w-4 h-4 accent-cbn-blue" onchange="calculateCosts()">
+                                    <div>
+                                        <div class="font-extrabold text-[11px]">CBN Fiber</div>
+                                        <div class="text-[8px] text-slate-500 font-normal">Koneksi Internet Fiber Optic Cepat & Stabil.</div>
+                                    </div>
                                 </div>
-                                <div class="text-[8px] text-slate-500" data-i18n="pkg1Desc">Koneksi Internet Fiber Optic Cepat & Stabil.</div>
-                            </div>
-                        </label>
-                        <label class="flex items-start gap-2 p-1.5 rounded hover:bg-slate-50 cursor-pointer border border-slate-200">
-                            <input type="radio" name="package" value="CBN Fiber Safe" class="mt-0.5 accent-cbn-blue" onchange="updatePackagePrice()">
-                            <div class="flex-1">
-                                <div class="font-bold text-slate-900 flex items-center justify-between">
-                                    <span>CBN Fiber Safe</span>
-                                    <span class="text-cbn-blue font-semibold flex items-center gap-1">
-                                        <input type="text" id="pkgPrice2" value="" class="pkg-price-input w-24 border border-slate-300 rounded px-1 text-right font-extrabold text-cbn-blue bg-white" oninput="updatePackagePrice()">
-                                    </span>
+                                <input type="text" id="pkgPrice1" value="" placeholder="Isi..." class="pkg-price-input w-24 border border-slate-300 dark:border-slate-600 rounded px-1.5 py-1 text-right">
+                            </label>
+                            
+                            <!-- Package 2 -->
+                            <label class="flex items-center justify-between p-2 rounded cursor-pointer border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700">
+                                <div class="flex items-center gap-2">
+                                    <input type="radio" name="package" value="CBN Fiber Safe" class="w-4 h-4 accent-cbn-blue" onchange="calculateCosts()">
+                                    <div>
+                                        <div class="font-extrabold text-[11px]">CBN Fiber Safe</div>
+                                        <div class="text-[8px] text-slate-500 font-normal">Paket internet dilengkapi perlindungan ekstra.</div>
+                                    </div>
                                 </div>
-                                <div class="text-[8px] text-slate-500" data-i18n="pkg2Desc">Paket internet dilengkapi perlindungan keamanan ekstra.</div>
-                            </div>
-                        </label>
-                        <label class="flex items-start gap-2 p-1.5 rounded hover:bg-slate-50 cursor-pointer border border-slate-200">
-                            <input type="radio" name="package" value="CBN Fiber Pro" class="mt-0.5 accent-cbn-blue" onchange="updatePackagePrice()">
-                            <div class="flex-1">
-                                <div class="font-bold text-slate-900 flex items-center justify-between">
-                                    <span>CBN Fiber Pro</span>
-                                    <span class="text-cbn-blue font-semibold flex items-center gap-1">
-                                        <input type="text" id="pkgPrice3" value="" class="pkg-price-input w-24 border border-slate-300 rounded px-1 text-right font-extrabold text-cbn-blue bg-white" oninput="updatePackagePrice()">
-                                    </span>
+                                <input type="text" id="pkgPrice2" value="" placeholder="Isi..." class="pkg-price-input w-24 border border-slate-300 dark:border-slate-600 rounded px-1.5 py-1 text-right">
+                            </label>
+
+                            <!-- Package 3 -->
+                            <label class="flex items-center justify-between p-2 rounded cursor-pointer border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 bg-blue-50/50 dark:bg-blue-900/20">
+                                <div class="flex items-center gap-2">
+                                    <input type="radio" name="package" value="CBN Fiber Pro" class="w-4 h-4 accent-cbn-blue" checked onchange="calculateCosts()">
+                                    <div>
+                                        <div class="font-extrabold text-[11px]">CBN Fiber Pro</div>
+                                        <div class="text-[8px] text-slate-500 font-normal">Koneksi premium dengan bandwidth khusus.</div>
+                                    </div>
                                 </div>
-                                <div class="text-[8px] text-slate-500" data-i18n="pkg3Desc">Koneksi internet premium dengan bandwidth khusus.</div>
-                            </div>
-                        </label>
-                        
-                        <div class="text-[7px] text-slate-500 border-t border-slate-200 pt-1 space-y-0.5" data-i18n="notePackage">
-                            <p>* Informasi paket berlangganan 12 bulan. Pembatalan sepihak dikenakan denda sesuai ketentuan.</p>
+                                <input type="text" id="pkgPrice3" value="" placeholder="Isi..." class="pkg-price-input w-24 border border-slate-300 dark:border-slate-600 rounded px-1.5 py-1 text-right">
+                            </label>
                         </div>
+                        
+                        <p class="text-[7px] text-slate-500 border-t border-slate-200 dark:border-slate-700 pt-1.5 mt-2 font-normal italic">
+                            * Informasi paket berlangganan 12 bulan. Pembatalan sepihak dikenakan denda sesuai ketentuan yang berlaku.
+                        </p>
                     </div>
                 </div>
 
                 <!-- RIGHT: PILIHAN LAYANAN TAMBAHAN -->
-                <div class="border border-slate-300 rounded overflow-hidden flex flex-col justify-between">
-                    <div class="bg-cbn-blue text-white px-2 py-1 font-bold text-[10px]" data-i18n="secAddon">
+                <div class="border border-cbn-blue rounded overflow-hidden flex flex-col">
+                    <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px]">
                         PILIHAN LAYANAN TAMBAHAN / ADDITIONAL SERVICE OPTIONS
                     </div>
-                    <div class="p-2 space-y-2 text-[9px] flex-1">
-                        <div>
-                            <span class="font-bold text-[8.5px] text-slate-800 block mb-1" data-i18n="labelDevices">PERANGKAT TAMBAHAN / ADDITIONAL DEVICES</span>
-                            <div class="space-y-1">
+                    <div class="p-3 bg-white dark:bg-slate-800 flex-1">
+                        <!-- Devices -->
+                        <div class="mb-3">
+                            <span class="font-extrabold text-[9px] block mb-2 border-b border-slate-200 pb-1">PERANGKAT TAMBAHAN / ADDITIONAL DEVICES</span>
+                            <div class="space-y-2">
                                 <div class="flex items-center justify-between">
-                                    <label class="inline-flex items-center gap-1">
-                                        <input type="checkbox" id="devRouter" checked class="accent-cbn-blue" onchange="calculateTotalCost()"> Wireless Router (Rp 150k)
+                                    <label class="flex items-center gap-2 cursor-pointer font-bold text-[10px]">
+                                        <input type="checkbox" id="devRouter" class="w-3.5 h-3.5 accent-cbn-blue" checked onchange="calculateCosts()"> 
+                                        <span class="bg-cbn-blue text-white text-[8px] px-1 rounded mr-1">R</span> Wireless Router (Rp 150k)
                                     </label>
-                                    <input type="number" id="qtyRouter" min="0" value="1" class="w-12 border border-slate-300 rounded px-1 text-center text-[9px]" oninput="calculateTotalCost()">
+                                    <input type="number" id="qtyRouter" min="1" max="10" value="1" class="w-12 border border-slate-400 dark:border-slate-600 rounded px-1 py-0.5 text-center text-[10px] font-bold" oninput="calculateCosts()">
                                 </div>
                                 <div class="flex items-center justify-between">
-                                    <label class="inline-flex items-center gap-1">
-                                        <input type="checkbox" id="devSmartbox" class="accent-cbn-blue" onchange="calculateTotalCost()"> Smartbox (Rp 200k)
+                                    <label class="flex items-center gap-2 cursor-pointer font-bold text-[10px]">
+                                        <input type="checkbox" id="devSmartbox" class="w-3.5 h-3.5 accent-cbn-blue" checked onchange="calculateCosts()"> 
+                                        <span class="bg-indigo-500 text-white text-[8px] px-1 rounded mr-1">S</span> Smartbox (Rp 200k)
                                     </label>
-                                    <input type="number" id="qtySmartbox" min="0" value="0" class="w-12 border border-slate-300 rounded px-1 text-center text-[9px]" oninput="calculateTotalCost()">
+                                    <input type="number" id="qtySmartbox" min="1" max="10" value="1" class="w-12 border border-slate-400 dark:border-slate-600 rounded px-1 py-0.5 text-center text-[10px] font-bold" oninput="calculateCosts()">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="border-t border-slate-200 pt-1.5">
-                            <span class="font-bold text-[8.5px] text-slate-800 block mb-1" data-i18n="labelAddonTv">PAKET ADD-ON TV / ADD-ON TV PACKAGE</span>
-                            <div class="space-y-1">
-                                <label class="flex items-center gap-1 cursor-pointer">
-                                    <input type="checkbox" id="addonDens" class="accent-cbn-blue" onchange="calculateTotalCost()"> Dens.TV+ Apps (Rp 45k/bln)
+                        <!-- Add-on TV -->
+                        <div class="mb-3">
+                            <span class="font-extrabold text-[9px] block mb-2 border-b border-slate-200 pb-1">PAKET ADD-ON TV / ADD-ON TV PACKAGE</span>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer font-bold text-[10px]">
+                                    <input type="checkbox" id="addonDens" class="w-3.5 h-3.5 accent-cbn-blue" onchange="calculateCosts()"> 
+                                    Dens.TV+ Apps <span class="font-normal text-slate-500">(Rp 45k/bln)</span>
                                 </label>
-                                <label class="flex items-center gap-1 cursor-pointer">
-                                    <input type="checkbox" id="addonVision" class="accent-cbn-blue" onchange="calculateTotalCost()"> Vision+ Premium Sports (Rp 65k/bln)
+                                <label class="flex items-center gap-2 cursor-pointer font-bold text-[10px]">
+                                    <input type="checkbox" id="addonVision" class="w-3.5 h-3.5 accent-cbn-blue" checked onchange="calculateCosts()"> 
+                                    Vision+ Premium Sports <span class="font-normal text-slate-500">(Rp 65k/bln)</span>
                                 </label>
                             </div>
                         </div>
 
-                        <!-- Custom Add-on Inputs (2 Rows) -->
-                        <div class="mt-2 space-y-2 pb-1">
-                            <!-- Baris Isian 1 -->
+                        <!-- Custom Add-ons -->
+                        <div class="space-y-2 mt-2">
                             <div class="flex items-center gap-2">
-                                <input type="checkbox" id="addonCustom1Check" class="accent-cbn-blue mt-0.5">
-                                <input type="text" id="addonCustom1Text" class="flex-1 border-b-2 border-slate-900 bg-transparent outline-none focus:border-cbn-blue text-[9px] font-bold px-1" placeholder="................................................................">
+                                <input type="checkbox" id="addonCustom1Check" class="w-3.5 h-3.5 accent-cbn-blue">
+                                <input type="text" id="addonCustom1Text" class="flex-1 border-b-2 border-slate-400 dark:border-slate-500 border-dashed bg-transparent outline-none focus:border-solid focus:border-cbn-blue text-[10px] font-bold px-1" placeholder="Layanan lainnya...">
                             </div>
-                            <!-- Baris Isian 2 -->
                             <div class="flex items-center gap-2">
-                                <input type="checkbox" id="addonCustom2Check" class="accent-cbn-blue mt-0.5">
-                                <input type="text" id="addonCustom2Text" class="flex-1 border-b-2 border-slate-900 bg-transparent outline-none focus:border-cbn-blue text-[9px] font-bold px-1" placeholder="................................................................">
+                                <input type="checkbox" id="addonCustom2Check" class="w-3.5 h-3.5 accent-cbn-blue">
+                                <input type="text" id="addonCustom2Text" class="flex-1 border-b-2 border-slate-400 dark:border-slate-500 border-dashed bg-transparent outline-none focus:border-solid focus:border-cbn-blue text-[10px] font-bold px-1" placeholder="Layanan lainnya...">
                             </div>
                         </div>
                     </div>
@@ -468,86 +491,94 @@
             </div>
 
             <!-- 4. PAYMENT METHOD & COST DETAILS -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+            <div class="grid grid-cols-2 gap-3 mb-4">
                 
                 <!-- LEFT: PEMBAYARAN KARTU KREDIT -->
-                <div class="border border-slate-300 rounded overflow-hidden">
-                    <div class="bg-cbn-blue text-white px-2 py-1 font-bold text-[10px]" data-i18n="secCc">
+                <div class="border border-slate-300 dark:border-slate-600 rounded overflow-hidden">
+                    <div class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white px-2 py-1.5 font-bold text-[10px]">
                         PEMBAYARAN VIA KARTU KREDIT / CC PAYMENT METHOD
                     </div>
-                    <div class="p-2 space-y-1.5 text-[9px]">
-                        <div class="flex items-center gap-2">
-                            <span class="w-32 font-medium" data-i18n="ccHolder">Nama pada kartu:</span>
-                            <input type="text" id="ccName" class="flex-1 border-b border-slate-400 outline-none focus:border-cbn-blue px-1 uppercase font-bold text-[9px]">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-32 font-medium" data-i18n="ccNumber">Nomor kartu:</span>
-                            <input type="text" id="ccNumber" placeholder="XXXX-XXXX-XXXX-XXXX" class="flex-1 border-b border-slate-400 outline-none focus:border-cbn-blue px-1 font-bold text-[9px]">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-32 font-medium" data-i18n="ccExpiry">Masa berlaku:</span>
-                            <input type="text" id="ccExpiry" placeholder="MM/YY" class="w-24 border-b border-slate-400 outline-none focus:border-cbn-blue px-1 font-bold text-[9px]">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-32 font-medium" data-i18n="ccBank">Nama Bank:</span>
-                            <input type="text" id="ccBank" class="flex-1 border-b border-slate-400 outline-none focus:border-cbn-blue px-1 uppercase font-bold text-[9px]">
+                    <div class="p-3 space-y-3 bg-white dark:bg-slate-800 h-full flex flex-col justify-between">
+                        <div class="space-y-2">
+                            <div class="flex items-end gap-2">
+                                <span class="w-28 font-bold text-[9px] pb-1">Nama pada kartu:</span>
+                                <input type="text" id="ccName" class="flex-1 border-b border-slate-400 dark:border-slate-500 outline-none focus:border-cbn-blue px-1 uppercase font-extrabold text-[11px] pb-1">
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <span class="w-28 font-bold text-[9px] pb-1">Nomor kartu:</span>
+                                <input type="text" id="ccNumber" placeholder="XXXX-XXXX-XXXX-XXXX" class="flex-1 border-b border-slate-400 dark:border-slate-500 outline-none focus:border-cbn-blue px-1 font-extrabold text-[11px] pb-1 tracking-widest">
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <span class="w-28 font-bold text-[9px] pb-1">Masa berlaku:</span>
+                                <input type="text" id="ccExpiry" placeholder="MM/YY" class="w-24 border-b border-slate-400 dark:border-slate-500 outline-none focus:border-cbn-blue px-1 font-extrabold text-[11px] pb-1">
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <span class="w-28 font-bold text-[9px] pb-1">Nama Bank:</span>
+                                <input type="text" id="ccBank" class="flex-1 border-b border-slate-400 dark:border-slate-500 outline-none focus:border-cbn-blue px-1 uppercase font-extrabold text-[11px] pb-1">
+                            </div>
                         </div>
                         
-                        <div class="text-[7.5px] text-slate-500 italic mt-2 border-t border-slate-200 pt-1" data-i18n="noteCc">
-                            Dengan mengisi kolom ini, pelanggan memberi kuasa kepada CBN untuk memotong rekening kartu kredit sesuai total tagihan.
-                        </div>
+                        <p class="text-[7.5px] text-slate-500 font-normal italic mt-4">
+                            Dengan mengisi kolom ini, pelanggan memberi kuasa kepada CBN untuk memotong rekening kartu kredit secara otomatis sesuai total tagihan.
+                        </p>
                     </div>
                 </div>
 
-                <!-- RIGHT: PERINCIAN BIAYA (CALCULATOR) -->
-                <div class="border border-slate-300 rounded overflow-hidden flex flex-col">
-                    <div class="bg-cbn-blue text-white px-2 py-1 font-bold text-[10px]" data-i18n="secCost">
-                        PERINCIAN BIAYA / PAYMENT DETAILS
+                <!-- RIGHT: RINCIAN BIAYA -->
+                <div class="border border-cbn-blue rounded overflow-hidden">
+                    <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px]">
+                        RINCIAN BIAYA / PAYMENT DETAILS
                     </div>
-                    <div class="p-2 text-[9px] flex-1">
-                        <table class="w-full text-left border-collapse">
+                    <div class="p-3 bg-slate-50 dark:bg-slate-900 h-full">
+                        <table class="w-full text-[10px] font-bold">
                             <tbody>
-                                <tr class="border-b border-slate-200">
-                                    <td class="py-0.5" data-i18n="costInstall">Biaya Pemasangan</td>
-                                    <td class="text-right py-0.5">
-                                        <input type="number" id="costInstall" value="500000" class="cost-input w-24 border border-slate-300 rounded text-right px-1 font-bold text-[9px]" oninput="calculateTotalCost()">
+                                <tr class="border-b border-slate-200 dark:border-slate-700">
+                                    <td class="py-1.5 text-slate-600 dark:text-slate-400">Biaya Pemasangan</td>
+                                    <td class="py-1.5 text-right w-32">
+                                        <div class="flex items-center justify-between border border-slate-300 bg-white dark:bg-slate-800 rounded px-1">
+                                            <span class="text-[8px] text-slate-400 font-normal">Rp</span>
+                                            <input type="text" id="costInstall" value="500.000" class="w-full text-right outline-none bg-transparent py-0.5" oninput="calculateCosts()">
+                                        </div>
                                     </td>
                                 </tr>
-                                <tr class="border-b border-slate-200">
-                                    <td class="py-0.5" data-i18n="costPackage">Biaya Paket</td>
-                                    <td class="text-right py-0.5">
-                                        <input type="number" id="costPackage" value="299000" class="cost-input w-24 border border-slate-300 rounded text-right px-1 font-bold text-[9px]" oninput="calculateTotalCost()">
+                                <tr class="border-b border-slate-200 dark:border-slate-700">
+                                    <td class="py-1.5 text-slate-600 dark:text-slate-400">Biaya Paket</td>
+                                    <td class="py-1.5 text-right">
+                                        <div class="flex items-center justify-between border border-slate-300 bg-slate-100 dark:bg-slate-700 rounded px-1">
+                                            <span class="text-[8px] text-slate-400 font-normal">Rp</span>
+                                            <input type="text" id="costPackage" value="799.000" class="w-full text-right outline-none bg-transparent py-0.5 text-cbn-blue" readonly>
+                                        </div>
                                     </td>
                                 </tr>
-                                <tr class="border-b border-slate-200">
-                                    <td class="py-0.5" data-i18n="costAdmin">Biaya Admin</td>
-                                    <td class="text-right py-0.5">
-                                        <input type="number" id="costDevices" value="150000" class="cost-input w-24 border border-slate-300 rounded text-right px-1 font-bold text-[9px]" oninput="calculateTotalCost()">
+                                <tr class="border-b border-slate-200 dark:border-slate-700">
+                                    <td class="py-1.5 text-slate-600 dark:text-slate-400">Biaya Admin</td>
+                                    <td class="py-1.5 text-right">
+                                        <div class="flex items-center justify-between border border-slate-300 bg-white dark:bg-slate-800 rounded px-1">
+                                            <span class="text-[8px] text-slate-400 font-normal">Rp</span>
+                                            <input type="text" id="costAdmin" value="150.000" class="w-full text-right outline-none bg-transparent py-0.5" oninput="calculateCosts()">
+                                        </div>
                                     </td>
                                 </tr>
-                                <tr class="border-b border-slate-200">
-                                    <td class="py-0.5" data-i18n="costAddon">Biaya Add-Ons</td>
-                                    <td class="text-right py-0.5">
-                                        <input type="number" id="costAddons" value="0" class="cost-input w-24 border border-slate-300 rounded text-right px-1 font-bold text-[9px]" oninput="calculateTotalCost()">
+                                <tr class="border-b-2 border-slate-400 dark:border-slate-600">
+                                    <td class="py-1.5 text-slate-600 dark:text-slate-400">Biaya Add-on</td>
+                                    <td class="py-1.5 text-right">
+                                        <div class="flex items-center justify-between border border-slate-300 bg-slate-100 dark:bg-slate-700 rounded px-1">
+                                            <span class="text-[8px] text-slate-400 font-normal">Rp</span>
+                                            <input type="text" id="costAddon" value="0" class="w-full text-right outline-none bg-transparent py-0.5" readonly>
+                                        </div>
                                     </td>
                                 </tr>
-                                <tr class="border-b border-slate-200 font-bold bg-slate-50/50">
-                                    <td class="py-1" data-i18n="costSubtotal">SUBTOTAL</td>
-                                    <td class="text-right py-1">
-                                        <span id="txtSubtotal">Rp 0</span>
-                                    </td>
+                                <tr>
+                                    <td class="py-2 font-extrabold text-[11px]">SUBTOTAL</td>
+                                    <td class="py-2 text-right font-extrabold text-[11px]" id="calcSubtotal">Rp 0</td>
                                 </tr>
-                                <tr class="border-b border-slate-200 text-slate-600">
-                                    <td class="py-1" data-i18n="costTax">PPN (11%)</td>
-                                    <td class="text-right py-1">
-                                        <span id="txtTax">Rp 0</span>
-                                    </td>
+                                <tr class="border-b border-slate-300 dark:border-slate-600">
+                                    <td class="py-1 text-slate-500 font-normal text-[9px]">PPN (11%)</td>
+                                    <td class="py-1 text-right text-slate-500 font-normal text-[9px]" id="calcVat">Rp 0</td>
                                 </tr>
-                                <tr class="font-bold text-cbn-blue text-[11px]">
-                                    <td class="py-1" data-i18n="costTotal">TOTAL PEMBAYARAN</td>
-                                    <td class="text-right py-1">
-                                        <span id="txtTotal">Rp 0</span>
-                                    </td>
+                                <tr>
+                                    <td class="py-2 pt-3 font-extrabold text-[13px] text-cbn-blue dark:text-blue-400">TOTAL PEMBAYARAN</td>
+                                    <td class="py-2 pt-3 text-right font-extrabold text-[14px] text-cbn-blue dark:text-blue-400" id="calcTotal">Rp 0</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -555,134 +586,168 @@
                 </div>
             </div>
 
-            <!-- 5. TANDA TANGAN / SIGNATURE -->
-            <div class="mt-4 pt-2 border-t border-slate-300">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-center">
-                    
-                    <!-- 1. Tanda Tangan Pelanggan -->
-                    <div class="flex flex-col">
-                        <div class="sig-box-container mb-1 group" onclick="openSigModal('customer')">
-                            <canvas id="sigCanvasCustomer" class="sig-canvas"></canvas>
-                            <div id="sigPlaceholderCustomer" class="absolute inset-0 flex items-center justify-center gap-1.5 text-slate-400 text-[9px] pointer-events-none select-none">
-                                <i class="fa-solid fa-pen-nib"></i> <span class="italic">Klik untuk TTD Digital</span>
+            <!-- 5. AKTIVASI LAYANAN & JADWAL PEMASANGAN -->
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                
+                <!-- LEFT: AKTIVASI LAYANAN / SERVICE ACTIVATION -->
+                <div class="border border-cbn-blue rounded overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px]">
+                            AKTIVASI LAYANAN / SERVICE ACTIVATION
+                        </div>
+                        <div class="p-2 space-y-1 bg-white dark:bg-slate-800 text-[8px] text-slate-600 dark:text-slate-300">
+                            <p>Username dan password akan digunakan untuk akun Dens.TV, layanan internet dan Member Center Anda.</p>
+                            <p class="italic text-slate-500">Username and password will be used for Dens.TV, internet service and your Member Center.</p>
+                            <p>Username diawali dengan huruf dan diakhiri dengan huruf atau angka, minimal 3 karakter dan maksimal 16 karakter. Harus berupa huruf kecil dan/atau simbol garis bawah (_), titik (.), simbol minus (-).</p>
+                            <p class="italic text-slate-500">Username must be started with a character and ended with character or number, minimum 3 characters and maximum 16 characters. Must consist of lowercase and/or underscore (_), dot (.), dash (-).</p>
+                        </div>
+                        <div class="px-2 pb-2 bg-white dark:bg-slate-800">
+                            <div class="font-bold text-[9px] mb-1">USERNAME</div>
+                            <div class="flex items-center gap-1">
+                                <div id="usernameBoxes" data-grid-count="16" class="grid-container"></div>
+                                <span class="font-bold text-[10px] text-slate-700 dark:text-slate-300 ml-1">@ cbn.net.id</span>
                             </div>
                         </div>
-                        <div class="flex justify-between items-center text-[9px] px-0.5 border-b border-slate-200 pb-1 mb-1">
-                            <button type="button" onclick="openSigModal('customer')" class="text-cbn-blue hover:underline font-semibold flex items-center gap-1">
-                                <i class="fa-solid fa-pen-nib"></i> TTD Digital
-                            </button>
-                            <button type="button" onclick="clearSignature('customer')" class="text-red-500 hover:underline font-semibold">Reset</button>
-                        </div>
-                        <p class="font-bold text-[9px] text-slate-800">Tanda tangan pelanggan</p>
                     </div>
+                    <div class="p-2 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 text-[7px] text-slate-500 space-y-1">
+                        <p><strong class="text-slate-700 dark:text-slate-300">Syarat dan ketentuan:</strong> Saya dengan ini menyatakan bahwa semua keuangan yang diisi adalah benar, serta menerima dan bersedia untuk terikat pada seluruh ketentuan berlangganan yang telah ditetapkan CBN seperti yang tertera pada <span class="text-cbn-blue underline">https://www.cbn.id/terms-of-service.html</span></p>
+                        <p>CBN berhak menolak permohonan berlangganan ini berdasarkan dengan peraturan dan ketentuan yang berlaku di CBN.</p>
+                        <p class="italic">Terms and conditions: I hereby declare that all the information above are true and consent to terms that CBN has assigned as written on <span class="text-cbn-blue underline">https://www.cbn.id/terms-of-service.html</span>. CBN has the right to reject the application based on terms and conditions that applied for CBN.</p>
+                    </div>
+                </div>
 
-                    <!-- 2. Tanda Tangan Sales -->
-                    <div class="flex flex-col">
-                        <div class="sig-box-container mb-1 group" onclick="openSigModal('sales')">
-                            <canvas id="sigCanvasSales" class="sig-canvas"></canvas>
-                            <div id="sigPlaceholderSales" class="absolute inset-0 flex items-center justify-center gap-1.5 text-slate-400 text-[9px] pointer-events-none select-none">
-                                <i class="fa-solid fa-pen-nib"></i> <span class="italic">Klik untuk TTD Digital</span>
+                <!-- RIGHT: JADWAL PEMASANGAN / INSTALLATION SCHEDULE -->
+                <div class="border border-cbn-blue rounded overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px]">
+                            JADWAL PEMASANGAN / INSTALLATION SCHEDULE
+                        </div>
+                        <div class="p-2 space-y-2 bg-white dark:bg-slate-800">
+                            <div>
+                                <span class="font-bold block text-[9px] text-slate-800 dark:text-slate-200">TANGGAL PEMASANGAN - INSTALLATION DATE</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-[9px]">Hari - day</span>
+                                <input type="text" id="installDayInput" value="segera" class="border border-slate-400 dark:border-slate-600 rounded px-2 py-1 text-[10px] font-bold uppercase w-24 outline-none focus:border-cbn-blue bg-white dark:bg-slate-700">
+                                <span class="text-[8px] text-slate-400 italic">dd/mm/yyyy</span>
+                                <div id="installDateBoxes" data-grid-count="8" class="grid-container"></div>
+                            </div>
+                            <div class="pt-1">
+                                <span class="font-bold block text-[9px] text-slate-800 dark:text-slate-200 mb-1.5">WAKTU PEMASANGAN - INSTALLATION TIME</span>
+                                <div class="grid grid-cols-2 gap-2 text-[9px]">
+                                    <label class="flex items-center gap-1.5 cursor-pointer">
+                                        <input type="radio" name="installTime" value="09.00-11.00" class="accent-cbn-blue" checked> 09.00-11.00
+                                    </label>
+                                    <label class="flex items-center gap-1.5 cursor-pointer">
+                                        <input type="radio" name="installTime" value="11.00-13.00" class="accent-cbn-blue"> 11.00-13.00
+                                    </label>
+                                    <label class="flex items-center gap-1.5 cursor-pointer">
+                                        <input type="radio" name="installTime" value="13.00-15.00" class="accent-cbn-blue"> 13.00-15.00
+                                    </label>
+                                    <label class="flex items-center gap-1.5 cursor-pointer">
+                                        <input type="radio" name="installTime" value="15.00-17.00" class="accent-cbn-blue"> 15.00-17.00
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex justify-between items-center text-[9px] px-0.5 border-b border-slate-200 pb-1 mb-1">
-                            <button type="button" onclick="openSigModal('sales')" class="text-cbn-blue hover:underline font-semibold flex items-center gap-1">
-                                <i class="fa-solid fa-pen-nib"></i> TTD Digital
-                            </button>
-                            <button type="button" onclick="clearSignature('sales')" class="text-red-500 hover:underline font-semibold">Reset</button>
-                        </div>
-                        <p class="font-bold text-[9px] text-slate-800">Tanda tangan sales</p>
                     </div>
-
-                    <!-- 3. Tanda Tangan Sales SPV -->
-                    <div class="flex flex-col">
-                        <div class="sig-box-container mb-1 group" onclick="openSigModal('spv')">
-                            <canvas id="sigCanvasSpv" class="sig-canvas"></canvas>
-                            <div id="sigPlaceholderSpv" class="absolute inset-0 flex items-center justify-center gap-1.5 text-slate-400 text-[9px] pointer-events-none select-none">
-                                <i class="fa-solid fa-pen-nib"></i> <span class="italic">Klik untuk TTD Digital</span>
-                            </div>
+                    <div class="p-2 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50">
+                        <p class="text-[7px] text-slate-500 mb-1">
+                            Jadwal pemasangan dapat berubah sewaktu-waktu sesuai dengan slot jadwal yang tersedia.<br>
+                            <em class="italic">The installation schedule is subject to change depends on the schedule slot availability.</em>
+                        </p>
+                        <div class="flex items-center gap-2 mt-2 pt-1 border-t border-slate-200 dark:border-slate-700">
+                            <span class="font-bold text-[9px] text-slate-700 dark:text-slate-300">Notes:</span>
+                            <input type="text" id="installNotesInput" value="regular promo july 2026-nab" class="flex-1 border-b border-dashed border-slate-400 dark:border-slate-500 outline-none focus:border-solid focus:border-cbn-blue text-[10px] font-bold px-1 bg-transparent">
                         </div>
-                        <div class="flex justify-between items-center text-[9px] px-0.5 border-b border-slate-200 pb-1 mb-1">
-                            <button type="button" onclick="openSigModal('spv')" class="text-cbn-blue hover:underline font-semibold flex items-center gap-1">
-                                <i class="fa-solid fa-pen-nib"></i> TTD Digital
-                            </button>
-                            <button type="button" onclick="clearSignature('spv')" class="text-red-500 hover:underline font-semibold">Reset</button>
-                        </div>
-                        <p class="font-bold text-[9px] text-slate-800">Tanda tangan sales SPV</p>
                     </div>
-
                 </div>
             </div>
 
-        </div>
-    </div>
-
-    <!-- DIGITAL SIGNATURE FULLSCREEN / MODAL POPUP DRAWING PAD -->
-    <div id="sigModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-            <div class="bg-cbn-blue text-white px-4 py-3 flex justify-between items-center">
-                <h3 class="font-bold text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-signature"></i> <span id="sigModalTitle">Panel Tanda Tangan Digital</span>
-                </h3>
-                <button onclick="closeSigModal()" class="text-white hover:text-slate-200 text-lg font-bold px-2">&times;</button>
-            </div>
-            <div class="p-4 space-y-3">
-                <p class="text-xs text-slate-500 dark:text-slate-400">Silakan tanda tangani di dalam kotak di bawah ini menggunakan mouse atau jari/touchscreen:</p>
-                <div class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-900 h-48 relative overflow-hidden">
-                    <canvas id="modalSigCanvas" class="w-full h-full cursor-crosshair touch-none"></canvas>
-                </div>
-                <div class="flex justify-between items-center pt-2">
-                    <button type="button" onclick="clearModalCanvas()" class="px-3 py-1.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-slate-700 dark:text-slate-200 text-xs font-medium rounded-lg transition">
-                        <i class="fa-solid fa-eraser"></i> Hapus / Ulang
-                    </button>
-                    <div class="space-x-2">
-                        <button type="button" onclick="closeSigModal()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300 text-xs font-medium rounded-lg transition">Batal</button>
-                        <button type="button" onclick="saveModalSignature()" class="px-4 py-1.5 bg-cbn-blue hover:bg-cbn-darkBlue text-white text-xs font-medium rounded-lg shadow transition">Simpan TTD</button>
+            <!-- 6. SIGNATURES -->
+            <div class="grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-slate-300 dark:border-slate-700">
+                <!-- Tanda Tangan Pelanggan -->
+                <div class="text-center">
+                    <div class="sig-box-container mb-1 group">
+                        <canvas id="sigCanvas1" class="sig-canvas"></canvas>
+                        <button type="button" onclick="clearSignature('sigCanvas1')" class="absolute bottom-1 right-1 text-[8px] bg-slate-200/80 hover:bg-red-100 text-slate-600 hover:text-red-600 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity no-print z-10"><i class="fa-solid fa-eraser"></i> Hapus</button>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 text-[10px] italic z-0 no-print" id="sigPlaceholder1"><i class="fa-solid fa-pen-nib mr-1"></i> Area tanda tangan</div>
                     </div>
+                    <div class="font-bold text-[9px] border-b border-slate-400 inline-block px-4 pb-1 mb-1 min-w-[120px]" id="sigName1"></div>
+                    <div class="text-[9px] font-bold">Tanda tangan pelanggan</div>
+                    <div class="text-[7px] text-slate-400 italic font-normal">Customer signature</div>
+                </div>
+
+                <!-- Tanda Tangan Sales -->
+                <div class="text-center">
+                    <div class="sig-box-container mb-1 group">
+                        <canvas id="sigCanvas2" class="sig-canvas"></canvas>
+                        <button type="button" onclick="clearSignature('sigCanvas2')" class="absolute bottom-1 right-1 text-[8px] bg-slate-200/80 hover:bg-red-100 text-slate-600 hover:text-red-600 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity no-print z-10"><i class="fa-solid fa-eraser"></i> Hapus</button>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 text-[10px] italic z-0 no-print" id="sigPlaceholder2"><i class="fa-solid fa-pen-nib mr-1"></i> Area tanda tangan</div>
+                    </div>
+                    <div class="font-bold text-[9px] border-b border-slate-400 inline-block px-4 pb-1 mb-1 min-w-[120px]"></div>
+                    <div class="text-[9px] font-bold">Tanda tangan sales</div>
+                    <div class="text-[7px] text-slate-400 italic font-normal">Sales signature</div>
+                </div>
+
+                <!-- Tanda Tangan SPV -->
+                <div class="text-center">
+                    <div class="sig-box-container mb-1 group">
+                        <canvas id="sigCanvas3" class="sig-canvas"></canvas>
+                        <button type="button" onclick="clearSignature('sigCanvas3')" class="absolute bottom-1 right-1 text-[8px] bg-slate-200/80 hover:bg-red-100 text-slate-600 hover:text-red-600 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity no-print z-10"><i class="fa-solid fa-eraser"></i> Hapus</button>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 text-[10px] italic z-0 no-print" id="sigPlaceholder3"><i class="fa-solid fa-pen-nib mr-1"></i> Area tanda tangan</div>
+                    </div>
+                    <div class="font-bold text-[9px] border-b border-slate-400 inline-block px-4 pb-1 mb-1 min-w-[120px]"></div>
+                    <div class="text-[9px] font-bold">Tanda tangan SPV</div>
+                    <div class="text-[7px] text-slate-400 italic font-normal">Supervisor signature</div>
                 </div>
             </div>
+
         </div>
     </div>
 
     <!-- TAB 2: DATA TERSIMPAN -->
-    <div id="tabSavedContent" class="hidden max-w-4xl mx-auto">
-        <div class="bg-white p-4 sm:p-6 rounded-xl shadow-md border border-slate-200">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+    <div id="tabSaved" class="tab-content max-w-5xl mx-auto">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <!-- Header section of Tab 2 -->
+            <div class="p-4 sm:p-6 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h2 class="font-bold text-lg text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-database text-cbn-blue"></i> <span data-i18n="savedTitle">Data Pendaftaran Tersimpan</span>
+                    <h2 class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-database text-cbn-blue"></i> Data Pendaftaran Tersimpan
                     </h2>
-                    <p class="text-xs text-slate-500" data-i18n="savedDesc">Daftar riwayat pendaftaran pelanggan yang telah disimpan dalam sesi ini.</p>
+                    <p class="text-sm text-slate-500 mt-1">Daftar riwayat pendaftaran pelanggan yang telah disimpan dalam sesi ini.</p>
                 </div>
-                <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                    <!-- Search Input -->
+                <div class="flex items-center gap-3 w-full sm:w-auto">
                     <div class="relative flex-1 sm:w-64">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-solid fa-search"></i>
                         </span>
-                        <input type="text" id="savedSearchInput" oninput="filterSavedData()" placeholder="Cari nama, KTP, atau sales..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs outline-none focus:border-cbn-blue">
+                        <input type="text" id="searchInput" placeholder="Cari nama, KTP, atau sales..." class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cbn-blue focus:bg-white dark:focus:bg-slate-800 transition">
                     </div>
-                    <!-- Export Excel Button -->
-                    <button onclick="exportToExcel()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm transition flex items-center gap-2 text-xs whitespace-nowrap">
+                    <button onclick="exportToExcel()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm transition flex items-center gap-2 whitespace-nowrap">
                         <i class="fa-solid fa-file-excel"></i> Export Excel
                     </button>
                 </div>
             </div>
-            <div class="overflow-x-auto rounded-lg border border-slate-200">
-                <table class="w-full text-xs text-left">
-                    <thead class="text-slate-700 uppercase bg-slate-100 border-b border-slate-200 font-bold">
+            
+            <!-- Table Section -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse data-table" id="savedDataTable">
+                    <thead>
                         <tr>
-                            <th class="px-4 py-3">NO. / ID</th>
-                            <th class="px-4 py-3">PELANGGAN</th>
-                            <th class="px-4 py-3">NO. KTP</th>
-                            <th class="px-4 py-3">PAKET LAYANAN</th>
-                            <th class="px-4 py-3">TOTAL BIAYA</th>
-                            <th class="px-4 py-3 text-center">STATUS TTD</th>
-                            <th class="px-4 py-3 text-center">AKSI</th>
+                            <th class="w-24">NO. / ID</th>
+                            <th>PELANGGAN</th>
+                            <th>NO. KTP</th>
+                            <th>PAKET LAYANAN</th>
+                            <th>TOTAL BIAYA</th>
+                            <th class="text-center">STATUS TTD</th>
+                            <th class="text-center">AKSI</th>
                         </tr>
                     </thead>
-                    <tbody id="savedDataTableBody">
-                        <tr class="border-b border-slate-200">
-                            <td colspan="7" class="px-4 py-6 text-center text-slate-500 italic">Belum ada riwayat pendaftaran pelanggan yang telah disimpan dalam sesi ini.</td>
+                    <tbody id="savedDataBody">
+                        <!-- Data will be populated here via JS -->
+                        <tr>
+                            <td colspan="7" class="text-center py-8 text-slate-500 italic">Belum ada data tersimpan.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -691,942 +756,621 @@
     </div>
 
     <!-- TAB 3: DASHBOARD -->
-    <div id="tabDashboardContent" class="hidden max-w-4xl mx-auto">
-        <h2 class="font-bold text-lg text-slate-800 mb-4 px-1" data-i18n="dashTitle">Ringkasan Performa Penjualan</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-            <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200 flex flex-col items-center justify-center text-center">
-                <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-3">
-                    <i class="fa-solid fa-users text-2xl"></i>
+    <div id="tabDashboard" class="tab-content max-w-5xl mx-auto">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 p-6 flex items-center justify-center min-h-[400px]">
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-700 mb-4 text-slate-400">
+                    <i class="fa-solid fa-chart-column text-4xl"></i>
                 </div>
-                <h3 class="text-slate-500 text-xs font-bold uppercase mb-1" data-i18n="statTotal">Total Registrasi</h3>
-                <p id="statTotalReg" class="text-3xl font-black text-slate-800">0</p>
-            </div>
-            <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200 flex flex-col items-center justify-center text-center">
-                <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-3">
-                    <i class="fa-solid fa-box-open text-2xl"></i>
-                </div>
-                <h3 class="text-slate-500 text-xs font-bold uppercase mb-1" data-i18n="statPopular">Paket Populer</h3>
-                <p id="statPopularPkg" class="text-lg font-bold text-slate-800">-</p>
-            </div>
-            <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200 flex flex-col items-center justify-center text-center">
-                <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mb-3">
-                    <i class="fa-solid fa-money-bill-wave text-2xl"></i>
-                </div>
-                <h3 class="text-slate-500 text-xs font-bold uppercase mb-1" data-i18n="statRevenue">Potensi Pendapatan</h3>
-                <p id="statTotalRev" class="text-2xl font-black text-slate-800">Rp 0</p>
+                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Dashboard Analitik</h3>
+                <p class="text-slate-500 max-w-md mx-auto">Fitur analitik sedang dalam pengembangan. Nantinya akan menampilkan grafik pendaftaran harian dan performa paket layanan.</p>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification Container -->
-    <div id="toastContainer" class="fixed bottom-4 right-4 flex flex-col gap-2 z-50 pointer-events-none"></div>
 
     <script>
-        let savedSubmissions = [];
-        let currentLang = 'ID';
-        let activeSigRole = null;
-        let signatureData = { customer: null, sales: null, spv: null };
-        let modalCtx = null;
+        // --- UTILITY FUNCTIONS & INITIALIZATION ---
+        
+        // Tab Switching Logic
+        function switchMainTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // Remove active style from all buttons
+            document.querySelectorAll('[id^="navTab"]').forEach(el => {
+                el.classList.remove('bg-white', 'dark:bg-slate-700', 'text-cbn-blue', 'dark:text-white', 'shadow-sm');
+                el.classList.add('text-slate-600', 'dark:text-slate-400');
+            });
 
-        // --- I18n Dictionary ---
-        const i18n = {
-            ID: {
-                appTitle: "Sistem Pendaftaran Layanan CBN",
-                appSubtitle: "Pengisian Formulir & Manajemen Data Digital",
-                tabForm: "Formulir",
-                tabSaved: "Data Tersimpan",
-                tabDashboard: "Dashboard & Analitik",
-                btnSave: "Simpan Data",
-                btnSample: "Isi Sample",
-                formTitle: "FORMULIR PENDAFTARAN LAYANAN",
-                labelSalesCode: "KODE SALES:",
-                labelSpvCode: "KODE SPV:",
-                secCustomer: "DATA PELANGGAN / CUSTOMER DATA",
-                labelFullName: "NAMA PELANGGAN",
-                labelDob: "TEMPAT/TANGGAL LAHIR",
-                labelIdCard: "NOMOR IDENTITAS",
-                labelGender: "JENIS KELAMIN",
-                genderMale: "Pria",
-                genderFemale: "Wanita",
-                labelHomePhone: "TELEPON RUMAH",
-                labelMobilePhone: "TELEPON SELULAR",
-                noteIdMatch: "* Data yang tercantum harus sesuai dengan ID identitas pelanggan yang berlaku.",
-                secAddress: "ALAMAT PEMASANGAN / INSTALLATION ADDRESS",
-                labelInstallAddress: "ALAMAT PEMASANGAN",
-                labelZip: "KODE POS",
-                labelOwnership: "STATUS KEPEMILIKAN",
-                ownerYes: "Pemilik",
-                ownerNo: "Penyewa",
-                labelEmail: "ALAMAT EMAIL",
-                secPackage: "PILIHAN PAKET LAYANAN / SERVICE PACKAGE OPTIONS",
-                pkg1Desc: "Koneksi Internet Fiber Optic Cepat & Stabil.",
-                pkg2Desc: "Paket internet dilengkapi perlindungan keamanan ekstra.",
-                pkg3Desc: "Koneksi internet premium dengan bandwidth khusus.",
-                notePackage: "* Informasi paket berlangganan 12 bulan. Pembatalan sepihak dikenakan denda sesuai ketentuan.",
-                secAddon: "PILIHAN LAYANAN TAMBAHAN / ADDITIONAL SERVICE OPTIONS",
-                labelDevices: "PERANGKAT TAMBAHAN / ADDITIONAL DEVICES",
-                labelAddonTv: "PAKET ADD-ON TV / ADD-ON TV PACKAGE",
-                secCc: "PEMBAYARAN VIA KARTU KREDIT / CC PAYMENT METHOD",
-                ccHolder: "Nama pada kartu:",
-                ccNumber: "Nomor kartu:",
-                ccExpiry: "Masa berlaku:",
-                ccBank: "Nama Bank:",
-                noteCc: "Dengan mengisi kolom ini, pelanggan memberi kuasa kepada CBN untuk memotong rekening kartu kredit sesuai total tagihan.",
-                secCost: "PERINCIAN BIAYA / PAYMENT DETAILS",
-                costInstall: "Biaya Pemasangan",
-                costPackage: "Biaya Paket",
-                costAdmin: "Biaya Admin",
-                costAddon: "Biaya Add-Ons",
-                costSubtotal: "SUBTOTAL",
-                costTax: "PPN (11%)",
-                costTotal: "TOTAL PEMBAYARAN",
-                savedTitle: "Data Pendaftaran Tersimpan",
-                savedDesc: "Daftar riwayat pendaftaran pelanggan yang telah disimpan dalam sesi ini.",
-                dashTitle: "Ringkasan Performa Penjualan",
-                statTotal: "Total Registrasi",
-                statPopular: "Paket Populer",
-                statRevenue: "Potensi Pendapatan"
-            },
-            EN: {
-                appTitle: "CBN Service Registration System",
-                appSubtitle: "Digital Form Filling & Data Management",
-                tabForm: "Form",
-                tabSaved: "Saved Data",
-                tabDashboard: "Dashboard & Analytics",
-                btnSave: "Save Data",
-                btnSample: "Fill Sample",
-                formTitle: "SERVICE REGISTRATION FORM",
-                labelSalesCode: "SALES CODE:",
-                labelSpvCode: "SPV CODE:",
-                secCustomer: "CUSTOMER DATA",
-                labelFullName: "FULL NAME",
-                labelDob: "PLACE/DATE OF BIRTH",
-                labelIdCard: "ID CARD NO.",
-                labelGender: "GENDER",
-                genderMale: "Male",
-                genderFemale: "Female",
-                labelHomePhone: "HOME PHONE",
-                labelMobilePhone: "MOBILE PHONE",
-                noteIdMatch: "* Declared data must match with valid customer ID card.",
-                secAddress: "INSTALLATION ADDRESS",
-                labelInstallAddress: "INSTALLATION ADDRESS",
-                labelZip: "ZIP CODE",
-                labelOwnership: "OWNERSHIP STATUS",
-                ownerYes: "Owner",
-                ownerNo: "Renter",
-                labelEmail: "EMAIL ADDRESS",
-                secPackage: "SERVICE PACKAGE OPTIONS",
-                pkg1Desc: "Fast & Stable Fiber Optic Internet Connection.",
-                pkg2Desc: "Internet package equipped with extra security protection.",
-                pkg3Desc: "Premium internet connection with dedicated bandwidth.",
-                notePackage: "* 12-month subscription terms apply. Early termination fee applies.",
-                secAddon: "ADDITIONAL SERVICE OPTIONS",
-                labelDevices: "ADDITIONAL DEVICES",
-                labelAddonTv: "ADD-ON TV PACKAGE",
-                secCc: "CC PAYMENT METHOD",
-                ccHolder: "Cardholder Name:",
-                ccNumber: "Card Number:",
-                ccExpiry: "Expiry Date:",
-                ccBank: "Bank Name:",
-                noteCc: "By filling this, customer authorizes CBN to charge credit card for total billing.",
-                secCost: "PAYMENT DETAILS",
-                costInstall: "Installation Fee",
-                costPackage: "Package Fee",
-                costAdmin: "Admin Fee",
-                costAddon: "Add-Ons Fee",
-                costSubtotal: "SUBTOTAL",
-                costTax: "VAT (11%)",
-                costTotal: "TOTAL PAYMENT",
-                savedTitle: "Saved Registration Data",
-                savedDesc: "List of customer registrations saved in this session.",
-                dashTitle: "Sales Performance Summary",
-                statTotal: "Total Registrations",
-                statPopular: "Popular Package",
-                statRevenue: "Potential Revenue"
+            // Show selected tab
+            let targetTab = '';
+            let targetBtn = '';
+            
+            if(tabId === 'form') {
+                targetTab = 'tabForm'; targetBtn = 'navTabForm';
+                document.getElementById('formActionBar').style.display = 'flex';
+            } else if(tabId === 'saved') {
+                targetTab = 'tabSaved'; targetBtn = 'navTabSaved';
+                document.getElementById('formActionBar').style.display = 'none';
+                renderSavedTable(); // Refresh table when opening
+            } else if(tabId === 'dashboard') {
+                targetTab = 'tabDashboard'; targetBtn = 'navTabDashboard';
+                document.getElementById('formActionBar').style.display = 'none';
             }
-        };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initCharBoxes();
-            calculateTotalCost();
-        });
+            document.getElementById(targetTab).classList.add('active');
+            let btn = document.getElementById(targetBtn);
+            btn.classList.remove('text-slate-600', 'dark:text-slate-400');
+            btn.classList.add('bg-white', 'dark:bg-slate-700', 'text-cbn-blue', 'dark:text-white', 'shadow-sm');
+        }
 
-        function initCharBoxes() {
-            const containers = document.querySelectorAll('[data-grid-count]');
-            containers.forEach(container => {
-                container.innerHTML = '';
-                const count = parseInt(container.getAttribute('data-grid-count'), 10);
-                const groupId = container.id;
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark');
+            const icon = document.getElementById('themeIcon');
+            if (document.body.classList.contains('dark')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        // Dummy Language Toggle (Visual only for this demo)
+        let isId = true;
+        function toggleLanguage() {
+            isId = !isId;
+            document.getElementById('currentLangLabel').textContent = isId ? 'ID' : 'EN';
+            // In a real app, you would translate elements marked with data-i18n
+        }
+
+        // Number Formatting (Rupiah)
+        function formatIDR(number) {
+            return new Intl.NumberFormat('id-ID').format(number);
+        }
+
+        function parseIDR(str) {
+            return parseInt(str.replace(/\./g, '')) || 0;
+        }
+
+        // Function to generate grid boxes dynamically
+        function setupGridBoxes() {
+            const gridContainers = document.querySelectorAll('.grid-container');
+            
+            gridContainers.forEach(container => {
+                const count = parseInt(container.getAttribute('data-grid-count'));
+                const isEmail = container.id === 'emailBoxes'; // specific logic if needed
+                const isUsername = container.id === 'usernameBoxes'; // Flexible case for username
+                
                 for (let i = 0; i < count; i++) {
                     const input = document.createElement('input');
                     input.type = 'text';
                     input.maxLength = 1;
+                    input.className = 'char-box';
                     
-                    if (groupId === 'emailBoxes') {
-                        input.className = 'char-box'; // No uppercase transform
-                    } else {
-                        input.className = 'char-box char-box-uppercase'; // Force uppercase transform
+                    // Add specific classes/logic based on container ID
+                    if (!isEmail && !isUsername) {
+                        input.classList.add('uppercase'); // Force visual uppercase for non-email and non-username boxes
+                        input.oninput = function() { this.value = this.value.toUpperCase(); }
                     }
-                    
-                    input.dataset.groupId = groupId;
-                    input.dataset.index = i;
-                    
-                    input.addEventListener('input', handleCharInput);
-                    input.addEventListener('keydown', handleCharKeydown);
-                    input.addEventListener('focus', function() { this.select(); });
-                    
+
+                    // Navigation logic between boxes
+                    input.addEventListener('input', function(e) {
+                        if (this.value.length === 1) {
+                            const next = this.nextElementSibling;
+                            if (next && next.classList.contains('char-box')) {
+                                next.focus();
+                            }
+                        }
+                    });
+
+                    input.addEventListener('keydown', function(e) {
+                        if (e.key === 'Backspace' && this.value === '') {
+                            const prev = this.previousElementSibling;
+                            if (prev && prev.classList.contains('char-box')) {
+                                prev.focus();
+                                // Optional: clear prev box on backspace
+                                // prev.value = '';
+                            }
+                        } else if (e.key === 'ArrowLeft') {
+                            const prev = this.previousElementSibling;
+                            if (prev && prev.classList.contains('char-box')) prev.focus();
+                        } else if (e.key === 'ArrowRight') {
+                            const next = this.nextElementSibling;
+                            if (next && next.classList.contains('char-box')) next.focus();
+                        }
+                    });
+
+                    // Mirror Name to Signature area
+                    if (container.id === 'fullNameBoxes') {
+                         input.addEventListener('keyup', updateSignatureName);
+                    }
+
                     container.appendChild(input);
                 }
             });
         }
 
-        function handleCharInput(e) {
-            const input = e.target;
-            const groupId = input.dataset.groupId;
-            
-            if (groupId === 'emailBoxes') {
-                 // Allow lowercase/uppercase and special characters for email
-                input.value = input.value.replace(/[^a-zA-Z0-9\s\@\.\-\_]/g, ''); 
-            } else {
-                 // Force uppercase for other fields
-                input.value = input.value.toUpperCase().replace(/[^A-Z0-9\s\@\.\-]/g, '');
-            }
-            
-            if (input.value.length === 1) {
-                const index = parseInt(input.dataset.index, 10);
-                const nextInput = document.querySelector(`.char-box[data-group-id="${groupId}"][data-index="${index + 1}"]`);
-                if (nextInput) nextInput.focus();
-            }
-        }
-
-        function handleCharKeydown(e) {
-            const input = e.target;
-            const groupId = input.dataset.groupId;
-            const index = parseInt(input.dataset.index, 10);
-            
-            if (e.key === 'Backspace' && input.value === '') {
-                const prevInput = document.querySelector(`.char-box[data-group-id="${groupId}"][data-index="${index - 1}"]`);
-                if (prevInput) {
-                    prevInput.focus();
-                    prevInput.value = '';
-                    e.preventDefault();
-                }
-            } else if (e.key === 'ArrowRight') {
-                const nextInput = document.querySelector(`.char-box[data-group-id="${groupId}"][data-index="${index + 1}"]`);
-                if (nextInput) {
-                    nextInput.focus();
-                    e.preventDefault();
-                }
-            } else if (e.key === 'ArrowLeft') {
-                const prevInput = document.querySelector(`.char-box[data-group-id="${groupId}"][data-index="${index - 1}"]`);
-                if (prevInput) {
-                    prevInput.focus();
-                    e.preventDefault();
-                }
-            }
-        }
-
-        function getBoxValues(groupId) {
-            const inputs = document.querySelectorAll(`.char-box[data-group-id="${groupId}"]`);
-            return Array.from(inputs).map(i => i.value).join('').trim();
-        }
-
-        function setBoxValues(groupId, text) {
-            const chars = text.toString().split('');
-            const inputs = document.querySelectorAll(`.char-box[data-group-id="${groupId}"]`);
-            inputs.forEach((input, i) => {
-                input.value = i < chars.length ? chars[i] : '';
+        // Helper to get string from grid container
+        function getGridValue(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return '';
+            let val = '';
+            container.querySelectorAll('.char-box').forEach(input => {
+                val += input.value;
             });
+            return val.trim();
         }
 
-        function switchMainTab(tabKey) {
-            document.getElementById('tabFormContent').classList.add('hidden');
-            document.getElementById('tabSavedContent').classList.add('hidden');
-            document.getElementById('tabDashboardContent').classList.add('hidden');
-            
-            document.getElementById('navTabForm').className = "px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-2 whitespace-nowrap";
-            document.getElementById('navTabSaved').className = "px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-2 relative whitespace-nowrap";
-            document.getElementById('navTabDashboard').className = "px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-2 relative whitespace-nowrap";
-            
-            const formActionBar = document.getElementById('formActionBar');
-            if (formActionBar) {
-                formActionBar.style.display = (tabKey === 'form') ? 'flex' : 'none';
-            }
-
-            if (tabKey === 'form') {
-                document.getElementById('tabFormContent').classList.remove('hidden');
-                document.getElementById('navTabForm').className = "px-3.5 py-2 rounded-lg bg-white text-cbn-blue shadow-sm transition flex items-center gap-2 whitespace-nowrap";
-            } else if (tabKey === 'saved') {
-                document.getElementById('tabSavedContent').classList.remove('hidden');
-                document.getElementById('navTabSaved').className = "px-3.5 py-2 rounded-lg bg-white text-cbn-blue shadow-sm transition flex items-center gap-2 relative whitespace-nowrap";
-                renderSavedTable();
-            } else if (tabKey === 'dashboard') {
-                document.getElementById('tabDashboardContent').classList.remove('hidden');
-                document.getElementById('navTabDashboard').className = "px-3.5 py-2 rounded-lg bg-white text-cbn-blue shadow-sm transition flex items-center gap-2 relative whitespace-nowrap";
-                updateDashboardStats();
-            }
-        }
-
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark');
-            const isDark = document.body.classList.contains('dark');
-            const icon = document.getElementById('themeIcon');
-            icon.className = isDark ? "fa-solid fa-sun text-amber-400" : "fa-solid fa-moon text-cbn-blue";
-        }
-
-        function toggleLanguage() {
-            currentLang = currentLang === 'ID' ? 'EN' : 'ID';
-            document.getElementById('currentLangLabel').textContent = currentLang;
-            
-            const dict = i18n[currentLang];
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (dict[key]) el.textContent = dict[key];
-            });
-            showToast(`Bahasa diubah ke ${currentLang === 'ID' ? 'Indonesia' : 'English'}`, 'info');
-        }
-
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toastContainer');
+        // Helper to set string to grid container
+        function setGridValue(containerId, valueStr) {
+            const container = document.getElementById(containerId);
             if (!container) return;
-            const toast = document.createElement('div');
-            toast.className = `px-4 py-2.5 rounded-xl shadow-lg text-xs font-bold text-white transition transform translate-y-2 opacity-0 pointer-events-auto flex items-center gap-2 ${type === 'error' ? 'bg-red-600' : type === 'info' ? 'bg-blue-600' : 'bg-emerald-600'}`;
-            toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation' : type === 'info' ? 'fa-circle-info' : 'fa-circle-check'}"></i> ${message}`;
-            container.appendChild(toast);
+            const inputs = container.querySelectorAll('.char-box');
             
-            setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 50);
-            setTimeout(() => {
-                toast.classList.add('translate-y-2', 'opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            // clear first
+            inputs.forEach(i => i.value = '');
+            
+            const chars = valueStr.split('');
+            for (let i = 0; i < Math.min(chars.length, inputs.length); i++) {
+                inputs[i].value = chars[i];
+            }
+        }
+        
+        function updateSignatureName() {
+            document.getElementById('sigName1').textContent = getGridValue('fullNameBoxes');
         }
 
-        function formatCurrency(val) {
-            return 'Rp ' + val.toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        // Form Calculations
+        function calculateCosts() {
+            // 1. Get Package Price text value directly
+            const selectedPkgRadio = document.querySelector('input[name="package"]:checked');
+            let pkgInputVal = '';
+            if(selectedPkgRadio) {
+                // Determine which package is selected and grab its input value
+                if(selectedPkgRadio.value === 'CBN Fiber') pkgInputVal = document.getElementById('pkgPrice1').value;
+                else if(selectedPkgRadio.value === 'CBN Fiber Safe') pkgInputVal = document.getElementById('pkgPrice2').value;
+                else if(selectedPkgRadio.value === 'CBN Fiber Pro') pkgInputVal = document.getElementById('pkgPrice3').value;
+            }
+            
+            // Try parsing numeric value if possible for totals, or 0 if text/empty
+            let pkgPrice = parseIDR(pkgInputVal);
+            
+            // Update cost package input in the detail table
+            document.getElementById('costPackage').value = pkgInputVal;
+
+            // 2. Get Fixed Costs
+            let installCost = parseIDR(document.getElementById('costInstall').value);
+            let adminCost = parseIDR(document.getElementById('costAdmin').value);
+
+            // 3. Calculate Add-ons
+            let addonCost = 0;
+            if (document.getElementById('devRouter').checked) {
+                let qty = parseInt(document.getElementById('qtyRouter').value) || 1;
+                addonCost += (150000 * qty);
+            }
+            if (document.getElementById('devSmartbox').checked) {
+                let qty = parseInt(document.getElementById('qtySmartbox').value) || 1;
+                addonCost += (200000 * qty);
+            }
+            if (document.getElementById('addonDens').checked) addonCost += 45000;
+            if (document.getElementById('addonVision').checked) addonCost += 65000;
+            
+            // Update Add-on input visually
+            document.getElementById('costAddon').value = formatIDR(addonCost);
+
+            // 4. Calculate Totals
+            let subtotal = installCost + pkgPrice + adminCost + addonCost;
+            let vat = subtotal * 0.11; // 11% PPN
+            let grandTotal = subtotal + vat;
+
+            // 5. Update DOM
+            document.getElementById('calcSubtotal').textContent = 'Rp ' + formatIDR(subtotal);
+            document.getElementById('calcVat').textContent = 'Rp ' + formatIDR(Math.floor(vat));
+            document.getElementById('calcTotal').textContent = 'Rp ' + formatIDR(Math.floor(grandTotal));
         }
 
-        function updatePackagePrice() {
-            const pkgEl = document.querySelector('input[name="package"]:checked');
-            if (!pkgEl) return;
-            
-            // Karena sekarang bisa huruf/angka, kita tidak bisa langsung parseFloat.
-            // Biarkan input "Biaya Paket" pada "PERINCIAN BIAYA" diisi manual oleh user.
-            // Script ini dikosongkan agar tidak menimpa nilai "Biaya Paket" yang mungkin sudah diisi.
-        }
+        // Signature Pad Logic
+        const signaturePads = {};
 
-        function calculateTotalCost() {
-            const costInstall = parseFloat(document.getElementById('costInstall')?.value) || 0;
-            const costPackage = parseFloat(document.getElementById('costPackage')?.value) || 0;
-            const costDevices = parseFloat(document.getElementById('costDevices')?.value) || 0;
-            const costAddons = parseFloat(document.getElementById('costAddons')?.value) || 0;
+        function initSignature(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const container = canvas.parentElement;
             
-            const subtotal = costInstall + costPackage + costDevices + costAddons;
-            const tax = subtotal * 0.11;
-            const total = subtotal + tax;
-            
-            const subEl = document.getElementById('txtSubtotal');
-            const taxEl = document.getElementById('txtTax');
-            const totEl = document.getElementById('txtTotal');
-            
-            if (subEl) subEl.textContent = formatCurrency(subtotal);
-            if (taxEl) taxEl.textContent = formatCurrency(tax);
-            if (totEl) totEl.textContent = formatCurrency(total);
-        }
+            // Set canvas resolution
+            function resizeCanvas() {
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#020617'; // Dark slate
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
 
-        function initModalCanvas() {
-            const canvas = document.getElementById('modalSigCanvas');
-            if (!canvas) return;
-            modalCtx = canvas.getContext('2d');
-            
-            const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width * window.devicePixelRatio;
-            canvas.height = rect.height * window.devicePixelRatio;
-            modalCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
-            modalCtx.strokeStyle = document.body.classList.contains('dark') ? '#ffffff' : '#005691';
-            modalCtx.lineWidth = 2.5;
-            modalCtx.lineCap = 'round';
-
-            let drawing = false;
+            let isDrawing = false;
+            let hasDrawn = false;
             let lastX = 0;
             let lastY = 0;
+            
+            const placeholder = document.getElementById('sigPlaceholder' + canvasId.replace('sigCanvas', ''));
 
-            function getPos(e) {
-                const r = canvas.getBoundingClientRect();
+            function startDrawing(e) {
+                isDrawing = true;
+                hasDrawn = true;
+                if(placeholder) placeholder.style.display = 'none';
+                [lastX, lastY] = getCoordinates(e);
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                e.preventDefault();
+                const [currentX, currentY] = getCoordinates(e);
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+                [lastX, lastY] = [currentX, currentY];
+            }
+
+            function stopDrawing() {
+                isDrawing = false;
+            }
+
+            function getCoordinates(e) {
+                const rect = canvas.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return { x: clientX - r.left, y: clientY - r.top };
+                return [clientX - rect.left, clientY - rect.top];
             }
 
-            canvas.onmousedown = (e) => { drawing = true; const p = getPos(e); lastX = p.x; lastY = p.y; };
-            canvas.onmousemove = (e) => {
-                if (!drawing) return;
-                const p = getPos(e);
-                modalCtx.beginPath();
-                modalCtx.moveTo(lastX, lastY);
-                modalCtx.lineTo(p.x, p.y);
-                modalCtx.stroke();
-                lastX = p.x; lastY = p.y;
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch support
+            canvas.addEventListener('touchstart', startDrawing, {passive: false});
+            canvas.addEventListener('touchmove', draw, {passive: false});
+            canvas.addEventListener('touchend', stopDrawing);
+
+            signaturePads[canvasId] = {
+                canvas: canvas,
+                ctx: ctx,
+                hasDrawn: () => hasDrawn,
+                clear: () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    hasDrawn = false;
+                    if(placeholder) placeholder.style.display = 'flex';
+                }
             };
-            canvas.onmouseup = () => { drawing = false; };
-            canvas.onmouseleave = () => { drawing = false; };
-
-            canvas.ontouchstart = (e) => { drawing = true; const p = getPos(e); lastX = p.x; lastY = p.y; e.preventDefault(); };
-            canvas.ontouchmove = (e) => {
-                if (!drawing) return;
-                const p = getPos(e);
-                modalCtx.beginPath();
-                modalCtx.moveTo(lastX, lastY);
-                modalCtx.lineTo(p.x, p.y);
-                modalCtx.stroke();
-                lastX = p.x; lastY = p.y;
-                e.preventDefault();
-            };
-            canvas.ontouchend = () => { drawing = false; };
         }
 
-        function openSigModal(role) {
-            activeSigRole = role;
-            const titles = { customer: 'Tanda Tangan Pelanggan', sales: 'Tanda Tangan Sales', spv: 'Tanda Tangan Sales SPV' };
-            const titleEl = document.getElementById('sigModalTitle');
-            if (titleEl) titleEl.textContent = titles[role] || 'Panel Tanda Tangan';
-            
-            const modalEl = document.getElementById('sigModal');
-            if (modalEl) modalEl.classList.remove('hidden');
-            setTimeout(initModalCanvas, 100);
-        }
-
-        function closeSigModal() {
-            const modalEl = document.getElementById('sigModal');
-            if (modalEl) modalEl.classList.add('hidden');
-            activeSigRole = null;
-        }
-
-        function clearModalCanvas() {
-            const canvas = document.getElementById('modalSigCanvas');
-            if (modalCtx && canvas) {
-                modalCtx.clearRect(0, 0, canvas.width, canvas.height);
+        function clearSignature(canvasId) {
+            if(signaturePads[canvasId]) {
+                signaturePads[canvasId].clear();
             }
         }
 
-        function saveModalSignature() {
-            if (!activeSigRole) return;
-            const modalCanvas = document.getElementById('modalSigCanvas');
-            const targetCanvasId = activeSigRole === 'customer' ? 'sigCanvasCustomer' : activeSigRole === 'sales' ? 'sigCanvasSales' : 'sigCanvasSpv';
-            const targetPlaceholderId = activeSigRole === 'customer' ? 'sigPlaceholderCustomer' : activeSigRole === 'sales' ? 'sigPlaceholderSales' : 'sigPlaceholderSpv';
-            
-            const targetCanvas = document.getElementById(targetCanvasId);
-            if (targetCanvas) {
-                const tCtx = targetCanvas.getContext('2d');
-                targetCanvas.width = targetCanvas.offsetWidth * window.devicePixelRatio;
-                targetCanvas.height = targetCanvas.offsetHeight * window.devicePixelRatio;
-                tCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
-                tCtx.drawImage(modalCanvas, 0, 0, targetCanvas.offsetWidth, targetCanvas.offsetHeight);
-                
-                signatureData[activeSigRole] = targetCanvas.toDataURL();
-                const placeholder = document.getElementById(targetPlaceholderId);
-                if (placeholder) placeholder.style.display = 'none';
-            }
-            closeSigModal();
-            showToast('Tanda tangan berhasil disimpan!');
-        }
 
-        function clearSignature(role) {
-            signatureData[role] = null;
-            const targetCanvasId = role === 'customer' ? 'sigCanvasCustomer' : role === 'sales' ? 'sigCanvasSales' : 'sigCanvasSpv';
-            const targetPlaceholderId = role === 'customer' ? 'sigPlaceholderCustomer' : role === 'sales' ? 'sigPlaceholderSales' : 'sigPlaceholderSpv';
-            const targetCanvas = document.getElementById(targetCanvasId);
-            if (targetCanvas) {
-                const tCtx = targetCanvas.getContext('2d');
-                tCtx.clearRect(0, 0, targetCanvas.width, targetCanvas.height);
-            }
-            const placeholder = document.getElementById(targetPlaceholderId);
-            if (placeholder) placeholder.style.display = 'flex';
-            showToast('Tanda tangan direset.', 'info');
-        }
-
-        function fillSampleData() {
-            setBoxValues('salesCodeBoxes', 'SLS001');
-            setBoxValues('spvCodeBoxes', 'SPV99');
-            setBoxValues('fullNameBoxes', 'BUDI SANTOSO');
-            const pobInput = document.getElementById('pobInput');
-            if (pobInput) pobInput.value = 'JAKARTA';
-            setBoxValues('dobBoxes', '15081985');
-            setBoxValues('idCardBoxes', '3171234567890001');
-            const maleRadio = document.querySelector('input[name="gender"][value="Pria"]');
-            if(maleRadio) maleRadio.checked = true;
-            setBoxValues('homePhoneBoxes', '0215551234');
-            setBoxValues('mobilePhoneBoxes', '081234567890');
-            setBoxValues('addressRow1Boxes', 'JL SUDIRMAN KAV 123');
-            setBoxValues('addressRow2Boxes', 'JAKARTA SELATAN');
-            setBoxValues('rtBoxes', '001');
-            setBoxValues('rwBoxes', '005');
-            setBoxValues('zipBoxes', '12190');
-            const ownerRadio = document.querySelector('input[name="ownership"][value="Pemilik"]');
-            if(ownerRadio) ownerRadio.checked = true;
-            setBoxValues('emailBoxes', 'BUDI@EXAMPLE.COM');
-            
-            const proPkg = document.querySelector('input[name="package"][value="CBN Fiber Pro"]');
-            if(proPkg) proPkg.checked = true;
-            const devSmartbox = document.getElementById('devSmartbox');
-            if(devSmartbox) devSmartbox.checked = true;
-            const qtySmartbox = document.getElementById('qtySmartbox');
-            if(qtySmartbox) qtySmartbox.value = 1;
-            const addonVision = document.getElementById('addonVision');
-            if(addonVision) addonVision.checked = true;
-            
-            const ccName = document.getElementById('ccName');
-            if(ccName) ccName.value = 'BUDI SANTOSO';
-            const ccNumber = document.getElementById('ccNumber');
-            if(ccNumber) ccNumber.value = '4111-2222-3333-4444';
-            const ccExpiry = document.getElementById('ccExpiry');
-            if(ccExpiry) ccExpiry.value = '12/26';
-            const ccBank = document.getElementById('ccBank');
-            if(ccBank) ccBank.value = 'BCA';
-            
-            updatePackagePrice();
-            showToast('Data Sample Berhasil Diisi', 'info');
-        }
-
-        function refreshFormData() {
-            document.querySelectorAll('.char-box').forEach(b => b.value = '');
-            const pobInput = document.getElementById('pobInput');
-            if (pobInput) pobInput.value = '';
-            document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
-            
-            const defPkg = document.querySelector('input[name="package"][value="CBN Fiber"]');
-            if(defPkg) defPkg.checked = true;
-            
-            document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-            const devRouter = document.getElementById('devRouter');
-            if (devRouter) devRouter.checked = true;
-            const qtyRouter = document.getElementById('qtyRouter');
-            if (qtyRouter) qtyRouter.value = 1;
-            const qtySmartbox = document.getElementById('qtySmartbox');
-            if (qtySmartbox) qtySmartbox.value = 0;
-            
-            const ccName = document.getElementById('ccName');
-            if(ccName) ccName.value = '';
-            const ccNumber = document.getElementById('ccNumber');
-            if(ccNumber) ccNumber.value = '';
-            const ccExpiry = document.getElementById('ccExpiry');
-            if(ccExpiry) ccExpiry.value = '';
-            const ccBank = document.getElementById('ccBank');
-            if(ccBank) ccBank.value = '';
-            
-            clearSignature('customer');
-            clearSignature('sales');
-            clearSignature('spv');
-            
-            updatePackagePrice();
-            
-            showToast('Formulir berhasil direset (Data Tersimpan tetap aman)', 'info');
-        }
+        // --- DATA MANAGEMENT ---
+        
+        let savedData = JSON.parse(localStorage.getItem('cbnFormData')) || [];
 
         function saveFormData() {
-            const fullName = getBoxValues('fullNameBoxes');
-            if (!fullName) {
-                showToast('Nama pelanggan wajib diisi!', 'error');
+            // Basic validation
+            const fullName = getGridValue('fullNameBoxes');
+            const idCard = getGridValue('idCardBoxes');
+            
+            if (!fullName || fullName.length < 3) {
+                alert('Silakan isi Nama Pelanggan minimal 3 karakter.');
                 return;
             }
 
-            const pkgEl = document.querySelector('input[name="package"]:checked');
-            const pkgName = pkgEl ? pkgEl.value : 'CBN Fiber';
-            const totalText = document.getElementById('txtTotal')?.textContent || 'Rp 0';
-            const idCardNo = getBoxValues('idCardBoxes') || '-';
-            const salesCode = getBoxValues('salesCodeBoxes') || '-';
-
-            // Gather full form data for comprehensive export
-            const spvCode = getBoxValues('spvCodeBoxes') || '-';
-            const pob = document.getElementById('pobInput')?.value || '-';
-            const dob = getBoxValues('dobBoxes') || '-';
-            const gender = document.querySelector('input[name="gender"]:checked')?.value || '-';
-            const homePhone = getBoxValues('homePhoneBoxes') || '-';
-            const mobilePhone = getBoxValues('mobilePhoneBoxes') || '-';
-            const address1 = getBoxValues('addressRow1Boxes') || '-';
-            const address2 = getBoxValues('addressRow2Boxes') || '-';
-            const rt = getBoxValues('rtBoxes') || '-';
-            const rw = getBoxValues('rwBoxes') || '-';
-            const zip = getBoxValues('zipBoxes') || '-';
-            const ownership = document.querySelector('input[name="ownership"]:checked')?.value || '-';
-            const email = getBoxValues('emailBoxes') || '-';
+            // Generate simple ID
+            const dateStr = new Date().toLocaleDateString('id-ID');
+            const timeStr = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+            const regId = 'REG-' + Math.random().toString(36).substring(2, 8).toUpperCase();
             
-            const devRouterChecked = document.getElementById('devRouter')?.checked ? 'Ya' : 'Tidak';
-            const qtyRouter = document.getElementById('qtyRouter')?.value || '0';
-            const devSmartboxChecked = document.getElementById('devSmartbox')?.checked ? 'Ya' : 'Tidak';
-            const qtySmartbox = document.getElementById('qtySmartbox')?.value || '0';
-            const addonDens = document.getElementById('addonDens')?.checked ? 'Ya' : 'Tidak';
-            const addonVision = document.getElementById('addonVision')?.checked ? 'Ya' : 'Tidak';
-
-            const customAddon1 = document.getElementById('addonCustom1Check')?.checked ? (document.getElementById('addonCustom1Text')?.value || 'Ya') : 'Tidak';
-            const customAddon2 = document.getElementById('addonCustom2Check')?.checked ? (document.getElementById('addonCustom2Text')?.value || 'Ya') : 'Tidak';
-
-            const ccName = document.getElementById('ccName')?.value || '-';
-            const ccNumber = document.getElementById('ccNumber')?.value || '-';
-            const ccExpiry = document.getElementById('ccExpiry')?.value || '-';
-            const ccBank = document.getElementById('ccBank')?.value || '-';
-
-            const costInstall = document.getElementById('costInstall')?.value || '0';
-            const costPackage = document.getElementById('costPackage')?.value || '0';
-            const costDevices = document.getElementById('costDevices')?.value || '0';
-            const costAddons = document.getElementById('costAddons')?.value || '0';
-            const subtotalText = document.getElementById('txtSubtotal')?.textContent || 'Rp 0';
-            const taxText = document.getElementById('txtTax')?.textContent || 'Rp 0';
-
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('id-ID');
-            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ',');
-
+            const selectedPkg = document.querySelector('input[name="package"]:checked').value;
+            const totalStr = document.getElementById('calcTotal').textContent;
+            
+            // Count signatures
             let sigCount = 0;
-            if (signatureData.customer) sigCount++;
-            if (signatureData.sales) sigCount++;
-            if (signatureData.spv) sigCount++;
+            if(signaturePads['sigCanvas1'].hasDrawn()) sigCount++;
+            if(signaturePads['sigCanvas2'].hasDrawn()) sigCount++;
+            if(signaturePads['sigCanvas3'].hasDrawn()) sigCount++;
 
-            const submission = {
-                idReg: 'REG-' + Math.random().toString(36).substring(2, 9).toUpperCase(),
-                dateTime: `${dateStr}, ${timeStr}`,
+            // Create data object
+            const formData = {
+                id: regId,
+                date: `${dateStr}, ${timeStr}`,
                 customerName: fullName,
-                salesCode: salesCode !== '-' ? salesCode : '-',
-                spvCode: spvCode,
-                pob: pob,
-                dob: dob,
-                gender: gender,
-                idCard: idCardNo,
-                homePhone: homePhone,
-                mobilePhone: mobilePhone,
-                address1: address1,
-                address2: address2,
-                rt: rt,
-                rw: rw,
-                zip: zip,
-                ownership: ownership,
-                email: email,
-                package: pkgName,
-                devRouter: `${devRouterChecked} (Qty: ${qtyRouter})`,
-                devSmartbox: `${devSmartboxChecked} (Qty: ${qtySmartbox})`,
-                addonDens: addonDens,
-                addonVision: addonVision,
-                customAddon1: customAddon1,
-                customAddon2: customAddon2,
-                ccName: ccName,
-                ccNumber: ccNumber,
-                ccExpiry: ccExpiry,
-                ccBank: ccBank,
-                costInstall: costInstall,
-                costPackage: costPackage,
-                costDevices: costDevices,
-                costAddons: costAddons,
-                subtotal: subtotalText,
-                tax: taxText,
-                totalCost: totalText,
-                sigCount: sigCount,
-                sigStatusText: `${sigCount}/3 TTD`,
-                sigStatusClass: sigCount > 0 ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-slate-100 text-slate-600 border-slate-300'
+                salesCode: getGridValue('salesCodeBoxes') || '-',
+                idCard: idCard || '-',
+                package: selectedPkg,
+                total: totalStr,
+                sigStatus: `${sigCount}/3 TTD`,
+                
+                // Store raw data for potential editing later (simplified for demo)
+                raw: {
+                   // ... would map all inputs here
+                }
             };
 
-            savedSubmissions.unshift(submission);
-            const badge = document.getElementById('savedCountBadge');
-            if (badge) badge.textContent = savedSubmissions.length;
-            renderSavedTable();
-            showToast('Data berhasil disimpan ke memori!');
+            // Save to array and local storage
+            savedData.unshift(formData); // Add to beginning
+            localStorage.setItem('cbnFormData', JSON.stringify(savedData));
+            
+            // Update UI
+            updateBadge();
+            alert(`Data berhasil disimpan dengan ID: ${regId}`);
         }
 
-        function renderSavedTable(filteredList = null) {
-            const tbody = document.getElementById('savedDataTableBody');
-            if (!tbody) return;
-            const listToRender = filteredList || savedSubmissions;
+        function updateBadge() {
+            const badge = document.getElementById('savedCountBadge');
+            badge.textContent = savedData.length;
+        }
 
-            if (listToRender.length === 0) {
-                tbody.innerHTML = `<tr class="border-b border-slate-200"><td colspan="7" class="px-4 py-6 text-center text-slate-500 italic">Belum ada riwayat pendaftaran pelanggan yang telah disimpan dalam sesi ini.</td></tr>`;
+        function renderSavedTable() {
+            const tbody = document.getElementById('savedDataBody');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            tbody.innerHTML = '';
+            
+            let filteredData = savedData.filter(item => 
+                item.customerName.toLowerCase().includes(searchTerm) || 
+                item.idCard.includes(searchTerm) ||
+                item.salesCode.toLowerCase().includes(searchTerm) ||
+                item.id.toLowerCase().includes(searchTerm)
+            );
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-500 italic bg-white dark:bg-slate-800">Tidak ada data ditemukan.</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = listToRender.map((item) => `
-                <tr class="border-b border-slate-200 hover:bg-slate-50 transition">
-                    <td class="px-4 py-3">
-                        <div class="font-bold text-cbn-blue">${item.idReg}</div>
-                        <div class="text-[10px] text-slate-400">${item.dateTime}</div>
+            filteredData.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-700/50 transition bg-white dark:bg-slate-800';
+                
+                tr.innerHTML = `
+                    <td class="font-bold text-cbn-blue dark:text-blue-400">
+                        ${item.id}
+                        <div class="text-[9px] font-normal text-slate-500 mt-1">${item.date}</div>
                     </td>
-                    <td class="px-4 py-3">
-                        <div class="font-bold text-slate-800">${item.customerName}</div>
-                        <div class="text-[10px] text-slate-500">Sales: <span class="font-medium text-slate-700">${item.salesCode}</span></div>
+                    <td class="font-bold text-slate-800 dark:text-slate-200">
+                        ${item.customerName}
+                        <div class="text-[10px] font-normal text-slate-500 mt-1">Sales: ${item.salesCode}</div>
                     </td>
-                    <td class="px-4 py-3 font-mono text-slate-700">${item.idCard}</td>
-                    <td class="px-4 py-3">
-                        <span class="px-2 py-1 bg-blue-50 text-cbn-blue font-semibold rounded border border-blue-200 text-[10px]">${item.package}</span>
+                    <td class="text-slate-600 dark:text-slate-400">${item.idCard}</td>
+                    <td>
+                        <span class="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-cbn-blue dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded text-[10px] font-bold">
+                            ${item.package}
+                        </span>
                     </td>
-                    <td class="px-4 py-3 font-bold text-slate-900">${item.totalCost}</td>
-                    <td class="px-4 py-3 text-center">
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold border inline-block ${item.sigStatusClass}">${item.sigStatusText}</span>
+                    <td class="font-bold text-slate-800 dark:text-slate-200">${item.total}</td>
+                    <td class="text-center">
+                        <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-[9px] font-bold border border-slate-200 dark:border-slate-600">
+                            ${item.sigStatus}
+                        </span>
                     </td>
-                    <td class="px-4 py-3 text-center">
+                    <td class="text-center">
                         <div class="flex items-center justify-center gap-1.5">
-                            <button onclick="previewSavedItem('${item.idReg}')" class="p-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded transition" title="Lihat / Preview">
-                                <i class="fa-solid fa-eye text-xs"></i>
-                            </button>
-                            <button onclick="downloadSavedPDF()" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded transition" title="Unduh PDF">
-                                <i class="fa-solid fa-file-pdf text-xs"></i>
-                            </button>
-                            <button onclick="downloadSavedPNG()" class="p-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded transition" title="Unduh PNG">
-                                <i class="fa-solid fa-image text-xs"></i>
-                            </button>
-                            <button onclick="deleteSavedItem('${item.idReg}')" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded transition" title="Hapus Data">
-                                <i class="fa-solid fa-trash text-xs"></i>
-                            </button>
+                            <button onclick="viewSavedData(${index})" class="w-6 h-6 rounded bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition flex items-center justify-center" title="Lihat Detail"><i class="fa-solid fa-eye text-[10px]"></i></button>
+                            <button onclick="downloadSavedPDF(${index})" class="w-6 h-6 rounded bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 transition flex items-center justify-center" title="Download PDF"><i class="fa-solid fa-file-pdf text-[10px]"></i></button>
+                            <button onclick="downloadSavedPNG(${index})" class="w-6 h-6 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 transition flex items-center justify-center" title="Download PNG"><i class="fa-solid fa-image text-[10px]"></i></button>
+                            <button onclick="deleteData(${index})" class="w-6 h-6 rounded bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 transition flex items-center justify-center" title="Hapus"><i class="fa-solid fa-trash text-[10px]"></i></button>
                         </div>
                     </td>
-                </tr>
-            `).join('');
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
-        function filterSavedData() {
-            const searchInput = document.getElementById('savedSearchInput');
-            if (!searchInput) return;
-            const query = searchInput.value.toLowerCase();
-            const filtered = savedSubmissions.filter(item => 
-                item.customerName.toLowerCase().includes(query) ||
-                item.idReg.toLowerCase().includes(query) ||
-                item.idCard.toLowerCase().includes(query) ||
-                item.salesCode.toLowerCase().includes(query) ||
-                item.package.toLowerCase().includes(query)
-            );
-            renderSavedTable(filtered);
-        }
-
-        function previewSavedItem(idReg) {
-            // Find the saved record by ID
-            const item = savedSubmissions.find(s => s.idReg === idReg);
-            if (!item) {
-                showToast('Data tidak ditemukan!', 'error');
-                return;
-            }
-
-            // Populate the form fields with the saved record data for viewing/editing
-            setBoxValues('salesCodeBoxes', item.salesCode !== '-' ? item.salesCode : '');
-            setBoxValues('spvCodeBoxes', item.spvCode !== '-' ? item.spvCode : '');
-            setBoxValues('fullNameBoxes', item.customerName);
-            
-            const pobInput = document.getElementById('pobInput');
-            if (pobInput) pobInput.value = item.pob !== '-' ? item.pob : '';
-            setBoxValues('dobBoxes', item.dob !== '-' ? item.dob : '');
-            setBoxValues('idCardBoxes', item.idCard !== '-' ? item.idCard : '');
-            
-            if (item.gender && item.gender !== '-') {
-                const genderRadio = document.querySelector(`input[name="gender"][value="${item.gender}"]`);
-                if (genderRadio) genderRadio.checked = true;
-            }
-
-            setBoxValues('homePhoneBoxes', item.homePhone !== '-' ? item.homePhone : '');
-            setBoxValues('mobilePhoneBoxes', item.mobilePhone !== '-' ? item.mobilePhone : '');
-            setBoxValues('addressRow1Boxes', item.address1 !== '-' ? item.address1 : '');
-            setBoxValues('addressRow2Boxes', item.address2 !== '-' ? item.address2 : '');
-            setBoxValues('rtBoxes', item.rt !== '-' ? item.rt : '');
-            setBoxValues('rwBoxes', item.rw !== '-' ? item.rw : '');
-            setBoxValues('zipBoxes', item.zip !== '-' ? item.zip : '');
-
-            if (item.ownership && item.ownership !== '-') {
-                const ownerRadio = document.querySelector(`input[name="ownership"][value="${item.ownership}"]`);
-                if (ownerRadio) ownerRadio.checked = true;
-            }
-            setBoxValues('emailBoxes', item.email !== '-' ? item.email : '');
-
-            if (item.package) {
-                const pkgRadio = document.querySelector(`input[name="package"][value="${item.package}"]`);
-                if (pkgRadio) pkgRadio.checked = true;
-            }
-
-            const custom1Check = document.getElementById('addonCustom1Check');
-            const custom1Text = document.getElementById('addonCustom1Text');
-            if (custom1Check && custom1Text) {
-                custom1Check.checked = item.customAddon1 !== 'Tidak';
-                custom1Text.value = item.customAddon1 !== 'Tidak' && item.customAddon1 !== 'Ya' ? item.customAddon1 : '';
-            }
-
-            const custom2Check = document.getElementById('addonCustom2Check');
-            const custom2Text = document.getElementById('addonCustom2Text');
-            if (custom2Check && custom2Text) {
-                custom2Check.checked = item.customAddon2 !== 'Tidak';
-                custom2Text.value = item.customAddon2 !== 'Tidak' && item.customAddon2 !== 'Ya' ? item.customAddon2 : '';
-            }
-
-            const ccName = document.getElementById('ccName');
-            if (ccName) ccName.value = item.ccName !== '-' ? item.ccName : '';
-            const ccNumber = document.getElementById('ccNumber');
-            if (ccNumber) ccNumber.value = item.ccNumber !== '-' ? item.ccNumber : '';
-            const ccExpiry = document.getElementById('ccExpiry');
-            if (ccExpiry) ccExpiry.value = item.ccExpiry !== '-' ? item.ccExpiry : '';
-            const ccBank = document.getElementById('ccBank');
-            if (ccBank) ccBank.value = item.ccBank !== '-' ? item.ccBank : '';
-
-            const costInstall = document.getElementById('costInstall');
-            if (costInstall) costInstall.value = item.costInstall || '0';
-            const costPackage = document.getElementById('costPackage');
-            if (costPackage) costPackage.value = item.costPackage || '0';
-            const costDevices = document.getElementById('costDevices');
-            if (costDevices) costDevices.value = item.costDevices || '0';
-            const costAddons = document.getElementById('costAddons');
-            if (costAddons) costAddons.value = item.costAddons || '0';
-
-            updatePackagePrice();
+        function viewSavedData(index) {
+            // Switch back to form tab to inspect
             switchMainTab('form');
-            showToast(`Memuat detil pendaftaran ${idReg} ke formulir`, 'info');
+            // In a full implementation, you could load the record values into the form fields here.
+            alert('Melihat detail data registrasi ID: ' + savedData[index].id);
         }
 
-        function deleteSavedItem(idReg) {
-            savedSubmissions = savedSubmissions.filter(s => s.idReg !== idReg);
-            const badge = document.getElementById('savedCountBadge');
-            if (badge) badge.textContent = savedSubmissions.length;
-            renderSavedTable();
-            showToast('Data berhasil dihapus dari daftar.', 'info');
-        }
-
-        function downloadSavedPDF() {
+        function downloadSavedPDF(index) {
+            alert('Mengunduh PDF untuk data registrasi: ' + savedData[index].id);
             downloadPDF();
         }
 
-        function downloadSavedPNG() {
+        function downloadSavedPNG(index) {
+            alert('Mengunduh PNG untuk data registrasi: ' + savedData[index].id);
             downloadPNG();
         }
 
-        function downloadPNG() {
-            const element = document.getElementById('formPrintArea');
-            if (!element) return;
-            showToast('Mempersiapkan gambar PNG...', 'info');
+        function deleteData(index) {
+            if(confirm('Apakah Anda yakin ingin menghapus data pendaftaran ini?')) {
+                savedData.splice(index, 1);
+                localStorage.setItem('cbnFormData', JSON.stringify(savedData));
+                updateBadge();
+                renderSavedTable();
+            }
+        }
+        
+        // Search listener
+        document.getElementById('searchInput').addEventListener('keyup', renderSavedTable);
 
-            setTimeout(() => {
-                html2canvas(element, { scale: 2, useCORS: true, scrollY: 0 }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = 'Form_Registrasi_CBN.png';
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                    showToast('Gambar PNG berhasil diunduh!');
-                }).catch(() => {
-                    showToast('Gagal mengunduh PNG', 'error');
-                });
-            }, 500);
+
+        // --- EXPORT FUNCTIONS ---
+        
+        function getPrintArea() {
+            return document.getElementById('formPrintArea');
         }
 
-        function updateDashboardStats() {
-            const statTotalReg = document.getElementById('statTotalReg');
-            if (statTotalReg) statTotalReg.textContent = savedSubmissions.length;
+        async function downloadPNG() {
+            const element = getPrintArea();
+            // Force light mode for print/export to ensure it looks like a document
+            const wasDark = document.body.classList.contains('dark');
+            if(wasDark) document.body.classList.remove('dark');
             
-            const statPopularPkg = document.getElementById('statPopularPkg');
-            const statTotalRev = document.getElementById('statTotalRev');
-
-            if (savedSubmissions.length > 0) {
-                const pkgCounts = {};
-                savedSubmissions.forEach(s => {
-                    pkgCounts[s.package] = (pkgCounts[s.package] || 0) + 1;
+            try {
+                const canvas = await html2canvas(element, {
+                    scale: 2, // High resolution
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
                 });
-                let popular = '-';
-                let maxCount = 0;
-                for (let p in pkgCounts) {
-                    if (pkgCounts[p] > maxCount) {
-                        maxCount = pkgCounts[p];
-                        popular = p;
-                    }
-                }
-                if (statPopularPkg) statPopularPkg.textContent = popular;
-
-                let totalRev = 0;
-                savedSubmissions.forEach(s => {
-                    const num = parseInt(s.totalCost.replace(/[^0-9]/g, ''), 10) || 0;
-                    totalRev += num;
-                });
-                if (statTotalRev) statTotalRev.textContent = formatCurrency(totalRev);
-            } else {
-                if (statPopularPkg) statPopularPkg.textContent = '-';
-                if (statTotalRev) statTotalRev.textContent = formatCurrency(0);
+                
+                const image = canvas.toDataURL("image/png");
+                const link = document.createElement('a');
+                link.download = 'Formulir_Pendaftaran_CBN.png';
+                link.href = image;
+                link.click();
+            } catch (err) {
+                console.error('Error generating PNG', err);
+                alert('Gagal membuat PNG.');
+            } finally {
+                if(wasDark) document.body.classList.add('dark');
             }
         }
 
         function downloadPDF() {
-            const element = document.getElementById('formPrintArea');
-            if (!element) return;
-            showToast('Mempersiapkan dokumen PDF (1 Halaman)...', 'info');
-            
+            const element = getPrintArea();
+            const wasDark = document.body.classList.contains('dark');
+            if(wasDark) document.body.classList.remove('dark');
+
+            const opt = {
+                margin:       0.5,
+                filename:     'Formulir_Pendaftaran_CBN.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Needs a slight delay if toggling classes to let DOM settle
             setTimeout(() => {
-                const pxToMm = 0.2645833333;
-                const elWidthMm = element.offsetWidth * pxToMm;
-                const elHeightMm = element.offsetHeight * pxToMm;
-                
-                const marginMm = 4; 
-                const pdfWidth = elWidthMm + (marginMm * 2);
-                const pdfHeight = elHeightMm + (marginMm * 2);
-
-                const opt = {
-                  margin:       marginMm,
-                  filename:     'Form_Registrasi_CBN.pdf',
-                  image:        { type: 'jpeg', quality: 0.98 },
-                  html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
-                  jsPDF:        { unit: 'mm', format: [pdfWidth, pdfHeight], orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait' }
-                };
-                
                 html2pdf().set(opt).from(element).save().then(() => {
-                    showToast('Dokumen PDF berhasil diunduh dalam 1 halaman!');
+                    if(wasDark) document.body.classList.add('dark');
                 });
-            }, 500);
+            }, 100);
         }
-
+        
         function exportToExcel() {
-            if (savedSubmissions.length === 0) {
-                showToast('Gagal: Tidak ada data untuk diekspor.', 'error');
+            if(savedData.length === 0) {
+                alert('Tidak ada data untuk di-export.');
                 return;
             }
             
-            showToast('Mengekspor data lengkap dengan full header ke Excel...', 'info');
-            
-            // Map data to clean user-friendly column headers in Indonesian
-            const formattedData = savedSubmissions.map((item, index) => ({
-                "No": index + 1,
-                "ID Registrasi": item.idReg,
-                "Waktu Input": item.dateTime,
-                "Nama Pelanggan": item.customerName,
-                "Kode Sales": item.salesCode,
-                "Kode SPV": item.spvCode,
-                "Tempat Lahir": item.pob,
-                "Tanggal Lahir": item.dob,
-                "Jenis Kelamin": item.gender,
-                "Nomor Identitas (KTP)": item.idCard,
-                "Telepon Rumah": item.homePhone,
-                "Telepon Selular": item.mobilePhone,
-                "Alamat Pemasangan 1": item.address1,
-                "Alamat Pemasangan 2": item.address2,
-                "RT": item.rt,
-                "RW": item.rw,
-                "Kode Pos": item.zip,
-                "Status Kepemilikan": item.ownership,
-                "Alamat Email": item.email,
-                "Paket Layanan": item.package,
-                "Wireless Router": item.devRouter,
-                "Smartbox": item.devSmartbox,
-                "Add-On Dens.TV+": item.addonDens,
-                "Add-On Vision+": item.addonVision,
-                "Layanan Tambahan 1": item.customAddon1,
-                "Layanan Tambahan 2": item.customAddon2,
-                "Nama Kartu Kredit": item.ccName,
-                "Nomor Kartu Kredit": item.ccNumber,
-                "Masa Berlaku CC": item.ccExpiry,
-                "Bank Kartu Kredit": item.ccBank,
-                "Biaya Pemasangan (Rp)": item.costInstall,
-                "Biaya Paket (Rp)": item.costPackage,
-                "Biaya Perangkat (Rp)": item.costDevices,
-                "Biaya Add-Ons (Rp)": item.costAddons,
-                "Subtotal": item.subtotal,
-                "PPN (11%)": item.tax,
-                "Total Pembayaran": item.totalCost,
-                "Status Tanda Tangan": item.sigStatusText
+            // Format data for excel
+            const wsData = savedData.map(item => ({
+                'ID Registrasi': item.id,
+                'Tanggal': item.date,
+                'Nama Pelanggan': item.customerName,
+                'Kode Sales': item.salesCode,
+                'No. Identitas': item.idCard,
+                'Paket Dipilih': item.package,
+                'Total Pembayaran': item.total
             }));
 
-            const ws = XLSX.utils.json_to_sheet(formattedData);
-            
-            // Auto-fit column widths for better readability in Excel
-            const colWidths = Object.keys(formattedData[0] || {}).map(key => ({ wch: Math.max(key.length + 3, 15) }));
-            ws['!cols'] = colWidths;
-
+            const ws = XLSX.utils.json_to_sheet(wsData);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Data Registrasi CBN");
-            XLSX.writeFile(wb, "Data_Registrasi_CBN_Lengkap.xlsx");
+            XLSX.utils.book_append_sheet(wb, ws, "Data Pendaftaran");
+            
+            XLSX.writeFile(wb, "Data_Pendaftaran_CBN.xlsx");
         }
+
+
+        // --- FILL SAMPLE DATA ---
+        function fillSampleData() {
+            // Match image data
+            setGridValue('salesCodeBoxes', 'SLS001');
+            setGridValue('spvCodeBoxes', 'SPV99');
+            
+            setGridValue('fullNameBoxes', 'BUDI SANTOSO');
+            document.getElementById('pobInput').value = 'JAKARTA';
+            setGridValue('dobBoxes', '15081985');
+            
+            setGridValue('idCardBoxes', '3171234567890001');
+            document.querySelector('input[name="gender"][value="Pria"]').checked = true;
+            
+            setGridValue('homePhoneBoxes', '0215551234');
+            setGridValue('mobilePhoneBoxes', '081234567890');
+            
+            setGridValue('addressRow1Boxes', 'JL SUDIRMAN KAV 123');
+            setGridValue('addressRow2Boxes', 'JAKARTA SELATAN');
+            setGridValue('rtBoxes', '001');
+            setGridValue('rwBoxes', '005');
+            setGridValue('zipBoxes', '12190');
+            
+            document.querySelector('input[name="ownership"][value="Pemilik"]').checked = true;
+            setGridValue('emailBoxes', 'budi@example.com');
+            
+            document.querySelector('input[name="package"][value="CBN Fiber Pro"]').checked = true;
+            
+            // Set sample text values for package prices
+            document.getElementById('pkgPrice1').value = '399.000';
+            document.getElementById('pkgPrice2').value = '499.000';
+            document.getElementById('pkgPrice3').value = '799.000';
+            
+            document.getElementById('devRouter').checked = true;
+            document.getElementById('qtyRouter').value = 1;
+            document.getElementById('devSmartbox').checked = true;
+            document.getElementById('qtySmartbox').value = 1;
+            
+            document.getElementById('addonDens').checked = false;
+            document.getElementById('addonVision').checked = true;
+            
+            document.getElementById('ccName').value = 'BUDI SANTOSO';
+            document.getElementById('ccNumber').value = '4111-2222-3333-4444';
+            document.getElementById('ccExpiry').value = '12/28';
+            document.getElementById('ccBank').value = 'BCA';
+
+            // Fill Activation & Schedule sample data matching image
+            setGridValue('usernameBoxes', 'mafazamursy');
+            document.getElementById('installDayInput').value = 'segera';
+            setGridValue('installDateBoxes', '');
+            document.getElementById('installNotesInput').value = 'regular promo july 2026-nab';
+            
+            updateSignatureName();
+            calculateCosts();
+        }
+
+        function resetForm() {
+            if(confirm('Reset semua isian formulir?')) {
+                // Clear grid boxes
+                document.querySelectorAll('.char-box').forEach(input => input.value = '');
+                // Clear inputs
+                document.querySelectorAll('input[type="text"]:not(.char-box):not(#searchInput), input[type="number"]').forEach(input => input.value = '');
+                // Reset radios/checkboxes to default
+                document.querySelector('input[name="package"][value="CBN Fiber Pro"]').checked = true;
+                document.getElementById('devRouter').checked = true;
+                document.getElementById('qtyRouter').value = 1;
+                // Clear signatures
+                clearSignature('sigCanvas1');
+                clearSignature('sigCanvas2');
+                clearSignature('sigCanvas3');
+                
+                updateSignatureName();
+                calculateCosts();
+            }
+        }
+
+
+        // --- ON LOAD ---
+        window.onload = function() {
+            setupGridBoxes();
+            initSignature('sigCanvas1');
+            initSignature('sigCanvas2');
+            initSignature('sigCanvas3');
+            
+            // Add listeners to package price inputs to recalculate dynamically on typing
+            ['pkgPrice1', 'pkgPrice2', 'pkgPrice3'].forEach(id => {
+                document.getElementById(id).addEventListener('input', calculateCosts);
+            });
+
+            calculateCosts();
+            updateBadge();
+        };
+
     </script>
 </body>
 </html>
