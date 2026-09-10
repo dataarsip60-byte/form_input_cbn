@@ -57,7 +57,6 @@
             border-radius: 3px;
             font-size: 13px;
             font-weight: 800 !important;
-            text-transform: uppercase;
             background-color: #ffffff !important;
             color: #020617 !important;
             outline: none;
@@ -66,6 +65,11 @@
             justify-content: center;
             margin-right: 1px;
         }
+        
+        .char-box-uppercase {
+            text-transform: uppercase;
+        }
+
         .char-box:focus {
             border-color: #005691 !important;
             box-shadow: 0 0 0 2px rgba(0, 86, 145, 0.2);
@@ -443,6 +447,20 @@
                                 <label class="flex items-center gap-1 cursor-pointer">
                                     <input type="checkbox" id="addonVision" class="accent-cbn-blue" onchange="calculateTotalCost()"> Vision+ Premium Sports (Rp 65k/bln)
                                 </label>
+                            </div>
+                        </div>
+
+                        <!-- Custom Add-on Inputs (2 Rows) -->
+                        <div class="mt-2 space-y-2 pb-1">
+                            <!-- Baris Isian 1 -->
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="addonCustom1Check" class="accent-cbn-blue mt-0.5">
+                                <input type="text" id="addonCustom1Text" class="flex-1 border-b-2 border-slate-900 bg-transparent outline-none focus:border-cbn-blue text-[9px] font-bold px-1" placeholder="................................................................">
+                            </div>
+                            <!-- Baris Isian 2 -->
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="addonCustom2Check" class="accent-cbn-blue mt-0.5">
+                                <input type="text" id="addonCustom2Text" class="flex-1 border-b-2 border-slate-900 bg-transparent outline-none focus:border-cbn-blue text-[9px] font-bold px-1" placeholder="................................................................">
                             </div>
                         </div>
                     </div>
@@ -843,7 +861,13 @@
                     const input = document.createElement('input');
                     input.type = 'text';
                     input.maxLength = 1;
-                    input.className = 'char-box';
+                    
+                    if (groupId === 'emailBoxes') {
+                        input.className = 'char-box'; // No uppercase transform
+                    } else {
+                        input.className = 'char-box char-box-uppercase'; // Force uppercase transform
+                    }
+                    
                     input.dataset.groupId = groupId;
                     input.dataset.index = i;
                     
@@ -858,10 +882,17 @@
 
         function handleCharInput(e) {
             const input = e.target;
-            input.value = input.value.toUpperCase().replace(/[^A-Z0-9\s\@\.\-]/g, '');
+            const groupId = input.dataset.groupId;
+            
+            if (groupId === 'emailBoxes') {
+                 // Allow lowercase/uppercase and special characters for email
+                input.value = input.value.replace(/[^a-zA-Z0-9\s\@\.\-\_]/g, ''); 
+            } else {
+                 // Force uppercase for other fields
+                input.value = input.value.toUpperCase().replace(/[^A-Z0-9\s\@\.\-]/g, '');
+            }
             
             if (input.value.length === 1) {
-                const groupId = input.dataset.groupId;
                 const index = parseInt(input.dataset.index, 10);
                 const nextInput = document.querySelector(`.char-box[data-group-id="${groupId}"][data-index="${index + 1}"]`);
                 if (nextInput) nextInput.focus();
@@ -1226,6 +1257,9 @@
             const addonDens = document.getElementById('addonDens')?.checked ? 'Ya' : 'Tidak';
             const addonVision = document.getElementById('addonVision')?.checked ? 'Ya' : 'Tidak';
 
+            const customAddon1 = document.getElementById('addonCustom1Check')?.checked ? (document.getElementById('addonCustom1Text')?.value || 'Ya') : 'Tidak';
+            const customAddon2 = document.getElementById('addonCustom2Check')?.checked ? (document.getElementById('addonCustom2Text')?.value || 'Ya') : 'Tidak';
+
             const ccName = document.getElementById('ccName')?.value || '-';
             const ccNumber = document.getElementById('ccNumber')?.value || '-';
             const ccExpiry = document.getElementById('ccExpiry')?.value || '-';
@@ -1271,6 +1305,8 @@
                 devSmartbox: `${devSmartboxChecked} (Qty: ${qtySmartbox})`,
                 addonDens: addonDens,
                 addonVision: addonVision,
+                customAddon1: customAddon1,
+                customAddon2: customAddon2,
                 ccName: ccName,
                 ccNumber: ccNumber,
                 ccExpiry: ccExpiry,
@@ -1396,6 +1432,20 @@
             if (item.package) {
                 const pkgRadio = document.querySelector(`input[name="package"][value="${item.package}"]`);
                 if (pkgRadio) pkgRadio.checked = true;
+            }
+
+            const custom1Check = document.getElementById('addonCustom1Check');
+            const custom1Text = document.getElementById('addonCustom1Text');
+            if (custom1Check && custom1Text) {
+                custom1Check.checked = item.customAddon1 !== 'Tidak';
+                custom1Text.value = item.customAddon1 !== 'Tidak' && item.customAddon1 !== 'Ya' ? item.customAddon1 : '';
+            }
+
+            const custom2Check = document.getElementById('addonCustom2Check');
+            const custom2Text = document.getElementById('addonCustom2Text');
+            if (custom2Check && custom2Text) {
+                custom2Check.checked = item.customAddon2 !== 'Tidak';
+                custom2Text.value = item.customAddon2 !== 'Tidak' && item.customAddon2 !== 'Ya' ? item.customAddon2 : '';
             }
 
             const ccName = document.getElementById('ccName');
@@ -1551,6 +1601,8 @@
                 "Smartbox": item.devSmartbox,
                 "Add-On Dens.TV+": item.addonDens,
                 "Add-On Vision+": item.addonVision,
+                "Layanan Tambahan 1": item.customAddon1,
+                "Layanan Tambahan 2": item.customAddon2,
                 "Nama Kartu Kredit": item.ccName,
                 "Nomor Kartu Kredit": item.ccNumber,
                 "Masa Berlaku CC": item.ccExpiry,
