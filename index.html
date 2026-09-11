@@ -1,4 +1,4 @@
-<!-- ...STREAMING_CHUNK:Updating HTML artifact to add VISIT tab and modal... -->
+<!-- ...STREAMING_CHUNK:Updating HTML artifact with robust error handling and fallback mechanisms... -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -14,7 +14,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         window.firebaseAppInit = async function() {
             try {
@@ -559,13 +559,14 @@
                             <th class="p-2.5">Ekosistem</th>
                             <th class="p-2.5">Aktivitas</th>
                             <th class="p-2.5">Hasil Visit</th>
+                            <th class="p-2.5">Status</th>
                             <th class="p-2.5">Action Plan</th>
                             <th class="p-2.5 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="visitTableBody" class="divide-y divide-slate-200 bg-white">
                         <tr>
-                            <td colspan="10" class="p-4 text-center text-slate-400">Belum ada data visit tercatat.</td>
+                            <td colspan="11" class="p-4 text-center text-slate-400">Belum ada data visit tercatat.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -577,10 +578,11 @@
     <div id="visitModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 border border-slate-300 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
-                <h3 class="font-black text-blue-900 text-base uppercase">FORMULIR INPUT VISIT</h3>
+                <h3 id="visitModalTitle" class="font-black text-blue-900 text-base uppercase">FORMULIR INPUT VISIT</h3>
                 <button type="button" onclick="closeVisitModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">✕</button>
             </div>
             <form id="visitForm" onsubmit="event.preventDefault(); saveVisitData();" class="space-y-3 text-xs">
+                <input type="hidden" id="visitEditId" value="">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">POTO SELFIE (URL / Upload / Kamera)</label>
@@ -626,6 +628,19 @@
                         <input type="text" id="visitEkosistem" placeholder="Contoh: Ruko, Mall, Sekolah, dll" class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium">
                     </div>
                 </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">STATUS</label>
+                        <select id="visitStatus" class="w-full border border-slate-300 rounded px-2 py-1.5 font-bold bg-white text-slate-800">
+                            <option value="Tunggu info">Tunggu info</option>
+                            <option value="Done Deal">Done Deal</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">ACTIONPLANT (Action Plan)</label>
+                        <input type="text" id="visitActionPlan" placeholder="Rencana tindak lanjut..." class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium">
+                    </div>
+                </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">AKTIVITAS</label>
                     <textarea id="visitAktivitas" rows="2" placeholder="Aktivitas kunjungan..." class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium"></textarea>
@@ -634,13 +649,9 @@
                     <label class="block font-bold text-slate-700 mb-1">HASIL VISIT</label>
                     <textarea id="visitHasil" rows="2" placeholder="Hasil atau respon dari kunjungan..." class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium"></textarea>
                 </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">ACTIONPLANT (Action Plan)</label>
-                    <input type="text" id="visitActionPlan" placeholder="Rencana tindak lanjut..." class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium">
-                </div>
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
                     <button type="button" onclick="closeVisitModal()" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold px-4 py-2 rounded">Batal</button>
-                    <button type="submit" class="bg-blue-900 hover:bg-blue-800 text-white font-bold px-5 py-2 rounded">Simpan Visit</button>
+                    <button type="submit" class="bg-blue-900 hover:bg-blue-800 text-white font-bold px-5 py-2 rounded" id="visitSubmitBtn">Simpan Visit</button>
                 </div>
             </form>
         </div>
@@ -701,11 +712,10 @@
                 const now = ctx.currentTime;
 
                 if (type === 'reset') {
-                    // Distinct "Ting" bell sound for Refresh / Reset
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(1046.50, now); // C6 "Ting"
+                    osc.frequency.setValueAtTime(1046.50, now);
                     gain.gain.setValueAtTime(0.2, now);
                     gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.5);
                     osc.connect(gain);
@@ -715,12 +725,11 @@
                     return;
                 }
 
-                // Success notification chime (E5 -> A5)
                 const osc1 = ctx.createOscillator();
                 const gain1 = ctx.createGain();
                 osc1.type = 'triangle';
-                osc1.frequency.setValueAtTime(659.25, now); // E5
-                osc1.frequency.setValueAtTime(880.00, now + 0.12); // A5
+                osc1.frequency.setValueAtTime(659.25, now);
+                osc1.frequency.setValueAtTime(880.00, now + 0.12);
 
                 gain1.gain.setValueAtTime(0.15, now);
                 gain1.gain.exponentialRampToValueAtTime(0.00001, now + 0.35);
@@ -1140,15 +1149,50 @@
         }
 
         // VISIT FUNCTIONS
-        function openVisitModal() {
+        function getVisitRecordsList() {
+            if (visitRecords && visitRecords.length > 0) return visitRecords;
+            return JSON.parse(localStorage.getItem('cbn_visit_records') || '[]');
+        }
+
+        function openVisitModal(editId = null) {
             const modal = document.getElementById('visitModal');
-            if (modal) {
-                modal.classList.remove('hidden');
+            const titleEl = document.getElementById('visitModalTitle');
+            const submitBtn = document.getElementById('visitSubmitBtn');
+            const form = document.getElementById('visitForm');
+            if (!modal) return;
+
+            form.reset();
+            document.getElementById('visitEditId').value = '';
+
+            if (editId) {
+                const list = getVisitRecordsList();
+                const record = list.find(r => r.id === editId);
+                if (record) {
+                    titleEl.innerText = "EDIT FORMULIR VISIT";
+                    submitBtn.innerText = "Update Visit";
+                    document.getElementById('visitEditId').value = record.id;
+                    document.getElementById('visitFoto').value = record.foto || '';
+                    document.getElementById('visitTanggal').value = record.tanggal || '';
+                    document.getElementById('visitNamaSales').value = record.namaSales || '';
+                    document.getElementById('visitNpk').value = record.npk || '';
+                    document.getElementById('visitAlamatUsaha').value = record.alamatUsaha || '';
+                    document.getElementById('visitPicHp').value = record.picHp || '';
+                    document.getElementById('visitEkosistem').value = record.ekosistem || '';
+                    document.getElementById('visitStatus').value = record.status || 'Tunggu info';
+                    document.getElementById('visitAktivitas').value = record.aktivitas || '';
+                    document.getElementById('visitHasil').value = record.hasil || '';
+                    document.getElementById('visitActionPlan').value = record.actionPlan || '';
+                }
+            } else {
+                titleEl.innerText = "FORMULIR INPUT VISIT";
+                submitBtn.innerText = "Simpan Visit";
                 const dateInput = document.getElementById('visitTanggal');
-                if (dateInput && !dateInput.value) {
+                if (dateInput) {
                     dateInput.value = new Date().toISOString().slice(0, 10);
                 }
             }
+
+            modal.classList.remove('hidden');
         }
 
         function closeVisitModal() {
@@ -1160,23 +1204,27 @@
         let mediaStream = null;
 
         async function openCameraModal() {
-            const camModal = document.getElementById('cameraModal');
+            const modal = document.getElementById('cameraModal');
             const video = document.getElementById('cameraVideo');
-            if (!camModal || !video) return;
-            camModal.classList.remove('hidden');
+            if (!modal || !video) return;
+
+            modal.classList.remove('hidden');
             try {
-                mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
-                video.srcObject = mediaStream;
-            } catch(e) {
-                console.error("Camera access error:", e);
-                showToast("Gagal mengakses kamera. Perizinan ditolak.", "danger");
-                camModal.classList.add('hidden');
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+                    video.srcObject = mediaStream;
+                } else {
+                    showToast('Kamera tidak didukung di browser ini.', 'danger');
+                }
+            } catch (err) {
+                console.warn("Camera access error:", err);
+                showToast('Gagal mengakses kamera. Perizinan ditolak atau tidak tersedia.', 'danger');
             }
         }
 
         function closeCameraModal() {
-            const camModal = document.getElementById('cameraModal');
-            if (camModal) camModal.classList.add('hidden');
+            const modal = document.getElementById('cameraModal');
+            if (modal) modal.classList.add('hidden');
             stopCameraStream();
         }
 
@@ -1185,6 +1233,8 @@
                 mediaStream.getTracks().forEach(track => track.stop());
                 mediaStream = null;
             }
+            const video = document.getElementById('cameraVideo');
+            if (video) video.srcObject = null;
         }
 
         function captureCameraPhoto() {
@@ -1193,15 +1243,18 @@
             const fotoInput = document.getElementById('visitFoto');
             if (!video || !canvas || !fotoInput) return;
 
-            canvas.width = video.videoWidth || 320;
-            canvas.height = video.videoHeight || 240;
+            const width = video.videoWidth || 320;
+            const height = video.videoHeight || 240;
+
+            canvas.width = width;
+            canvas.height = height;
             const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(video, 0, 0, width, height);
 
             const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
             fotoInput.value = dataUrl;
             closeCameraModal();
-            showToast("Foto selfie berhasil diambil!", "success");
+            showToast('Foto berhasil diambil dari kamera!', 'success');
         }
 
         function handleVisitFileUpload(event) {
@@ -1212,21 +1265,17 @@
                 const fotoInput = document.getElementById('visitFoto');
                 if (fotoInput) {
                     fotoInput.value = e.target.result;
-                    showToast("File foto berhasil diunggah!", "success");
+                    showToast('File foto berhasil diunggah!', 'success');
                 }
             };
             reader.readAsDataURL(file);
         }
 
-        function getVisitRecordsList() {
-            if (visitRecords && visitRecords.length > 0) return visitRecords;
-            return JSON.parse(localStorage.getItem('cbn_visit_records') || '[]');
-        }
-
         async function saveVisitData() {
             try {
+                const editId = document.getElementById('visitEditId')?.value;
                 const visitItem = {
-                    id: Date.now(),
+                    id: editId ? parseInt(editId) : Date.now(),
                     foto: document.getElementById('visitFoto')?.value || 'https://placehold.co/100x100/1e3a8a/ffffff?text=Selfie',
                     tanggal: document.getElementById('visitTanggal')?.value || new Date().toISOString().slice(0, 10),
                     namaSales: document.getElementById('visitNamaSales')?.value || '',
@@ -1234,28 +1283,44 @@
                     alamatUsaha: document.getElementById('visitAlamatUsaha')?.value || '',
                     picHp: document.getElementById('visitPicHp')?.value || '',
                     ekosistem: document.getElementById('visitEkosistem')?.value || '',
+                    status: document.getElementById('visitStatus')?.value || 'Tunggu info',
                     aktivitas: document.getElementById('visitAktivitas')?.value || '',
                     hasil: document.getElementById('visitHasil')?.value || '',
                     actionPlan: document.getElementById('visitActionPlan')?.value || ''
                 };
 
                 let saved = JSON.parse(localStorage.getItem('cbn_visit_records') || '[]');
-                saved.unshift(visitItem);
+                if (editId) {
+                    saved = saved.map(r => r.id === parseInt(editId) ? visitItem : r);
+                } else {
+                    saved.unshift(visitItem);
+                }
                 localStorage.setItem('cbn_visit_records', JSON.stringify(saved));
 
                 if (window.db && window.auth && window.auth.currentUser) {
                     try {
                         const userId = window.auth.currentUser.uid;
                         const colRef = collection(window.db, 'artifacts', window.appId, 'users', userId, 'cbn_visit_records');
-                        await addDoc(colRef, visitItem);
+                        if (editId) {
+                            const existingRec = visitRecords.find(r => r.id === parseInt(editId));
+                            if (existingRec && existingRec.docId) {
+                                const docRef = doc(window.db, 'artifacts', window.appId, 'users', userId, 'cbn_visit_records', existingRec.docId);
+                                await setDoc(docRef, visitItem);
+                            } else {
+                                await addDoc(colRef, visitItem);
+                            }
+                        } else {
+                            await addDoc(colRef, visitItem);
+                        }
                     } catch(e) {
-                        console.warn("Visit cloud write failed, stored locally:", e);
+                        console.warn("Visit cloud write/update failed, stored locally:", e);
                     }
                 }
 
-                showToast('Data Visit sudah di Simpan', 'success');
+                showToast(editId ? 'Data Visit berhasil diupdate!' : 'Data Visit sudah di Simpan', 'success');
                 closeVisitModal();
-                document.getElementById('visitForm').reset();
+                const formEl = document.getElementById('visitForm');
+                if (formEl) formEl.reset();
                 renderVisitTable();
             } catch(e) {
                 console.error("Visit save error:", e);
@@ -1272,28 +1337,36 @@
             if (visitBadge) visitBadge.innerText = list.length;
 
             if (list.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-slate-400">Belum ada data visit tercatat.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="11" class="p-4 text-center text-slate-400">Belum ada data visit tercatat.</td></tr>`;
                 return;
             }
 
-            tableBody.innerHTML = list.map((item) => `
-                <tr class="hover:bg-slate-50">
-                    <td class="p-2.5">
-                        <img src="${item.foto}" alt="Selfie" class="w-10 h-10 object-cover rounded border border-slate-300" onerror="this.src='https://placehold.co/100x100/1e3a8a/ffffff?text=Selfie'">
-                    </td>
-                    <td class="p-2.5 text-slate-600">${item.tanggal}</td>
-                    <td class="p-2.5 font-bold text-slate-800">${item.namaSales}<br><span class="text-[10px] text-slate-500 font-normal">NPK: ${item.npk || '-'}</span></td>
-                    <td class="p-2.5 text-slate-600">${item.alamatUsaha}</td>
-                    <td class="p-2.5 text-slate-600">${item.picHp}</td>
-                    <td class="p-2.5 text-slate-600 font-semibold">${item.ekosistem}</td>
-                    <td class="p-2.5 text-slate-600">${item.aktivitas}</td>
-                    <td class="p-2.5 text-slate-600">${item.hasil}</td>
-                    <td class="p-2.5 text-blue-800 font-bold">${item.actionPlan}</td>
-                    <td class="p-2.5 text-center">
-                        <button type="button" onclick="playBeep(250); deleteVisitRecord('${item.docId || ''}', ${item.id})" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2.5 py-1 rounded text-[10px] font-bold">Hapus</button>
-                    </td>
-                </tr>
-            `).join('');
+            tableBody.innerHTML = list.map((item) => {
+                const statusVal = item.status || 'Tunggu info';
+                const statusBadgeClass = statusVal === 'Done Deal' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-800 border-amber-300';
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-2.5">
+                            <img src="${item.foto}" alt="Selfie" class="w-10 h-10 object-cover rounded border border-slate-300" onerror="this.src='https://placehold.co/100x100/1e3a8a/ffffff?text=Selfie'">
+                        </td>
+                        <td class="p-2.5 text-slate-600">${item.tanggal}</td>
+                        <td class="p-2.5 font-bold text-slate-800">${item.namaSales}<br><span class="text-[10px] text-slate-500 font-normal">NPK: ${item.npk || '-'}</span></td>
+                        <td class="p-2.5 text-slate-600">${item.alamatUsaha}</td>
+                        <td class="p-2.5 text-slate-600">${item.picHp}</td>
+                        <td class="p-2.5 text-slate-600 font-semibold">${item.ekosistem}</td>
+                        <td class="p-2.5 text-slate-600">${item.aktivitas}</td>
+                        <td class="p-2.5 text-slate-600">${item.hasil}</td>
+                        <td class="p-2.5">
+                            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-extrabold border ${statusBadgeClass}">${statusVal}</span>
+                        </td>
+                        <td class="p-2.5 text-blue-800 font-bold">${item.actionPlan}</td>
+                        <td class="p-2.5 text-center whitespace-nowrap">
+                            <button type="button" onclick="playBeep(350); openVisitModal(${item.id})" class="bg-amber-100 hover:bg-amber-200 text-amber-800 px-2.5 py-1 rounded text-[10px] font-bold mr-1">Edit</button>
+                            <button type="button" onclick="playBeep(250); deleteVisitRecord('${item.docId || ''}', ${item.id})" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2.5 py-1 rounded text-[10px] font-bold">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         async function deleteVisitRecord(docId, id) {
@@ -1593,6 +1666,8 @@
                 setupSignatures();
                 calculateTotal();
                 switchTab('form');
+                renderSavedTable();
+                renderVisitTable();
             } catch(e) {
                 console.error("Initialization error:", e);
             }
