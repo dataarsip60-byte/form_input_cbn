@@ -1505,20 +1505,23 @@
                 return;
             }
             if (typeof window.jspdf === 'undefined' || typeof html2canvas === 'undefined') {
-                showToast('Library PDF belum siap. Silakan coba lagi beberapa saat.', 'danger');
+                showToast('Library PDF belum siap. Silakan tunggu sebentar atau pastikan koneksi internet stabil.', 'danger');
                 return;
             }
             
             showToast('Sedang merender PDF...', 'info');
             try {
+                // Ensure any canvas elements are properly handled for html2canvas
                 const canvas = await html2canvas(element, {
                     scale: 2,
                     useCORS: true,
+                    allowTaint: true,
                     logging: false,
-                    backgroundColor: '#ffffff'
+                    backgroundColor: '#ffffff',
+                    windowWidth: document.documentElement.offsetWidth
                 });
 
-                const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
                 const { jsPDF } = window.jspdf;
                 
                 const select = document.getElementById('paperSizeSelect');
@@ -1541,7 +1544,7 @@
                 pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pdfHeight;
 
-                while (heightLeft >= 0) {
+                while (heightLeft > 0) {
                     position = heightLeft - imgHeight;
                     pdf.addPage();
                     pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
