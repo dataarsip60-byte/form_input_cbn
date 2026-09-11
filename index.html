@@ -544,12 +544,19 @@
     <!-- TAB 3: VISIT -->
     <div id="tabVisitContent" class="max-w-5xl mx-auto hidden">
         <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
                 <div class="flex items-center gap-2">
                     <h2 class="font-bold text-slate-800 text-sm">📍 Data Kunjungan / Visit Sales</h2>
                     <span id="visitCloudStatusBadge" class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Cloud Active</span>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex flex-wrap items-center gap-2">
+                    <div class="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 px-2.5 py-1 rounded border border-slate-200">
+                        <span>Filter:</span>
+                        <input type="date" id="filterVisitDateStart" onchange="renderVisitTable()" class="border border-slate-300 rounded px-1.5 py-0.5 text-xs bg-white font-medium">
+                        <span>s/d</span>
+                        <input type="date" id="filterVisitDateEnd" onchange="renderVisitTable()" class="border border-slate-300 rounded px-1.5 py-0.5 text-xs bg-white font-medium">
+                        <button type="button" onclick="playBeep(300); resetVisitFilter()" class="text-rose-600 hover:underline font-bold text-[11px] ml-1">Reset</button>
+                    </div>
                     <button type="button" onclick="playBeep(500); exportVisitPDF()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded text-xs transition flex items-center gap-1.5 shadow-sm">
                         📄 Download PDF
                     </button>
@@ -558,6 +565,11 @@
                     </button>
                 </div>
             </div>
+            
+            <div class="flex justify-between items-center mb-3 px-1 text-xs font-bold text-slate-700">
+                <div>Total Visit Ditampilkan: <span id="totalVisitCountDisplay" class="text-blue-900 font-black">0</span></div>
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-xs text-left text-slate-600 border border-slate-200 rounded" id="visitDataTable">
                     <thead class="bg-slate-100 font-bold text-slate-800 uppercase border-b border-slate-200">
@@ -1173,6 +1185,16 @@
             return JSON.parse(localStorage.getItem('cbn_visit_records') || '[]');
         }
 
+        function resetVisitFilter() {
+            const startInput = document.getElementById('filterVisitDateStart');
+            const endInput = document.getElementById('filterVisitDateEnd');
+            if (startInput) startInput.value = '';
+            if (endInput) endInput.value = '';
+            renderVisitTable();
+            showToast('Filter tanggal direset.', 'info');
+        }
+        window.resetVisitFilter = resetVisitFilter;
+
         function openVisitModal(editId = null) {
             const modal = document.getElementById('visitModal');
             const titleEl = document.getElementById('visitModalTitle');
@@ -1357,17 +1379,34 @@
         function renderVisitTable() {
             const tableBody = document.getElementById('visitTableBody');
             const visitBadge = document.getElementById('visitBadge');
+            const totalDisplay = document.getElementById('totalVisitCountDisplay');
             if (!tableBody) return;
 
-            const list = getVisitRecordsList();
-            if (visitBadge) visitBadge.innerText = list.length;
+            const allList = getVisitRecordsList();
+            if (visitBadge) visitBadge.innerText = allList.length;
 
-            if (list.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="11" class="p-4 text-center text-slate-400">Belum ada data visit tercatat.</td></tr>`;
+            const startDate = document.getElementById('filterVisitDateStart')?.value;
+            const endDate = document.getElementById('filterVisitDateEnd')?.value;
+
+            let filteredList = allList;
+            if (startDate || endDate) {
+                filteredList = allList.filter(item => {
+                    const itemDate = item.tanggal || '';
+                    if (!itemDate) return false;
+                    if (startDate && itemDate < startDate) return false;
+                    if (endDate && itemDate > endDate) return false;
+                    return true;
+                });
+            }
+
+            if (totalDisplay) totalDisplay.innerText = filteredList.length;
+
+            if (filteredList.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="11" class="p-4 text-center text-slate-400">Tidak ada data visit yang sesuai dengan filter.</td></tr>`;
                 return;
             }
 
-            tableBody.innerHTML = list.map((item) => {
+            tableBody.innerHTML = filteredList.map((item) => {
                 const statusVal = item.status || 'Tunggu info';
                 const statusBadgeClass = statusVal === 'Done Deal' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-800 border-amber-300';
                 return `
@@ -1396,229 +1435,22 @@
         }
         window.renderVisitTable = renderVisitTable;
 
-        async function deleteVisitRecord(docId, id) {
-            try {
-                if (docId && docId !== 'undefined' && window.db && window.auth && window.auth.currentUser) {
-                    const userId = window.auth.currentUser.uid;
-                    await deleteDoc(doc(window.db, 'artifacts', window.appId, 'users', userId, 'cbn_visit_records', docId));
-                }
-                let saved = JSON.parse(localStorage.getItem('cbn_visit_records') || '[]');
-                saved = saved.filter(r => r.id !== id);
-                localStorage.setItem('cbn_visit_records', JSON.stringify(saved));
-                renderVisitTable();
-                showToast('Data visit berhasil dihapus.', 'info');
-            } catch(e) {
-                console.error("Visit delete error:", e);
-                renderVisitTable();
-            }
-        }
-        window.deleteVisitRecord = deleteVisitRecord;
-
-        function exportExcel() {
-            const saved = getSavedRecordsList();
-            if (saved.length === 0) {
-                showToast('Tidak ada data untuk diexport ke Excel.', 'danger');
-                return;
-            }
-
-            let html = `
-                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-                <head><meta charset="UTF-8"></head>
-                <body>
-                <table border="1">
-                    <thead>
-                        <tr style="background-color: #0b2e6b; color: #ffffff; font-weight: bold;">
-                            <th>Waktu Pendaftaran</th>
-                            <th>Nama Pelanggan</th>
-                            <th>Tempat Lahir</th>
-                            <th>Tanggal Lahir</th>
-                            <th>No. Identitas</th>
-                            <th>Jenis Kelamin</th>
-                            <th>Telp</th>
-                            <th>HP</th>
-                            <th>Alamat 1</th>
-                            <th>Alamat 2</th>
-                            <th>RT</th>
-                            <th>RW</th>
-                            <th>Kode Pos</th>
-                            <th>Status Rumah</th>
-                            <th>Email</th>
-                            <th>Kode Sales</th>
-                            <th>Kode SPV</th>
-                            <th>Total Pembayaran (Rp)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            saved.forEach(item => {
-                html += `
-                    <tr>
-                        <td>${item.timestamp}</td>
-                        <td>${item.customerName}</td>
-                        <td>${item.tempatLahir}</td>
-                        <td>${item.birthDate}</td>
-                        <td>${item.idCard}</td>
-                        <td>${item.gender}</td>
-                        <td>${item.phoneLandline}</td>
-                        <td>${item.phoneMobile}</td>
-                        <td>${item.address1}</td>
-                        <td>${item.address2}</td>
-                        <td>${item.rt}</td>
-                        <td>${item.rw}</td>
-                        <td>${item.postalCode}</td>
-                        <td>${item.houseStatus}</td>
-                        <td>${item.email}</td>
-                        <td>${item.salesCode}</td>
-                        <td>${item.spvCode}</td>
-                        <td>${item.total}</td>
-                    </tr>
-                `;
-            });
-
-            html += `</tbody></table></body></html>`;
-
-            const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Data_Pendaftaran_CBN_${new Date().toISOString().slice(0, 10)}.xls`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            showToast('File Excel berhasil diunduh!', 'success');
-        }
-        window.exportExcel = exportExcel;
-
-        function resetFormWithoutNotice() {
-            const form = document.getElementById('cbnRegistrationForm');
-            if (form) form.reset();
-            
-            gridConfigs.forEach(cfg => {
-                const container = document.querySelector(`[data-box-name="${cfg.name}"]`);
-                if (container) {
-                    container.querySelectorAll('.grid-box').forEach(b => b.value = '');
-                }
-            });
-
-            if (document.getElementById('tempatLahir')) document.getElementById('tempatLahir').value = '';
-            if (document.getElementById('inputMonthlyFeeCustom')) document.getElementById('inputMonthlyFeeCustom').value = '299000';
-            if (document.getElementById('inputAddonFeeCustom')) document.getElementById('inputAddonFeeCustom').value = '0';
-            if (document.getElementById('inputRegFee')) document.getElementById('inputRegFee').value = '';
-
-            manualTotalOverride = false;
-            calculateTotal();
-            for (let i = 1; i <= 3; i++) {
-                clearSignature(i.toString());
-                const sigName = document.getElementById(`sigName${i}`);
-                if (sigName) sigName.value = '';
-            }
-        }
-
-        function resetForm() {
-            resetFormWithoutNotice();
-            showToast('Formulir berhasil di-refresh dan dikosongkan.', 'reset');
-        }
-        window.resetForm = resetForm;
-
-        function changePaperSize() {
-            const select = document.getElementById('paperSizeSelect');
-            if (!select) return;
-            const size = select.value;
-            showToast(`Ukuran kertas diubah ke ${size}`, 'info');
-        }
-        window.changePaperSize = changePaperSize;
-
-        async function exportPDF() {
-            const element = document.getElementById('tabFormContent');
-            if (!element) {
-                showToast('Elemen formulir tidak ditemukan.', 'danger');
-                return;
-            }
-            if (typeof window.jspdf === 'undefined' || typeof html2canvas === 'undefined') {
-                showToast('Library PDF belum siap. Silakan tunggu sebentar atau pastikan koneksi internet stabil.', 'danger');
-                return;
-            }
-            
-            showToast('Sedang merender PDF (1 Halaman)...', 'info');
-            try {
-                const originalDisplay = element.style.display;
-                element.style.display = 'block';
-
-                const canvas = await html2canvas(element, {
-                    scale: 1.5,
-                    useCORS: true,
-                    allowTaint: true,
-                    logging: false,
-                    backgroundColor: '#ffffff',
-                    windowWidth: 1200,
-                    onclone: function(clonedDoc) {
-                        const clonedEl = clonedDoc.getElementById('tabFormContent');
-                        if (clonedEl) {
-                            clonedEl.style.width = '1000px';
-                            clonedEl.style.margin = '0 auto';
-                        }
-                    }
-                });
-
-                const imgData = canvas.toDataURL('image/jpeg', 0.90);
-                const { jsPDF } = window.jspdf;
-                
-                const select = document.getElementById('paperSizeSelect');
-                const paperFormat = select ? select.value.toLowerCase() : 'a4';
-                
-                const pdf = new jsPDF({
-                    orientation: 'portrait',
-                    unit: 'mm',
-                    format: paperFormat === 'f4' ? [215.9, 330] : paperFormat === 'letter' ? 'letter' : 'a4'
-                });
-
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
-                
-                const imgWidth = pdfWidth;
-                const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-
-                if (imgHeight <= pdfHeight) {
-                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-                } else {
-                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, pdfHeight);
-                }
-
-                pdf.save('Formulir_Pendaftaran_CBN_1Hal.pdf');
-                showToast('File PDF 1 Halaman berhasil diunduh!', 'success');
-            } catch(err) {
-                console.error("PDF Export Error:", err);
-                showToast('Gagal mengunduh PDF. Silakan gunakan tombol PNG.', 'danger');
-            }
-        }
-        window.exportPDF = exportPDF;
-
-        function exportPNG() {
-            const element = document.getElementById('tabFormContent');
-            if (!element) {
-                showToast('Elemen formulir tidak ditemukan.', 'danger');
-                return;
-            }
-            if (typeof html2canvas === 'undefined') {
-                showToast('Library PNG belum siap.', 'danger');
-                return;
-            }
-            html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `Formulir_CBN_${Date.now()}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                showToast('File PNG berhasil diunduh!', 'success');
-            }).catch(err => {
-                console.error("PNG Export Error:", err);
-                showToast('Gagal mengunduh PNG.', 'danger');
-            });
-        }
-        window.exportPNG = exportPNG;
-
         async function exportVisitPDF() {
-            const list = getVisitRecordsList();
+            const allList = getVisitRecordsList();
+            const startDate = document.getElementById('filterVisitDateStart')?.value;
+            const endDate = document.getElementById('filterVisitDateEnd')?.value;
+
+            let list = allList;
+            if (startDate || endDate) {
+                list = allList.filter(item => {
+                    const itemDate = item.tanggal || '';
+                    if (!itemDate) return false;
+                    if (startDate && itemDate < startDate) return false;
+                    if (endDate && itemDate > endDate) return false;
+                    return true;
+                });
+            }
+
             if (list.length === 0) {
                 showToast('Tidak ada data visit untuk diexport ke PDF.', 'danger');
                 return;
