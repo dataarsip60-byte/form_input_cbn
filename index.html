@@ -5,216 +5,175 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulir Pendaftaran CBN</title>
     
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Font Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- html2pdf.js & html2canvas for PDF and PNG export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #eef2f6;
-            color: #1e293b;
-            margin: 0;
-            padding: 0;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-
-        .form-section-title {
-            background-color: #0b2e6b;
-            color: #ffffff;
-            font-weight: 800;
-            font-size: 10px;
-            padding: 3px 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-radius: 1px;
-        }
-
-        /* Standard Grid Box (Kotak Mode) - Made flexible for mixed-case text */
-        .grid-box {
-            width: 15px;
-            height: 19px;
-            line-height: 19px;
-            padding: 0;
-            font-size: 9.5px;
-            font-weight: 800;
-            text-align: center;
-            border: 1px solid #94a3b8;
-            background-color: #ffffff;
-            border-radius: 2px;
-            text-transform: none; /* Changed from uppercase to allow flexible case */
-            box-sizing: border-box;
-            transition: all 0.1s ease-in-out;
-            flex-shrink: 0;
+            background-color: #f8fafc;
             color: #0f172a;
         }
 
-        .grid-box:focus {
-            border-color: #1d4ed8;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.25);
-            background-color: #eff6ff;
-        }
-
-        /* Titik Mode (Dotted Boxes) */
-        .style-titik .grid-box {
-            border: 1.5px dotted #64748b !important;
-            border-radius: 2px !important;
-            background-color: #f8fafc;
-        }
-
-        /* Garis Mode (Underline Only) */
-        .style-garis .grid-box {
-            border: none !important;
-            border-bottom: 2px solid #334155 !important;
-            border-radius: 0 !important;
-            background-color: transparent !important;
-        }
-
+        /* Grid box styling for form fields */
         .grid-boxes-container {
             display: flex;
-            gap: 2px;
-            flex-wrap: nowrap;
+            gap: 1.5px;
             align-items: center;
-            overflow: hidden;
         }
 
-        canvas.signature-pad {
-            border: 1px dashed #94a3b8;
+        .grid-box {
+            width: 18px;
+            height: 22px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            border-radius: 2px;
+            outline: none;
+            transition: all 0.1s ease;
+        }
+
+        /* Dynamic styles for grid boxes */
+        .style-kotak .grid-box {
+            border: 1px solid #cbd5e1;
             background-color: #ffffff;
-            border-radius: 4px;
-            cursor: crosshair;
-            touch-action: none;
+            color: #1e293b;
+        }
+        .style-kotak .grid-box:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 1px #2563eb;
+            z-index: 10;
         }
 
-        /* Menghilangkan panah angka bawaan pada input number */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none;
-            margin: 0;
+        .style-titik .grid-box {
+            border: none;
+            border-bottom: 2px dotted #64748b;
+            background-color: transparent;
+            border-radius: 0;
+            color: #1e293b;
+        }
+        .style-titik .grid-box:focus {
+            border-bottom-color: #2563eb;
         }
 
-        /* Print Styling */
-        @media print {
-            .no-print {
-                display: none !important;
-            }
-            body {
-                background-color: #ffffff !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .print-container {
-                box-shadow: none !important;
-                border: none !important;
-                max-width: 100% !important;
-                width: 100% !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .page-break {
-                page-break-after: always;
-            }
+        .style-garis .grid-box {
+            border: none;
+            border-bottom: 1.5px solid #475569;
+            background-color: transparent;
+            border-radius: 0;
+            color: #1e293b;
+        }
+        .style-garis .grid-box:focus {
+            border-bottom-color: #2563eb;
         }
 
-        /* Capsule Divider Graphic (Tipis & Elegan) */
+        .form-section-title {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
         .capsule-bar {
             display: flex;
             align-items: center;
             gap: 4px;
-            color: #64748b;
-            font-size: 8px;
-            line-height: 1;
-            margin: 3px 0;
+            color: #94a3b8;
+            padding: 1px 0;
+        }
+        .capsule-line {
+            flex: 1;
+            height: 1px;
+            background-color: #cbd5e1;
         }
 
-        .capsule-bar .capsule-line {
-            flex: 1;
-            height: 1.5px;
-            background: linear-gradient(90deg, #94a3b8 0%, #cbd5e1 50%, #94a3b8 100%);
-            border-radius: 2px;
+        @media print {
+            body {
+                background-color: white !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-container {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+            }
         }
     </style>
 </head>
-<body class="py-4 px-2 sm:px-4 text-[11px]">
+<body class="p-2 sm:p-4">
 
-    <!-- TOP CONTROL TOOLBAR -->
-    <div class="max-w-5xl mx-auto mb-3 no-print bg-white p-3 rounded-xl shadow-sm border border-slate-200 space-y-3">
+    <div class="max-w-5xl mx-auto mb-3 bg-white p-3 rounded-xl shadow-md border border-slate-200 flex flex-wrap items-center justify-between gap-3 no-print">
         
-        <!-- ROW 1: Tabs, Paper Size, Box Style Switcher -->
-        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-2.5">
-            <!-- Navigation Tabs -->
-            <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
-                <button type="button" id="tabFormBtn" onclick="switchTab('form')" class="px-3 py-1.5 rounded-md font-bold text-xs bg-white text-blue-900 shadow-sm transition">
-                    📄 Formulir
-                </button>
-                <button type="button" id="tabSavedBtn" onclick="switchTab('saved')" class="px-3 py-1.5 rounded-md font-bold text-xs text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
-                    💾 Data Tersimpan <span id="savedBadge" class="bg-blue-600 text-white text-[10px] font-extrabold px-1.5 py-0.2 rounded-full">1</span>
-                </button>
+        <!-- Tab Selectors & Saved Badge -->
+        <div class="flex items-center gap-2">
+            <button type="button" id="tabFormBtn" onclick="switchTab('form')" class="px-3 py-1.5 rounded-md font-bold text-xs bg-blue-900 text-white shadow-sm transition">
+                📄 Formulir
+            </button>
+            <button type="button" id="tabSavedBtn" onclick="switchTab('saved')" class="px-3 py-1.5 rounded-md font-bold text-xs text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                💾 Data Tersimpan <span id="savedBadge" class="bg-blue-100 text-blue-800 text-[10px] px-1.5 py-0.2 rounded-full font-extrabold">0</span>
+            </button>
+        </div>
+
+        <!-- Paper Size & Box Style Dropdowns -->
+        <div class="flex flex-wrap items-center gap-3 text-xs">
+            <div class="flex items-center gap-1.5">
+                <span class="font-bold text-slate-700">Ukuran:</span>
+                <select id="pageSizeSelect" onchange="changePaperSize()" class="border border-slate-300 rounded px-2 py-1 bg-white font-bold text-slate-800 text-xs focus:outline-none focus:border-blue-600">
+                    <option value="A4">A4 (210 × 297 mm)</option>
+                    <option value="F4">F4 (215 × 330 mm)</option>
+                    <option value="Letter">Letter (8.5 × 11 in)</option>
+                </select>
             </div>
 
-            <!-- Display Options (Ukuran Paper & Gaya Kotak) -->
-            <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-700">
-                <div class="flex items-center gap-2">
-                    <span>Ukuran:</span>
-                    <select id="pageSizeSelect" onchange="changePaperSize()" class="border border-slate-300 rounded px-2 py-1 bg-white font-semibold text-xs focus:outline-none focus:border-blue-600">
-                        <option value="A4">A4 (210 x 297 mm)</option>
-                        <option value="F4">F4 (215 x 330 mm)</option>
-                        <option value="Letter">Letter (8.5 x 11 in)</option>
-                    </select>
-                </div>
-
-                <div class="flex items-center gap-1">
-                    <span>Gaya Kotak:</span>
-                    <div class="inline-flex rounded-md shadow-sm" role="group">
-                        <button type="button" id="btnStyleKotak" onclick="setBoxStyle('kotak')" class="px-2.5 py-1 text-xs font-bold text-white bg-blue-900 rounded-l-md border border-blue-900">
-                            Kotak
-                        </button>
-                        <button type="button" id="btnStyleTitik" onclick="setBoxStyle('titik')" class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-white border-t border-b border-slate-300 hover:bg-slate-50">
-                            Titik
-                        </button>
-                        <button type="button" id="btnStyleGaris" onclick="setBoxStyle('garis')" class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-white rounded-r-md border border-slate-300 hover:bg-slate-50">
-                            Garis
-                        </button>
-                    </div>
+            <div class="flex items-center gap-1.5">
+                <span class="font-bold text-slate-700">Gaya Kotak:</span>
+                <div class="inline-flex rounded-md shadow-sm" role="group">
+                    <button type="button" id="btnStyleKotak" onclick="setBoxStyle('kotak')" class="px-2.5 py-1 text-xs font-bold text-white bg-blue-900 rounded-l-md border border-blue-900">Kotak</button>
+                    <button type="button" id="btnStyleTitik" onclick="setBoxStyle('titik')" class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-white border-t border-b border-slate-300 hover:bg-slate-50">Titik</button>
+                    <button type="button" id="btnStyleGaris" onclick="setBoxStyle('garis')" class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-white rounded-r-md border border-slate-300 hover:bg-slate-50">Garis</button>
                 </div>
             </div>
         </div>
-
-        <!-- ROW 2: Action Buttons -->
-        <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-                <button type="button" id="btnToggleMode" onclick="toggleTextMode()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-3 py-1.5 rounded text-xs transition flex items-center gap-1 shadow-sm">
-                    👁️ <span id="modeTextLabel">Mode Teks/Biasa</span>
-                </button>
-                <button type="button" onclick="saveData()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3.5 py-1.5 rounded text-xs transition flex items-center gap-1.5 shadow-sm">
-                    💾 Simpan Data
-                </button>
-                <button type="button" onclick="confirmResetForm()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold px-3 py-1.5 rounded text-xs transition flex items-center gap-1.5 shadow-sm" title="Refresh & Kosongkan Formulir">
-                    🔄 Refresh / Reset
-                </button>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <button type="button" onclick="exportPDF()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded text-xs transition flex items-center gap-1.5 shadow-sm">
-                    📄 PDF (1 Hal)
-                </button>
-                <button type="button" onclick="exportPNG()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded text-xs transition flex items-center gap-1.5 shadow-sm">
-                    🖼️ PNG
-                </button>
-            </div>
-        </div>
-
     </div>
 
-    <!-- FORM TAB CONTENT -->
+    <div class="max-w-5xl mx-auto mb-4 bg-slate-100 p-2.5 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-2 no-print">
+        <div class="flex items-center gap-2">
+            <button type="button" onclick="toggleTextMode()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-3 py-1.5 rounded text-xs transition shadow-sm flex items-center gap-1.5">
+                👁️ <span id="modeTextLabel">Mode Teks/Biasa</span>
+            </button>
+            <button type="button" onclick="saveData()" class="bg-blue-900 hover:bg-blue-950 text-white font-bold px-3 py-1.5 rounded text-xs transition shadow-sm flex items-center gap-1.5">
+                💾 Simpan Data
+            </button>
+            <button type="button" onclick="resetFormDirect()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold px-3 py-1.5 rounded text-xs transition shadow-sm flex items-center gap-1.5">
+                🔄 Refresh / Reset
+            </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button type="button" onclick="exportPDF()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded text-xs transition flex items-center gap-1.5 shadow-sm">
+                📄 PDF (1 Hal)
+            </button>
+            <button type="button" onclick="exportPNG()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded text-xs transition flex items-center gap-1.5 shadow-sm">
+                🖼️ PNG
+            </button>
+            <button type="button" onclick="exportExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded text-xs transition flex items-center gap-1.5 shadow-sm">
+                📊 Excel
+            </button>
+        </div>
+    </div>
+
     <div id="tabFormContent" class="max-w-5xl mx-auto">
         <div id="formPaper" class="bg-white p-3 sm:p-5 rounded-xl shadow-lg border border-slate-200 print-container style-kotak">
             
@@ -393,7 +352,7 @@
                             <!-- Package 1 -->
                             <div class="flex justify-between items-center p-1 bg-white border border-slate-300 rounded">
                                 <div class="flex items-center gap-1.5 flex-1 mr-2">
-                                    <input type="radio" name="paket" id="radioPaket1" value="299000" onchange="calculateTotal()" class="text-blue-600">
+                                    <input type="radio" name="paket" id="radioPaket1" value="299000" onchange="calculateTotal()" class="text-blue-600" checked>
                                     <select id="paketName1" class="border border-slate-300 rounded px-1 py-0.5 bg-white font-bold text-slate-800 text-[10px] w-full">
                                         <option value="CBN Fiber">CBN Fiber</option>
                                         <option value="CBN Safe">CBN Safe</option>
@@ -402,7 +361,7 @@
                                 </div>
                                 <div class="flex items-center gap-1 font-bold text-slate-700 shrink-0">
                                     <span>Rp</span>
-                                    <input type="text" id="paketPrice1" value="" placeholder="" oninput="updatePackageValue(1)" class="w-20 border border-slate-300 rounded px-1 py-0.5 text-right font-bold text-slate-800 text-[10px]">
+                                    <input type="text" id="paketPrice1" value="299.000" placeholder="" oninput="updatePackageValue(1)" class="w-20 border border-slate-300 rounded px-1 py-0.5 text-right font-bold text-slate-800 text-[10px]">
                                 </div>
                             </div>
 
@@ -418,7 +377,7 @@
                                 </div>
                                 <div class="flex items-center gap-1 font-bold text-slate-700 shrink-0">
                                     <span>Rp</span>
-                                    <input type="text" id="paketPrice2" value="" placeholder="" oninput="updatePackageValue(2)" class="w-20 border border-slate-300 rounded px-1 py-0.5 text-right font-bold text-slate-800 text-[10px]">
+                                    <input type="text" id="paketPrice2" value="399.000" placeholder="" oninput="updatePackageValue(2)" class="w-20 border border-slate-300 rounded px-1 py-0.5 text-right font-bold text-slate-800 text-[10px]">
                                 </div>
                             </div>
 
@@ -434,7 +393,7 @@
                                 </div>
                                 <div class="flex items-center gap-1 font-bold text-slate-700 shrink-0">
                                     <span>Rp</span>
-                                    <input type="text" id="paketPrice3" value="" placeholder="" oninput="updatePackageValue(3)" class="w-20 border border-slate-300 rounded px-1 py-0.5 text-right font-bold text-slate-800 text-[10px]">
+                                    <input type="text" id="paketPrice3" value="799.000" placeholder="" oninput="updatePackageValue(3)" class="w-20 border border-slate-300 rounded px-1 py-0.5 text-right font-bold text-slate-800 text-[10px]">
                                 </div>
                             </div>
 
@@ -452,7 +411,7 @@
                                     <span class="font-bold text-slate-800">Wireless Router Extra</span>
                                 </div>
                                 <div class="flex items-center gap-1">
-                                    <input type="text" id="qty1" value="0" oninput="calculateTotal()" class="w-10 border border-slate-300 text-center rounded text-[10px] py-0.5 font-bold">
+                                    <input type="number" id="qty1" value="0" min="0" oninput="calculateTotal()" class="w-10 border border-slate-300 text-center rounded text-[10px] py-0.5 font-bold">
                                 </div>
                             </label>
 
@@ -462,7 +421,7 @@
                                     <span class="font-bold text-slate-800">Smart TV Box</span>
                                 </div>
                                 <div class="flex items-center gap-1">
-                                    <input type="text" id="qty2" value="0" oninput="calculateTotal()" class="w-10 border border-slate-300 text-center rounded text-[10px] py-0.5 font-bold">
+                                    <input type="number" id="qty2" value="0" min="0" oninput="calculateTotal()" class="w-10 border border-slate-300 text-center rounded text-[10px] py-0.5 font-bold">
                                 </div>
                             </label>
 
@@ -472,7 +431,7 @@
                                     <span class="font-bold text-slate-800">Static IP Address</span>
                                 </div>
                                 <div class="flex items-center gap-1">
-                                    <input type="text" id="qty3" value="0" oninput="calculateTotal()" class="w-10 border border-slate-300 text-center rounded text-[10px] py-0.5 font-bold">
+                                    <input type="number" id="qty3" value="0" min="0" oninput="calculateTotal()" class="w-10 border border-slate-300 text-center rounded text-[10px] py-0.5 font-bold">
                                 </div>
                             </label>
 
@@ -493,7 +452,7 @@
                                 <span class="text-slate-700 font-semibold">Biaya Pendaftaran:</span>
                                 <div class="flex items-center gap-1 font-bold text-slate-800">
                                     <span>Rp</span>
-                                    <input type="text" id="inputRegFee" value="" oninput="calculateTotal()" class="w-24 border border-slate-300 rounded px-1 py-0.5 text-right font-bold text-slate-800 text-[10px] bg-white">
+                                    <input type="text" id="inputRegFee" value="100.000" oninput="calculateTotal()" class="w-24 border border-slate-300 rounded px-1 py-0.5 text-right font-bold text-slate-800 text-[10px] bg-white">
                                 </div>
                             </div>
 
@@ -501,7 +460,7 @@
                                 <span class="text-slate-700 font-semibold">Biaya Bulanan:</span>
                                 <div class="flex items-center gap-1 font-bold text-slate-800">
                                     <span>Rp</span>
-                                    <input type="text" id="inputMonthlyFeeCustom" value="0" oninput="manualMonthlyOverride=true; calculateTotal()" class="w-24 border border-slate-300 rounded px-1 py-0.5 text-right font-bold text-slate-800 text-[10px] bg-white">
+                                    <input type="text" id="inputMonthlyFeeCustom" value="299.000" oninput="manualMonthlyOverride=true; calculateTotal()" class="w-24 border border-slate-300 rounded px-1 py-0.5 text-right font-bold text-slate-800 text-[10px] bg-white">
                                 </div>
                             </div>
 
@@ -517,7 +476,7 @@
                                 <span class="text-slate-700 font-semibold">PPN (11%):</span>
                                 <div class="flex items-center gap-1 font-bold text-slate-800">
                                     <span>Rp</span>
-                                    <input type="text" id="inputTaxCustom" value="0" oninput="manualTaxOverride=true; calculateTotal()" class="w-24 border border-slate-300 rounded px-1 py-0.5 text-right font-bold text-slate-800 text-[10px] bg-white">
+                                    <input type="text" id="inputTaxCustom" value="43.890" oninput="manualTaxOverride=true; calculateTotal()" class="w-24 border border-slate-300 rounded px-1 py-0.5 text-right font-bold text-slate-800 text-[10px] bg-white">
                                 </div>
                             </div>
 
@@ -525,49 +484,46 @@
                                 <span class="text-blue-950">TOTAL PEMBAYARAN:</span>
                                 <div class="flex items-center gap-1 font-extrabold text-blue-950">
                                     <span>Rp</span>
-                                    <input type="text" id="inputTotalCustom" value="0" oninput="manualTotalOverride=true; calculateTotal()" class="w-24 border border-blue-400 rounded px-1 py-0.5 text-right font-extrabold text-blue-950 text-[10.5px] bg-white">
+                                    <input type="text" id="inputTotalCustom" value="442.890" oninput="manualTotalOverride=true; calculateTotal()" class="w-24 border border-blue-400 rounded px-1 py-0.5 text-right font-extrabold text-blue-950 text-[11px] bg-white">
                                 </div>
                             </div>
 
                         </div>
                     </div>
 
-                    <!-- 6 & 7. JADWAL & METODE LAYANAN -->
+                    <!-- 6 & 7 SCHEDULE & SERVICE METHOD -->
                     <div class="space-y-2">
                         <!-- 6. JADWAL PEMASANGAN -->
                         <div>
                             <div class="form-section-title">6. JADWAL PEMASANGAN / INSTALLATION SCHEDULE</div>
-                            <div class="border border-slate-300 p-1.5 space-y-1.5 bg-slate-50/30 text-[9.5px]">
-                                <div class="flex items-center justify-between gap-1">
-                                    <span class="font-bold text-slate-800 text-[9.5px]">TANGGAL:</span>
-                                    <div class="grid-boxes-container" data-box-count="8" data-box-name="installDate" data-default=""></div>
+                            <div class="border border-slate-300 p-1.5 space-y-1 bg-slate-50/30 text-[9.5px]">
+                                <div class="flex flex-wrap items-center justify-between gap-1">
+                                    <span class="font-bold text-slate-800">TANGGAL:</span>
+                                    <div class="grid-boxes-container" data-box-count="8" data-box-name="scheduleDate" data-default="15092026"></div>
                                 </div>
-                                <div class="flex items-center justify-start gap-4 pt-0.5">
+                                <div class="flex items-center gap-4 pt-1">
                                     <label class="inline-flex items-center gap-1 cursor-pointer">
-                                        <input type="radio" name="installTime" value="08:00 - 12:00" class="text-blue-600">
-                                        <span class="font-bold text-slate-700 text-[9.5px]">08:00 - 12:00</span>
+                                        <input type="radio" name="scheduleTime" value="08:00 - 12:00" checked class="text-blue-600">
+                                        <span class="font-semibold text-slate-800 text-[9px]">08:00 - 12:00</span>
                                     </label>
                                     <label class="inline-flex items-center gap-1 cursor-pointer">
-                                        <input type="radio" name="installTime" value="13:00 - 17:00" class="text-blue-600">
-                                        <span class="font-bold text-slate-700 text-[9.5px]">13:00 - 17:00</span>
+                                        <input type="radio" name="scheduleTime" value="13:00 - 17:00" class="text-blue-600">
+                                        <span class="font-semibold text-slate-800 text-[9px]">13:00 - 17:00</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- METODE LAYANAN -->
+                        <!-- 7. METODE LAYANAN -->
                         <div>
-                            <div class="form-section-title">METODE LAYANAN / SERVICE METHOD</div>
-                            <div class="border border-slate-300 p-1.5 space-y-1 bg-slate-50/30 text-[8.5px]">
-                                <p class="text-slate-600 leading-tight">
-                                    Dengan menandatangani formulir ini, pelanggan menyetujui seluruh Syarat & Ketentuan berlangganan layanan CBN yang berlaku.
+                            <div class="form-section-title">7. METODE LAYANAN / SERVICE METHOD</div>
+                            <div class="border border-slate-300 p-1.5 space-y-1 bg-slate-50/30 text-[8.5px] leading-tight">
+                                <p class="text-slate-700 text-justify">
+                                    Dengan menandatangani formulir ini, pelanggan menyetujui seluruh syarat & ketentuan berlangganan layanan CBN yang berlaku. Pelanggan menjamin bahwa seluruh data yang diisi adalah benar, sah, dan dapat dipertanggungjawabkan. Permohonan tunduk pada ketersediaan jaringan di lokasi pemasangan / operasional.
                                 </p>
-                                <p class="text-slate-600 leading-tight">
-                                    Pelanggan menjamin bahwa seluruh data yang diisikan adalah benar dan sah. CBN berhak melakukan verifikasi teknis dan fisik sebelum melakukan instalasi. Pembatalan setelah instalasi berjalan akan dikenakan denda biaya pemutusan operasional.
-                                </p>
-                                <div class="pt-1 border-t border-slate-200 flex items-center justify-between gap-1">
-                                    <span class="font-bold text-slate-800 text-[9px]">CID / Customer ID:</span>
-                                    <div class="grid-boxes-container" data-box-count="12" data-box-name="cidNumber" data-default=""></div>
+                                <div class="flex items-center justify-between gap-1 pt-0.5">
+                                    <span class="font-bold text-slate-800 text-[9px]">Valid / Verifikator ID:</span>
+                                    <div class="grid-boxes-container" data-box-count="8" data-box-name="verifierId" data-default="CBN99201"></div>
                                 </div>
                             </div>
                         </div>
@@ -575,150 +531,141 @@
 
                 </div>
 
-                <!-- 8. TANDA TANGAN DIGITAL -->
+                <!-- 8. PERSETUJUAN & TANDA TANGAN DIGITAL -->
                 <div>
-                    <div class="form-section-title">7. PERSETUJUAN & TANDA TANGAN DIGITAL / SIGNATURES</div>
-                    <div class="border border-slate-300 p-2 bg-slate-50/30">
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
-                            
-                            <!-- Pelanggan -->
-                            <div class="space-y-1">
-                                <span class="font-bold text-slate-800 block text-[9.5px]">PELANGGAN / CUSTOMER</span>
-                                <div class="relative inline-block w-full">
-                                    <canvas id="canvasPelanggan" width="220" height="60" class="signature-pad w-full"></canvas>
-                                    <button type="button" onclick="clearSig('Pelanggan')" class="absolute top-1 right-1 bg-slate-200 hover:bg-slate-300 text-slate-700 text-[8px] font-bold px-1 py-0.5 rounded no-print">Hapus</button>
-                                </div>
-                                <input type="text" id="namaPelangganTtd" placeholder="Nama Terang Pelanggan" class="w-full border border-slate-300 rounded px-1 py-0.5 text-center text-[10px] font-bold text-slate-800 bg-white">
+                    <div class="form-section-title">8. PERSETUJUAN & TANDA TANGAN DIGITAL / SIGNATURES</div>
+                    <div class="border border-slate-300 p-2 bg-slate-50/30 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        
+                        <!-- Box 1: Pelanggan -->
+                        <div class="flex flex-col items-center border border-dashed border-slate-400 p-1.5 rounded bg-white">
+                            <div class="w-full flex justify-between items-center mb-1">
+                                <span class="font-bold text-[9px] text-slate-700">PELANGGAN / CUSTOMER</span>
+                                <button type="button" onclick="clearSignature('canvasPelanggan')" class="text-[8px] text-rose-600 hover:underline">Hapus</button>
                             </div>
-
-                            <!-- Sales Representative -->
-                            <div class="space-y-1">
-                                <span class="font-bold text-slate-800 block text-[9.5px]">SALES REPRESENTATIVE</span>
-                                <div class="relative inline-block w-full">
-                                    <canvas id="canvasSales" width="220" height="60" class="signature-pad w-full"></canvas>
-                                    <button type="button" onclick="clearSig('Sales')" class="absolute top-1 right-1 bg-slate-200 hover:bg-slate-300 text-slate-700 text-[8px] font-bold px-1 py-0.5 rounded no-print">Hapus</button>
-                                </div>
-                                <input type="text" id="namaSalesTtd" placeholder="Nama Terang Sales" class="w-full border border-slate-300 rounded px-1 py-0.5 text-center text-[10px] font-bold text-slate-800 bg-white">
-                            </div>
-
-                            <!-- Verifikator / Lainnya -->
-                            <div class="space-y-1">
-                                <span class="font-bold text-slate-800 block text-[9.5px]">VERIFIKATOR / LAINNYA</span>
-                                <div class="relative inline-block w-full">
-                                    <canvas id="canvasVerif" width="220" height="60" class="signature-pad w-full"></canvas>
-                                    <button type="button" onclick="clearSig('Verif')" class="absolute top-1 right-1 bg-slate-200 hover:bg-slate-300 text-slate-700 text-[8px] font-bold px-1 py-0.5 rounded no-print">Hapus</button>
-                                </div>
-                                <input type="text" id="namaVerifTtd" placeholder="Nama Terang Verifikator" class="w-full border border-slate-300 rounded px-1 py-0.5 text-center text-[10px] font-bold text-slate-800 bg-white">
-                            </div>
-
+                            <canvas id="canvasPelanggan" class="signature-pad w-full h-24 border border-slate-100 rounded bg-slate-50/50" width="220" height="90"></canvas>
+                            <input type="text" id="namePelanggan" value="ABIL ARDIANSYAH" placeholder="Nama Terang Pelanggan" class="mt-1.5 w-full border border-slate-300 rounded px-1 py-0.5 text-center font-bold text-[9.5px]">
                         </div>
+
+                        <!-- Box 2: Sales Representative -->
+                        <div class="flex flex-col items-center border border-dashed border-slate-400 p-1.5 rounded bg-white">
+                            <div class="w-full flex justify-between items-center mb-1">
+                                <span class="font-bold text-[9px] text-slate-700">SALES REPRESENTATIVE</span>
+                                <button type="button" onclick="clearSignature('canvasSales')" class="text-[8px] text-rose-600 hover:underline">Hapus</button>
+                            </div>
+                            <canvas id="canvasSales" class="signature-pad w-full h-24 border border-slate-100 rounded bg-slate-50/50" width="220" height="90"></canvas>
+                            <input type="text" id="nameSales" value="KELOS SALES" placeholder="Nama Terang Sales" class="mt-1.5 w-full border border-slate-300 rounded px-1 py-0.5 text-center font-bold text-[9.5px]">
+                        </div>
+
+                        <!-- Box 3: Verifikator / Lainnya -->
+                        <div class="flex flex-col items-center border border-dashed border-slate-400 p-1.5 rounded bg-white">
+                            <div class="w-full flex justify-between items-center mb-1">
+                                <span class="font-bold text-[9px] text-slate-700">VERIFIKATOR / LAINNYA</span>
+                                <button type="button" onclick="clearSignature('canvasVerif')" class="text-[8px] text-rose-600 hover:underline">Hapus</button>
+                            </div>
+                            <canvas id="canvasVerif" class="signature-pad w-full h-24 border border-slate-100 rounded bg-slate-50/50" width="220" height="90"></canvas>
+                            <input type="text" id="nameVerif" value="TIM VERIFIKASI CBN" placeholder="Nama Terang Verifikator" class="mt-1.5 w-full border border-slate-300 rounded px-1 py-0.5 text-center font-bold text-[9.5px]">
+                        </div>
+
                     </div>
                 </div>
 
             </form>
-
         </div>
     </div>
 
-    <!-- SAVED HISTORY TAB CONTENT -->
     <div id="tabSavedContent" class="max-w-5xl mx-auto hidden">
-        <div class="bg-white p-4 rounded-xl shadow-md border border-slate-200">
-            <div class="flex justify-between items-center mb-3">
-                <h2 class="font-bold text-slate-800 text-sm">📋 History Data Tersimpan</h2>
-                <button type="button" onclick="clearAllSavedData()" class="text-rose-600 hover:underline font-bold text-xs">Hapus Semua History</button>
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                <div>
+                    <h2 class="text-base font-black text-slate-800">Riwayat Data Pendaftaran Tersimpan</h2>
+                    <p class="text-xs text-slate-500">Kelola atau muat kembali data formulir yang pernah disimpan di browser.</p>
+                </div>
+                <button type="button" onclick="clearAllSavedData()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded text-xs transition">
+                    🗑️ Hapus Semua Data
+                </button>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-xs text-left text-slate-600 border border-slate-200 rounded">
-                    <thead class="bg-slate-100 font-bold text-slate-800 uppercase border-b border-slate-200">
-                        <tr>
-                            <th class="p-2">Waktu</th>
-                            <th class="p-2">Nama Pelanggan</th>
-                            <th class="p-2">No. Identitas</th>
-                            <th class="p-2">Kode Sales</th>
-                            <th class="p-2">Total Pembayaran</th>
-                            <th class="p-2 text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="savedTableBody" class="divide-y divide-slate-200 bg-white">
-                        <tr>
-                            <td colspan="6" class="p-4 text-center text-slate-400">Belum ada data tersimpan.</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div id="savedDataList" class="space-y-3">
+                <!-- Injected via JavaScript -->
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification & Custom Modal Box -->
-    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-lg shadow-xl font-bold text-xs text-white transition-all transform translate-y-10 opacity-0 duration-300 flex items-center gap-2 pointer-events-none"></div>
+    <div id="customModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white p-5 rounded-xl shadow-2xl max-w-sm w-full mx-4 border border-slate-200 space-y-3 text-center">
+            <h3 id="modalTitle" class="text-base font-black text-slate-800">Notifikasi</h3>
+            <p id="modalMessage" class="text-xs text-slate-600 leading-relaxed"></p>
+            <div id="modalButtons" class="flex justify-center gap-2 pt-2">
+                <button type="button" onclick="closeModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-1.5 rounded text-xs transition">OK</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toastNotification');
-            if (!toast) return;
-            toast.className = `fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-lg shadow-xl font-bold text-xs text-white transition-all transform duration-300 flex items-center gap-2 ${type === 'danger' ? 'bg-rose-600' : type === 'info' ? 'bg-blue-600' : 'bg-emerald-600'}`;
-            toast.innerHTML = `<span>${type === 'danger' ? '⚠️' : type === 'info' ? 'ℹ️' : '✅'}</span> <span>${message}</span>`;
-            
-            toast.classList.remove('translate-y-10', 'opacity-0');
-
-            setTimeout(() => {
-                toast.classList.add('translate-y-10', 'opacity-0');
-            }, 3000);
-        }
-
+        let currentBoxStyle = 'kotak';
+        let isTextMode = false;
         let manualMonthlyOverride = false;
         let manualAddonOverride = false;
         let manualTaxOverride = false;
         let manualTotalOverride = false;
-        let isTextOnlyMode = false;
-        let signatures = {};
 
-        window.onload = function() {
-            try {
-                setupGridBoxes();
-                setupSignatures();
-                renderSavedTable();
-                calculateTotal();
-            } catch(e) {
-                console.error("Initialization error:", e);
-            }
-        };
+        document.addEventListener('DOMContentLoaded', () => {
+            initGridBoxes();
+            setupSignatures();
+            calculateTotal();
+            loadSavedDataBadge();
+            switchTab('form'); // Ensure form view is active on load
+        });
 
-        // Generates grid boxes with pre-filled default data
-        function setupGridBoxes() {
-            document.querySelectorAll('.grid-boxes-container').forEach(container => {
+        function initGridBoxes(customDefaults = {}) {
+            const containers = document.querySelectorAll('.grid-boxes-container');
+            containers.forEach(container => {
+                const count = parseInt(container.getAttribute('data-box-count')) || 10;
+                const name = container.getAttribute('data-box-name') || 'box';
+                const defaultValue = customDefaults[name] !== undefined ? customDefaults[name] : (container.getAttribute('data-default') || '');
+                
                 container.innerHTML = '';
-                const count = parseInt(container.getAttribute('data-box-count') || '0', 10);
-                const name = container.getAttribute('data-box-name') || '';
-                const defaultValue = container.getAttribute('data-default') || '';
-                const chars = defaultValue.split('');
-
                 for (let i = 0; i < count; i++) {
                     const input = document.createElement('input');
                     input.type = 'text';
                     input.maxLength = 1;
                     input.className = 'grid-box';
-                    input.setAttribute('data-group', name);
-                    input.setAttribute('data-index', i);
-                    // Retain original case (no forced uppercase) for full flexibility
-                    input.value = (chars[i] !== undefined) ? chars[i] : '';
+                    input.dataset.group = name;
+                    input.dataset.index = i;
+                    
+                    if (defaultValue[i] !== undefined) {
+                        input.value = defaultValue[i];
+                    }
 
-                    input.addEventListener('input', function() {
-                        // Removed forced uppercase to keep character case flexible
-                        if (this.value.length === 1) {
-                            const boxes = container.querySelectorAll('.grid-box');
-                            if (i + 1 < boxes.length) {
-                                boxes[i + 1].focus();
-                            }
+                    input.addEventListener('input', (e) => {
+                        const val = e.target.value;
+                        if (val.length > 0) {
+                            e.target.value = val.slice(-1);
+                            const nextBox = container.querySelector(`[data-index="${i + 1}"]`);
+                            if (nextBox) nextBox.focus();
                         }
+                        calculateTotal();
                     });
 
-                    input.addEventListener('keydown', function(e) {
-                        if (e.key === 'Backspace' && !this.value) {
-                            const boxes = container.querySelectorAll('.grid-box');
-                            if (i - 1 >= 0) {
-                                boxes[i - 1].focus();
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Backspace') {
+                            if (e.target.value === '') {
+                                const prevBox = container.querySelector(`[data-index="${i - 1}"]`);
+                                if (prevBox) {
+                                    prevBox.focus();
+                                    prevBox.value = '';
+                                    e.preventDefault();
+                                }
+                            } else {
+                                e.target.value = '';
+                                e.preventDefault();
                             }
+                            calculateTotal();
+                        } else if (e.key === 'ArrowLeft') {
+                            const prevBox = container.querySelector(`[data-index="${i - 1}"]`);
+                            if (prevBox) prevBox.focus();
+                        } else if (e.key === 'ArrowRight') {
+                            const nextBox = container.querySelector(`[data-index="${i + 1}"]`);
+                            if (nextBox) nextBox.focus();
                         }
                     });
 
@@ -727,427 +674,453 @@
             });
         }
 
-        // Switch Box Styles: Kotak | Titik | Garis
+        function getGridValue(name) {
+            const container = document.querySelector(`.grid-boxes-container[data-box-name="${name}"]`);
+            if (!container) return '';
+            const inputs = container.querySelectorAll('input.grid-box');
+            let val = '';
+            inputs.forEach(inp => {
+                val += inp.value || ' ';
+            });
+            return val.trim();
+        }
+
+        function setGridValue(name, text) {
+            const container = document.querySelector(`.grid-boxes-container[data-box-name="${name}"]`);
+            if (!container) return;
+            const inputs = container.querySelectorAll('input.grid-box');
+            const cleanText = (text || '').split('');
+            inputs.forEach((inp, i) => {
+                inp.value = cleanText[i] || '';
+            });
+        }
+
+        function switchTab(tab) {
+            const formBtn = document.getElementById('tabFormBtn');
+            const savedBtn = document.getElementById('tabSavedBtn');
+            const formContent = document.getElementById('tabFormContent');
+            const savedContent = document.getElementById('tabSavedContent');
+
+            if (tab === 'form') {
+                formBtn.className = "px-3 py-1.5 rounded-md font-bold text-xs bg-blue-900 text-white shadow-sm transition";
+                savedBtn.className = "px-3 py-1.5 rounded-md font-bold text-xs text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5";
+                formContent.classList.remove('hidden');
+                savedContent.classList.add('hidden');
+            } else {
+                savedBtn.className = "px-3 py-1.5 rounded-md font-bold text-xs bg-blue-900 text-white shadow-sm transition flex items-center gap-1.5";
+                formBtn.className = "px-3 py-1.5 rounded-md font-bold text-xs text-slate-600 hover:text-slate-900 transition";
+                savedContent.classList.remove('hidden');
+                formContent.classList.add('hidden');
+                renderSavedDataList();
+            }
+        }
+
+        function changePaperSize() {
+            const size = document.getElementById('pageSizeSelect').value;
+            const paper = document.getElementById('formPaper');
+            if (size === 'A4') {
+                paper.style.maxWidth = '210mm';
+            } else if (size === 'F4') {
+                paper.style.maxWidth = '215mm';
+            } else {
+                paper.style.maxWidth = '8.5in';
+            }
+            showModal("Ukuran Kertas", `Berhasil mengubah tampilan lembar kerja ke ukuran ${size}.`);
+        }
+
         function setBoxStyle(style) {
+            currentBoxStyle = style;
             const paper = document.getElementById('formPaper');
             paper.classList.remove('style-kotak', 'style-titik', 'style-garis');
             paper.classList.add(`style-${style}`);
 
-            document.getElementById('btnStyleKotak').className = style === 'kotak' 
-                ? 'px-2.5 py-1 text-xs font-bold text-white bg-blue-900 rounded-l-md border border-blue-900' 
-                : 'px-2.5 py-1 text-xs font-bold text-slate-700 bg-white border-t border-b border-l border-slate-300 hover:bg-slate-50';
-
-            document.getElementById('btnStyleTitik').className = style === 'titik' 
-                ? 'px-2.5 py-1 text-xs font-bold text-white bg-blue-900 border border-blue-900' 
-                : 'px-2.5 py-1 text-xs font-bold text-slate-700 bg-white border-t border-b border-slate-300 hover:bg-slate-50';
-
-            document.getElementById('btnStyleGaris').className = style === 'garis' 
-                ? 'px-2.5 py-1 text-xs font-bold text-white bg-blue-900 rounded-r-md border border-blue-900' 
-                : 'px-2.5 py-1 text-xs font-bold text-slate-700 bg-white border-t border-b border-r border-slate-300 hover:bg-slate-50';
+            document.getElementById('btnStyleKotak').className = style === 'kotak' ? "px-2.5 py-1 text-xs font-bold text-white bg-blue-900 rounded-l-md border border-blue-900" : "px-2.5 py-1 text-xs font-bold text-slate-700 bg-white border-t border-b border-slate-300 hover:bg-slate-50 rounded-l-md";
+            document.getElementById('btnStyleTitik').className = style === 'titik' ? "px-2.5 py-1 text-xs font-bold text-white bg-blue-900 border border-blue-900" : "px-2.5 py-1 text-xs font-bold text-slate-700 bg-white border-t border-b border-slate-300 hover:bg-slate-50";
+            document.getElementById('btnStyleGaris').className = style === 'garis' ? "px-2.5 py-1 text-xs font-bold text-white bg-blue-900 rounded-r-md border border-blue-900" : "px-2.5 py-1 text-xs font-bold text-slate-700 bg-white rounded-r-md border border-slate-300 hover:bg-slate-50";
         }
 
-        // Mode Teks / Biasa Toggle
         function toggleTextMode() {
-            isTextOnlyMode = !isTextOnlyMode;
-            const label = document.getElementById('modeTextLabel');
-            label.innerText = isTextOnlyMode ? "Mode Grid Box" : "Mode Teks/Biasa";
-
-            document.querySelectorAll('.grid-boxes-container').forEach(container => {
-                const groupName = container.getAttribute('data-box-name');
-                const currentValue = getGridValue(groupName);
-
-                if (isTextOnlyMode) {
-                    container.setAttribute('data-original-html', container.innerHTML);
-                    // Removed uppercase class here as well for flexible text input
-                    container.innerHTML = `<input type="text" value="${currentValue}" class="w-full border border-slate-300 rounded px-2 py-0.5 text-xs font-bold text-slate-800 bg-white focus:outline-none focus:border-blue-600" oninput="updateGridFromText(this, '${groupName}')">`;
+            isTextMode = !isTextMode;
+            document.getElementById('modeTextLabel').innerText = isTextMode ? "Mode Kotak Grid" : "Mode Teks/Biasa";
+            const containers = document.querySelectorAll('.grid-boxes-container');
+            
+            containers.forEach(container => {
+                if (isTextMode) {
+                    let combined = '';
+                    container.querySelectorAll('input.grid-box').forEach(inp => combined += inp.value || '');
+                    container.style.display = 'none';
+                    
+                    let normalInput = container.parentNode.querySelector('input.normal-text-input');
+                    if (!normalInput) {
+                        normalInput = document.createElement('input');
+                        normalInput.type = 'text';
+                        normalInput.className = 'normal-text-input border border-slate-300 rounded px-2 py-0.5 text-[10px] font-bold text-slate-800 w-full bg-white';
+                        container.parentNode.appendChild(normalInput);
+                    }
+                    normalInput.value = combined.trim();
+                    normalInput.oninput = () => {
+                        const val = normalInput.value;
+                        const inputs = container.querySelectorAll('input.grid-box');
+                        inputs.forEach((inp, idx) => {
+                            inp.value = val[idx] || '';
+                        });
+                        calculateTotal();
+                    };
                 } else {
-                    const count = parseInt(container.getAttribute('data-box-count') || '0', 10);
-                    container.setAttribute('data-default', currentValue);
-                    setupGridContainer(container, count, groupName, currentValue);
+                    container.style.display = 'flex';
+                    let normalInput = container.parentNode.querySelector('input.normal-text-input');
+                    if (normalInput) {
+                        const val = normalInput.value;
+                        const inputs = container.querySelectorAll('input.grid-box');
+                        inputs.forEach((inp, idx) => {
+                            inp.value = val[idx] || '';
+                        });
+                        normalInput.remove();
+                    }
                 }
             });
         }
 
-        function setupGridContainer(container, count, name, defaultValue) {
-            container.innerHTML = '';
-            const chars = defaultValue.split('');
-
-            for (let i = 0; i < count; i++) {
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.maxLength = 1;
-                input.className = 'grid-box';
-                input.setAttribute('data-group', name);
-                input.setAttribute('data-index', i);
-                input.value = (chars[i] !== undefined) ? chars[i] : '';
-
-                input.addEventListener('input', function() {
-                    if (this.value.length === 1) {
-                        const boxes = container.querySelectorAll('.grid-box');
-                        if (i + 1 < boxes.length) boxes[i + 1].focus();
-                    }
-                });
-
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Backspace' && !this.value) {
-                        const boxes = container.querySelectorAll('.grid-box');
-                        if (i - 1 >= 0) boxes[i - 1].focus();
-                    }
-                });
-
-                container.appendChild(input);
-            }
-        }
-
-        function updateGridFromText(inputEl, groupName) {
-            // Placeholder for text-mode dynamic updates
-        }
-
-        // Tab Switching Logic
-        function switchTab(tab) {
-            const formContent = document.getElementById('tabFormContent');
-            const savedContent = document.getElementById('tabSavedContent');
-            const formBtn = document.getElementById('tabFormBtn');
-            const savedBtn = document.getElementById('tabSavedBtn');
-
-            if (tab === 'form') {
-                formContent.classList.remove('hidden');
-                savedContent.classList.add('hidden');
-                formBtn.className = "px-3 py-1.5 rounded-md font-bold text-xs bg-white text-blue-900 shadow-sm transition";
-                savedBtn.className = "px-3 py-1.5 rounded-md font-bold text-xs text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5";
-            } else {
-                formContent.classList.add('hidden');
-                savedContent.classList.remove('hidden');
-                savedBtn.className = "px-3 py-1.5 rounded-md font-bold text-xs bg-white text-blue-900 shadow-sm transition flex items-center gap-1.5";
-                formBtn.className = "px-3 py-1.5 rounded-md font-bold text-xs text-slate-600 hover:text-slate-900 transition";
-            }
-        }
-
-        // Helper number parser
-        function parseNumber(val) {
-            if (val === null || val === undefined) return 0;
-            if (typeof val === 'number') return isNaN(val) ? 0 : val;
-            let str = String(val).trim();
-            if (!str) return 0;
-            const clean = str.replace(/[^0-9]/g, '');
-            return clean ? parseInt(clean, 10) : 0;
-        }
-
-        function calculateTotal() {
-            try {
-                const selectedPaket = document.querySelector('input[name="paket"]:checked');
-                let monthlyRaw = "0";
-                if (selectedPaket) {
-                    if (selectedPaket.id === 'radioPaket1') {
-                        monthlyRaw = document.getElementById('paketPrice1')?.value || "0";
-                    } else if (selectedPaket.id === 'radioPaket2') {
-                        monthlyRaw = document.getElementById('paketPrice2')?.value || "0";
-                    } else if (selectedPaket.id === 'radioPaket3') {
-                        monthlyRaw = document.getElementById('paketPrice3')?.value || "0";
-                    } else {
-                        monthlyRaw = selectedPaket.value || "0";
-                    }
-                }
-
-                const monthlyInput = document.getElementById('inputMonthlyFeeCustom');
-                if (monthlyInput && !manualMonthlyOverride) {
-                    monthlyInput.value = monthlyRaw;
-                }
-
-                const regFeeEl = document.getElementById('inputRegFee');
-                const regFee = regFeeEl ? parseNumber(regFeeEl.value) : 0;
-                const monthly = monthlyInput ? parseNumber(monthlyInput.value) : 0;
-
-                let addonTotal = 0;
-                for (let i = 1; i <= 3; i++) {
-                    const cb = document.getElementById(`addon${i}`);
-                    const qtyEl = document.getElementById(`qty${i}`);
-                    const qty = qtyEl ? parseNumber(qtyEl.value) : 0;
-                    if (cb && cb.checked) {
-                        addonTotal += parseNumber(cb.value) * qty;
-                    }
-                }
-
-                const addonInput = document.getElementById('inputAddonFeeCustom');
-                if (addonInput && !manualAddonOverride) {
-                    addonInput.value = addonTotal ? addonTotal.toLocaleString('id-ID') : '0';
-                } else if (addonInput) {
-                    addonTotal = parseNumber(addonInput.value);
-                }
-
-                const subtotal = regFee + monthly + addonTotal;
-                let tax = Math.round(subtotal * 0.11);
-                const taxInput = document.getElementById('inputTaxCustom');
-                if (taxInput && !manualTaxOverride) {
-                    taxInput.value = tax ? tax.toLocaleString('id-ID') : '0';
-                } else if (taxInput) {
-                    tax = parseNumber(taxInput.value);
-                }
-
-                let total = subtotal + tax;
-                const totalInput = document.getElementById('inputTotalCustom');
-                if (totalInput && !manualTotalOverride) {
-                    totalInput.value = total ? total.toLocaleString('id-ID') : '0';
-                }
-            } catch (e) {
-                console.error("Error in calculateTotal:", e);
-            }
-        }
-
-        function updatePackageValue(index) {
-            const valEl = document.getElementById(`paketPrice${index}`);
-            const radio = document.getElementById(`radioPaket${index}`);
-            if (valEl && radio) {
-                radio.value = valEl.value;
-            }
-            manualMonthlyOverride = false;
+        function updatePackageValue(num) {
             calculateTotal();
         }
 
-        // Setup Digital Signatures
+        function parseNum(str) {
+            if (!str) return 0;
+            return parseInt(str.toString().replace(/[^0-9]/g, '')) || 0;
+        }
+
+        function formatNum(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function calculateTotal() {
+            let monthlyBase = 299000;
+            const r1 = document.getElementById('radioPaket1');
+            const r2 = document.getElementById('radioPaket2');
+            const r3 = document.getElementById('radioPaket3');
+
+            if (r1 && r1.checked) monthlyBase = parseNum(document.getElementById('paketPrice1').value);
+            if (r2 && r2.checked) monthlyBase = parseNum(document.getElementById('paketPrice2').value);
+            if (r3 && r3.checked) monthlyBase = parseNum(document.getElementById('paketPrice3').value);
+
+            if (!manualMonthlyOverride) {
+                document.getElementById('inputMonthlyFeeCustom').value = formatNum(monthlyBase);
+            }
+
+            let addonTotal = 0;
+            const a1 = document.getElementById('addon1');
+            const a2 = document.getElementById('addon2');
+            const a3 = document.getElementById('addon3');
+            const q1 = parseNum(document.getElementById('qty1').value);
+            const q2 = parseNum(document.getElementById('qty2').value);
+            const q3 = parseNum(document.getElementById('qty3').value);
+
+            if (a1 && a1.checked) addonTotal += parseNum(a1.value) * (q1 > 0 ? q1 : 1);
+            if (a2 && a2.checked) addonTotal += parseNum(a2.value) * (q2 > 0 ? q2 : 1);
+            if (a3 && a3.checked) addonTotal += parseNum(a3.value) * (q3 > 0 ? q3 : 1);
+
+            if (!manualAddonOverride) {
+                document.getElementById('inputAddonFeeCustom').value = formatNum(addonTotal);
+            }
+
+            const regFee = parseNum(document.getElementById('inputRegFee').value);
+            const monthlyFee = parseNum(document.getElementById('inputMonthlyFeeCustom').value);
+            const addonFee = parseNum(document.getElementById('inputAddonFeeCustom').value);
+
+            const subtotal = regFee + monthlyFee + addonFee;
+            const tax = Math.round(subtotal * 0.11);
+
+            if (!manualTaxOverride) {
+                document.getElementById('inputTaxCustom').value = formatNum(tax);
+            }
+
+            const currentTax = parseNum(document.getElementById('inputTaxCustom').value);
+            const total = subtotal + currentTax;
+
+            if (!manualTotalOverride) {
+                document.getElementById('inputTotalCustom').value = formatNum(total);
+            }
+        }
+
         function setupSignatures() {
-            ['Pelanggan', 'Sales', 'Verif'].forEach(key => {
-                const canvas = document.getElementById(`canvas${key}`);
+            ['canvasPelanggan', 'canvasSales', 'canvasVerif'].forEach(id => {
+                const canvas = document.getElementById(id);
                 if (!canvas) return;
                 const ctx = canvas.getContext('2d');
-                let isDrawing = false;
+                let drawing = false;
 
-                function getPos(e) {
+                canvas.addEventListener('mousedown', (e) => { drawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
+                canvas.addEventListener('mousemove', (e) => { if (drawing) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } });
+                canvas.addEventListener('mouseup', () => { drawing = false; });
+                canvas.addEventListener('mouseleave', () => { drawing = false; });
+
+                canvas.addEventListener('touchstart', (e) => {
+                    drawing = true;
                     const rect = canvas.getBoundingClientRect();
-                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                    return {
-                        x: clientX - rect.left,
-                        y: clientY - rect.top
-                    };
-                }
-
-                function startDraw(e) {
-                    isDrawing = true;
-                    const pos = getPos(e);
+                    const touch = e.touches[0];
                     ctx.beginPath();
-                    ctx.moveTo(pos.x, pos.y);
-                }
-
-                function draw(e) {
-                    if (!isDrawing) return;
+                    ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
                     e.preventDefault();
-                    const pos = getPos(e);
-                    ctx.lineTo(pos.x, pos.y);
-                    ctx.strokeStyle = '#020617';
-                    ctx.lineWidth = 2;
-                    ctx.lineCap = 'round';
-                    ctx.stroke();
-                }
-
-                function stopDraw() {
-                    isDrawing = false;
-                }
-
-                canvas.addEventListener('mousedown', startDraw);
-                canvas.addEventListener('mousemove', draw);
-                canvas.addEventListener('mouseup', stopDraw);
-                canvas.addEventListener('mouseleave', stopDraw);
-
-                canvas.addEventListener('touchstart', startDraw);
-                canvas.addEventListener('touchmove', draw);
-                canvas.addEventListener('touchend', stopDraw);
-
-                signatures[key] = { canvas, ctx };
+                });
+                canvas.addEventListener('touchmove', (e) => {
+                    if (drawing) {
+                        const rect = canvas.getBoundingClientRect();
+                        const touch = e.touches[0];
+                        ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                        ctx.stroke();
+                    }
+                    e.preventDefault();
+                });
+                canvas.addEventListener('touchend', () => { drawing = false; });
             });
         }
 
-        function clearSig(key) {
-            if (signatures[key]) {
-                const { canvas, ctx } = signatures[key];
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
+        function clearSignature(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
-        // Get/Set Grid Character Values
-        function getGridValue(groupName) {
-            const container = document.querySelector(`[data-box-name="${groupName}"]`);
-            if (!container) return '';
+        function resetFormDirect() {
+            document.getElementById('cbnForm').reset();
             
-            const singleInput = container.querySelector('input[type="text"]:not(.grid-box)');
-            if (singleInput) return singleInput.value.trim();
+            // Re-initialize all grid boxes with empty values
+            const emptyDefaults = {
+                salesCode: '', spvCode: '', customerName: '', birthDate: '', idCard: '',
+                phoneLandline: '', phoneMobile: '', addressLine1: '', addressLine2: '',
+                rtNumber: '', rwNumber: '', postalCode: '', emailAddress: '',
+                scheduleDate: '', verifierId: ''
+            };
+            initGridBoxes(emptyDefaults);
 
-            const boxes = container.querySelectorAll('.grid-box');
-            let str = '';
-            boxes.forEach(b => str += b.value || '');
-            return str.trim();
-        }
-
-        function setGridValue(groupName, value) {
-            const container = document.querySelector(`[data-box-name="${groupName}"]`);
-            if (!container) return;
-
-            const singleInput = container.querySelector('input[type="text"]:not(.grid-box)');
-            if (singleInput) {
-                singleInput.value = value || '';
-                return;
+            // Clear text inputs if normal text mode was active
+            if (isTextMode) {
+                toggleTextMode();
             }
 
-            const boxes = container.querySelectorAll('.grid-box');
-            const chars = (value || '').split('');
-            boxes.forEach((b, i) => {
-                b.value = chars[i] || '';
-            });
-        }
+            // Clear signature pads and signature name inputs
+            clearSignature('canvasPelanggan');
+            clearSignature('canvasSales');
+            clearSignature('canvasVerif');
+            document.getElementById('namePelanggan').value = '';
+            document.getElementById('nameSales').value = '';
+            document.getElementById('nameVerif').value = '';
+            document.getElementById('tempatLahir').value = '';
 
-        // Save Form Record to History
-        function saveData() {
-            try {
-                const data = {
-                    id: Date.now(),
-                    timestamp: new Date().toLocaleString('id-ID'),
-                    customerName: getGridValue('customerName') || 'Tanpa Nama',
-                    salesCode: getGridValue('salesCode'),
-                    spvCode: getGridValue('spvCode'),
-                    tempatLahir: document.getElementById('tempatLahir')?.value || '',
-                    birthDate: getGridValue('birthDate'),
-                    idCard: getGridValue('idCard'),
-                    gender: document.querySelector('input[name="gender"]:checked')?.value || '',
-                    phoneLandline: getGridValue('phoneLandline'),
-                    phoneMobile: getGridValue('phoneMobile'),
-                    address1: getGridValue('addressLine1'),
-                    address2: getGridValue('addressLine2'),
-                    rt: getGridValue('rtNumber'),
-                    rw: getGridValue('rwNumber'),
-                    postalCode: getGridValue('postalCode'),
-                    houseStatus: document.querySelector('input[name="houseStatus"]:checked')?.value || '',
-                    email: getGridValue('emailAddress'),
-                    total: document.getElementById('inputTotalCustom')?.value || '0'
-                };
-
-                let saved = JSON.parse(localStorage.getItem('cbn_form_records') || '[]');
-                saved.unshift(data);
-                localStorage.setItem('cbn_form_records', JSON.stringify(saved));
-                
-                renderSavedTable();
-                showToast('Data formulir berhasil disimpan ke history!', 'success');
-            } catch(e) {
-                console.error("Save error:", e);
-                showToast('Terjadi kesalahan saat menyimpan data.', 'danger');
-            }
-        }
-
-        function renderSavedTable() {
-            const tableBody = document.getElementById('savedTableBody');
-            const savedBadge = document.getElementById('savedBadge');
-            if (!tableBody) return;
-
-            const saved = JSON.parse(localStorage.getItem('cbn_form_records') || '[]');
-            if (savedBadge) savedBadge.innerText = saved.length;
-
-            if (saved.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada data tersimpan.</td></tr>`;
-                return;
-            }
-
-            tableBody.innerHTML = saved.map((item) => `
-                <tr class="hover:bg-slate-50">
-                    <td class="p-2 text-slate-500">${item.timestamp}</td>
-                    <td class="p-2 font-bold text-slate-800">${item.customerName}</td>
-                    <td class="p-2 text-slate-600">${item.idCard || '-'}</td>
-                    <td class="p-2 font-bold text-blue-800">${item.salesCode || '-'}</td>
-                    <td class="p-2 font-bold text-emerald-700">Rp ${item.total}</td>
-                    <td class="p-2 text-center">
-                        <button type="button" onclick="loadSavedRecord(${item.id})" class="bg-blue-100 hover:bg-blue-200 text-blue-800 px-2 py-1 rounded text-[10px] font-bold mr-1">Muat</button>
-                        <button type="button" onclick="deleteSavedRecord(${item.id})" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2 py-1 rounded text-[10px] font-bold">Hapus</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function loadSavedRecord(id) {
-            const saved = JSON.parse(localStorage.getItem('cbn_form_records') || '[]');
-            const record = saved.find(r => r.id === id);
-            if (!record) return;
-
-            setGridValue('customerName', record.customerName);
-            setGridValue('salesCode', record.salesCode);
-            setGridValue('spvCode', record.spvCode);
-            if (document.getElementById('tempatLahir')) document.getElementById('tempatLahir').value = record.tempatLahir || '';
-            setGridValue('birthDate', record.birthDate);
-            setGridValue('idCard', record.idCard);
-            setGridValue('phoneLandline', record.phoneLandline);
-            setGridValue('phoneMobile', record.phoneMobile);
-            setGridValue('addressLine1', record.address1);
-            setGridValue('addressLine2', record.address2);
-            setGridValue('rtNumber', record.rt);
-            setGridValue('rwNumber', record.rw);
-            setGridValue('postalCode', record.postalCode);
-            setGridValue('emailAddress', record.email);
-
-            switchTab('form');
-            showToast(`Data "${record.customerName}" berhasil dimuat!`, 'info');
-        }
-
-        function deleteSavedRecord(id) {
-            let saved = JSON.parse(localStorage.getItem('cbn_form_records') || '[]');
-            saved = saved.filter(r => r.id !== id);
-            localStorage.setItem('cbn_form_records', JSON.stringify(saved));
-            renderSavedTable();
-            showToast('Data history dihapus.', 'info');
-        }
-
-        function clearAllSavedData() {
-            localStorage.removeItem('cbn_form_records');
-            renderSavedTable();
-            showToast('Semua history data tersimpan telah dihapus.', 'danger');
-        }
-
-        function changePaperSize() {
-            // Adjust layout spacing or paper aspect ratio if required
-        }
-
-        function confirmResetForm() {
-            resetForm();
-        }
-
-        function resetForm() {
-            // Kosongkan semua input grid box
-            document.querySelectorAll('.grid-box').forEach(b => b.value = '');
-
-            // Kosongkan semua input teks & angka biasa di dalam formulir
-            document.querySelectorAll('#cbnForm input[type="text"]').forEach(i => {
-                i.value = '';
-            });
-
-            // Reset pilihan radio button
-            document.querySelectorAll('#cbnForm input[type="radio"]').forEach(r => {
-                r.checked = false;
-            });
-
-            // Reset checkbox dan jumlahnya
-            document.querySelectorAll('#cbnForm input[type="checkbox"]').forEach(c => {
-                c.checked = false;
-            });
-            ['qty1', 'qty2', 'qty3'].forEach(id => {
-                const qtyInput = document.getElementById(id);
-                if (qtyInput) qtyInput.value = '0';
-            });
-
-            // Bersihkan kanvas tanda tangan
-            clearSig('Pelanggan');
-            clearSig('Sales');
-            clearSig('Verif');
-
-            // Reset nilai harga & override total
+            // Reset manual fee overrides
             manualMonthlyOverride = false;
             manualAddonOverride = false;
             manualTaxOverride = false;
             manualTotalOverride = false;
-
-            if (document.getElementById('inputRegFee')) document.getElementById('inputRegFee').value = '';
-            if (document.getElementById('inputMonthlyFeeCustom')) document.getElementById('inputMonthlyFeeCustom').value = '0';
-            if (document.getElementById('inputAddonFeeCustom')) document.getElementById('inputAddonFeeCustom').value = '0';
-            if (document.getElementById('inputTaxCustom')) document.getElementById('inputTaxCustom').value = '0';
-            if (document.getElementById('inputTotalCustom')) document.getElementById('inputTotalCustom').value = '0';
+            
+            document.getElementById('inputRegFee').value = '0';
+            document.getElementById('inputMonthlyFeeCustom').value = '0';
+            document.getElementById('inputAddonFeeCustom').value = '0';
+            document.getElementById('inputTaxCustom').value = '0';
+            document.getElementById('inputTotalCustom').value = '0';
 
             calculateTotal();
-            showToast('Formulir berhasil di-refresh & dikosongkan!', 'success');
+            showModal("Reset", "Formulir telah berhasil dikosongkan.");
+        }
+
+        function saveData() {
+            const data = {
+                id: 'CBN-' + Date.now(),
+                timestamp: new Date().toLocaleString('id-ID'),
+                customerName: getGridValue('customerName'),
+                salesCode: getGridValue('salesCode'),
+                spvCode: getGridValue('spvCode'),
+                tempatLahir: document.getElementById('tempatLahir').value,
+                birthDate: getGridValue('birthDate'),
+                idCard: getGridValue('idCard'),
+                gender: document.querySelector('input[name="gender"]:checked')?.value || '',
+                phoneLandline: getGridValue('phoneLandline'),
+                phoneMobile: getGridValue('phoneMobile'),
+                addressLine1: getGridValue('addressLine1'),
+                addressLine2: getGridValue('addressLine2'),
+                rtNumber: getGridValue('rtNumber'),
+                rwNumber: getGridValue('rwNumber'),
+                postalCode: getGridValue('postalCode'),
+                houseStatus: document.querySelector('input[name="houseStatus"]:checked')?.value || '',
+                emailAddress: getGridValue('emailAddress'),
+                totalPayment: document.getElementById('inputTotalCustom').value,
+                canvasPelanggan: document.getElementById('canvasPelanggan').toDataURL(),
+                canvasSales: document.getElementById('canvasSales').toDataURL(),
+                canvasVerif: document.getElementById('canvasVerif').toDataURL(),
+                namePelanggan: document.getElementById('namePelanggan').value,
+                nameSales: document.getElementById('nameSales').value,
+                nameVerif: document.getElementById('nameVerif').value
+            };
+
+            let savedList = JSON.parse(localStorage.getItem('cbn_registrations') || '[]');
+            savedList.unshift(data);
+            localStorage.setItem('cbn_registrations', JSON.stringify(savedList));
+
+            loadSavedDataBadge();
+            showModal("Sukses", "Data formulir pendaftaran berhasil disimpan ke penyimpanan lokal browser.");
+        }
+
+        function loadSavedDataBadge() {
+            const savedList = JSON.parse(localStorage.getItem('cbn_registrations') || '[]');
+            document.getElementById('savedBadge').innerText = savedList.length;
+        }
+
+        function renderSavedDataList() {
+            const container = document.getElementById('savedDataList');
+            const savedList = JSON.parse(localStorage.getItem('cbn_registrations') || '[]');
+
+            if (savedList.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-6">Belum ada data pendaftaran yang tersimpan.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            savedList.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "flex flex-wrap items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-lg gap-2";
+                card.innerHTML = `
+                    <div>
+                        <div class="font-bold text-slate-800 text-xs">Pelanggan: ${item.customerName || 'Tanpa Nama'}</div>
+                        <div class="text-[10px] text-slate-500">ID: ${item.id} | Disimpan: ${item.timestamp} | Total: Rp ${item.totalPayment}</div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="loadSavedItem(${index})" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded text-[10px] font-bold transition">Muat Form</button>
+                        <button type="button" onclick="deleteSavedItem(${index})" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1 rounded text-[10px] font-bold transition">Hapus</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function loadSavedItem(index) {
+            const savedList = JSON.parse(localStorage.getItem('cbn_registrations') || '[]');
+            const item = savedList[index];
+            if (!item) return;
+
+            setGridValue('customerName', item.customerName);
+            setGridValue('salesCode', item.salesCode);
+            setGridValue('spvCode', item.spvCode);
+            document.getElementById('tempatLahir').value = item.tempatLahir || '';
+            setGridValue('birthDate', item.birthDate);
+            setGridValue('idCard', item.idCard);
+            setGridValue('phoneLandline', item.phoneLandline);
+            setGridValue('phoneMobile', item.phoneMobile);
+            setGridValue('addressLine1', item.addressLine1);
+            setGridValue('addressLine2', item.addressLine2);
+            setGridValue('rtNumber', item.rtNumber);
+            setGridValue('rwNumber', item.rwNumber);
+            setGridValue('postalCode', item.postalCode);
+            setGridValue('emailAddress', item.emailAddress);
+            document.getElementById('inputTotalCustom').value = item.totalPayment || '0';
+            document.getElementById('namePelanggan').value = item.namePelanggan || '';
+            document.getElementById('nameSales').value = item.nameSales || '';
+            document.getElementById('nameVerif').value = item.nameVerif || '';
+
+            ['Pelanggan', 'Sales', 'Verif'].forEach(key => {
+                const canvas = document.getElementById(`canvas${key}`);
+                const dataUrl = item[`canvas${key}`];
+                if (canvas && dataUrl) {
+                    const ctx = canvas.getContext('2d');
+                    const img = new Image();
+                    img.onload = () => {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0);
+                    };
+                    img.src = dataUrl;
+                }
+            });
+
+            switchTab('form');
+            showModal("Berhasil", "Data formulir berhasil dimuat kembali ke lembar kerja.");
+        }
+
+        function deleteSavedItem(index) {
+            let savedList = JSON.parse(localStorage.getItem('cbn_registrations') || '[]');
+            savedList.splice(index, 1);
+            localStorage.setItem('cbn_registrations', JSON.stringify(savedList));
+            renderSavedDataList();
+            loadSavedDataBadge();
+        }
+
+        function clearAllSavedData() {
+            localStorage.removeItem('cbn_registrations');
+            renderSavedDataList();
+            loadSavedDataBadge();
+            showModal("Berhasil", "Seluruh riwayat data pendaftaran telah dihapus.");
+        }
+
+        function exportPDF() {
+            const element = document.getElementById('formPaper');
+            const opt = {
+                margin:       5,
+                filename:     'Formulir_Pendaftaran_CBN.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().from(element).set(opt).save();
+        }
+
+        function exportPNG() {
+            const element = document.getElementById('formPaper');
+            html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Formulir_Pendaftaran_CBN.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        function exportExcel() {
+            const formData = {
+                "ID Pendaftaran": 'CBN-' + Date.now(),
+                "Tanggal Ekspor": new Date().toLocaleString('id-ID'),
+                "Kode Sales": getGridValue('salesCode'),
+                "Kode SPV": getGridValue('spvCode'),
+                "Nama Pelanggan": getGridValue('customerName'),
+                "Tempat Lahir": document.getElementById('tempatLahir').value,
+                "Tanggal Lahir": getGridValue('birthDate'),
+                "Nomor Identitas (KTP)": getGridValue('idCard'),
+                "Jenis Kelamin": document.querySelector('input[name="gender"]:checked')?.value || '',
+                "Telepon Landline": getGridValue('phoneLandline'),
+                "Nomor HP": getGridValue('phoneMobile'),
+                "Alamat Pemasangan 1": getGridValue('addressLine1'),
+                "Alamat Pemasangan 2": getGridValue('addressLine2'),
+                "RT": getGridValue('rtNumber'),
+                "RW": getGridValue('rwNumber'),
+                "Kode Pos": getGridValue('postalCode'),
+                "Status Rumah": document.querySelector('input[name="houseStatus"]:checked')?.value || '',
+                "Email": getGridValue('emailAddress'),
+                "Biaya Pendaftaran": document.getElementById('inputRegFee').value,
+                "Biaya Bulanan": document.getElementById('inputMonthlyFeeCustom').value,
+                "Biaya Addon": document.getElementById('inputAddonFeeCustom').value,
+                "PPN (11%)": document.getElementById('inputTaxCustom').value,
+                "Total Pembayaran": document.getElementById('inputTotalCustom').value,
+                "Jadwal Tanggal": getGridValue('scheduleDate'),
+                "Jadwal Jam": document.querySelector('input[name="scheduleTime"]:checked')?.value || '',
+                "Verifikator ID": getGridValue('verifierId'),
+                "Nama Pelanggan TTD": document.getElementById('namePelanggan').value,
+                "Nama Sales TTD": document.getElementById('nameSales').value,
+                "Nama Verifikator TTD": document.getElementById('nameVerif').value
+            };
+
+            const ws = XLSX.utils.json_to_sheet([formData]);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Data Pendaftaran CBN");
+            XLSX.writeFile(wb, "Formulir_Pendaftaran_CBN.xlsx");
+            showModal("Ekspor Berhasil", "Data formulir berhasil diekspor ke file Excel (.xlsx).");
+        }
+
+        function showModal(title, message) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.add('hidden');
         }
     </script>
 </body>
