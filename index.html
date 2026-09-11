@@ -206,10 +206,12 @@
                             <div class="flex items-center gap-1">
                                 <span class="text-slate-500 text-[9px]">TELP:</span>
                                 <div class="flex gap-0.5 grid-group" data-length="10" data-id="telp"></div>
+                                <input type="text" id="input-telp" class="border border-slate-300 px-1 py-0.5 rounded text-xs hidden w-28" placeholder="Telepon Rumah">
                             </div>
                             <div class="flex items-center gap-1 ml-auto">
                                 <span class="text-slate-500 text-[9px]">HP:</span>
                                 <div class="flex gap-0.5 grid-group" data-length="12" data-id="hp"></div>
+                                <input type="text" id="input-hp" class="border border-slate-300 px-1 py-0.5 rounded text-xs hidden w-28" placeholder="No HP">
                             </div>
                         </div>
                     </div>
@@ -620,40 +622,40 @@
         }
 
         function saveData() {
-            const nama = getGridValue('nama') || document.getElementById('input-nama').value || 'Tanpa Nama';
-            const ktp = getGridValue('ktp') || document.getElementById('input-ktp').value || '-';
-            const total = 'Rp ' + (parseInt(document.getElementById('inputTotalCustom').value) || 0).toLocaleString('id-ID');
-            const cid = getGridValue('cid') || document.getElementById('input-cid').value || 'CBN-' + Math.floor(1000 + Math.random() * 9000);
+            const nama = getGridValue('nama') || document.getElementById('input-nama')?.value || 'Tanpa Nama';
+            const ktp = getGridValue('ktp') || document.getElementById('input-ktp')?.value || '-';
+            const total = 'Rp ' + (parseInt(document.getElementById('inputTotalCustom')?.value) || 0).toLocaleString('id-ID');
+            const cid = getGridValue('cid') || document.getElementById('input-cid')?.value || 'CBN-' + Math.floor(1000 + Math.random() * 9000);
 
             const selectedPaket = document.querySelector('input[name="paket"]:checked');
             let paketName = '-';
             if (selectedPaket) {
-                if (selectedPaket.value === '299000') paketName = document.getElementById('paketName1').value;
-                else if (selectedPaket.value === '399000') paketName = document.getElementById('paketName2').value;
-                else if (selectedPaket.value === '799000') paketName = document.getElementById('paketName3').value;
+                if (selectedPaket.id === 'radioPaket1') paketName = document.getElementById('paketName1')?.value || '-';
+                else if (selectedPaket.id === 'radioPaket2') paketName = document.getElementById('paketName2')?.value || '-';
+                else if (selectedPaket.id === 'radioPaket3') paketName = document.getElementById('paketName3')?.value || '-';
             }
 
             const record = {
                 "ID/CID": cid,
                 "Waktu Simpan": new Date().toLocaleString('id-ID'),
-                "Kode Sales": getGridValue('sales') || document.getElementById('input-sales').value || '-',
-                "Kode SPV": getGridValue('spv') || document.getElementById('input-spv').value || '-',
+                "Kode Sales": getGridValue('sales') || document.getElementById('input-sales')?.value || '-',
+                "Kode SPV": getGridValue('spv') || document.getElementById('input-spv')?.value || '-',
                 "Nama Pelanggan": nama,
-                "Tempat Lahir": document.getElementById('tempatLahir').value || '-',
-                "Tanggal Lahir": getGridValue('tglLahir') || document.getElementById('input-tglLahir').value || '-',
+                "Tempat Lahir": document.getElementById('tempatLahir')?.value || '-',
+                "Tanggal Lahir": getGridValue('tglLahir') || document.getElementById('input-tglLahir')?.value || '-',
                 "Nomor KTP": ktp,
-                "Telepon Rumah": getGridValue('telp') || document.getElementById('input-telp').value || '-',
-                "Telepon Seluler": getGridValue('hp') || document.getElementById('input-hp').value || '-',
-                "Alamat Pemasangan": (getGridValue('alamat1') || document.getElementById('input-alamat1').value || '') + ' ' + getGridValue('alamat2'),
+                "Telepon Rumah": getGridValue('telp') || document.getElementById('input-telp')?.value || '-',
+                "Telepon Seluler": getGridValue('hp') || document.getElementById('input-hp')?.value || '-',
+                "Alamat Pemasangan": (getGridValue('alamat1') || document.getElementById('input-alamat1')?.value || '') + ' ' + (getGridValue('alamat2') || ''),
                 "RT / RW": (getGridValue('rt') || '-') + ' / ' + (getGridValue('rw') || '-'),
                 "Kode Pos": getGridValue('kodepos') || '-',
-                "Email": getGridValue('email') || document.getElementById('input-email').value || '-',
+                "Email": getGridValue('email') || document.getElementById('input-email')?.value || '-',
                 "Paket Layanan": paketName,
-                "Tanggal Pemasangan": getGridValue('tglInstall') || document.getElementById('input-tglInstall').value || '-',
+                "Tanggal Pemasangan": getGridValue('tglInstall') || document.getElementById('input-tglInstall')?.value || '-',
                 "Total Biaya": total,
-                "Nama TTD Pelanggan": document.getElementById('namaPelangganTtd').value || '-',
-                "Nama TTD Sales": document.getElementById('namaSalesTtd').value || '-',
-                "Nama TTD Verifikator": document.getElementById('namaVerifTtd').value || '-'
+                "Nama TTD Pelanggan": document.getElementById('namaPelangganTtd')?.value || '-',
+                "Nama TTD Sales": document.getElementById('namaSalesTtd')?.value || '-',
+                "Nama TTD Verifikator": document.getElementById('namaVerifTtd')?.value || '-'
             };
 
             let saved = JSON.parse(localStorage.getItem('cbn_registrations') || '[]');
