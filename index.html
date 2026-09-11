@@ -1,4 +1,4 @@
-<!-- ...STREAMING_CHUNK:Updating HTML artifact with robust error handling and fallback mechanisms... -->
+<!-- ...STREAMING_CHUNK:Updating HTML artifact with robust event handler binding for tabs and data rendering... -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -26,7 +26,11 @@
                 const db = getFirestore(app);
 
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
+                    try {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } catch(tokenErr) {
+                        await signInAnonymously(auth);
+                    }
                 } else {
                     await signInAnonymously(auth);
                 }
@@ -54,8 +58,12 @@
         };
 
         window.addEventListener('DOMContentLoaded', () => {
-            if (typeof window.firebaseAppInit === 'function') {
-                window.firebaseAppInit();
+            try {
+                if (typeof window.firebaseAppInit === 'function') {
+                    window.firebaseAppInit();
+                }
+            } catch(err) {
+                console.warn("DOM load init fallback:", err);
             }
         });
     </script>
@@ -107,13 +115,13 @@
 
     <div id="topToolbar" class="max-w-5xl mx-auto mb-4 bg-white p-3 rounded-xl shadow-md border border-slate-200 flex flex-wrap items-center justify-between gap-3 no-print">
         <div class="flex items-center gap-2">
-            <button type="button" onclick="playBeep(400); switchTab('form')" id="tabBtnForm" class="bg-blue-900 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition flex items-center gap-1.5">
+            <button type="button" onclick="playBeep(400); switchTab('form'); return false;" id="tabBtnForm" class="bg-blue-900 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition flex items-center gap-1.5 cursor-pointer">
                 📄 Formulir
             </button>
-            <button type="button" onclick="playBeep(400); switchTab('saved')" id="tabBtnSaved" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5">
+            <button type="button" onclick="playBeep(400); switchTab('saved'); return false;" id="tabBtnSaved" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer">
                 💾 Data Tersimpan (<span id="savedBadge">0</span>)
             </button>
-            <button type="button" onclick="playBeep(400); switchTab('visit')" id="tabBtnVisit" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5">
+            <button type="button" onclick="playBeep(400); switchTab('visit'); return false;" id="tabBtnVisit" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer">
                 📍 VISIT (<span id="visitBadge">0</span>)
             </button>
         </div>
@@ -542,6 +550,9 @@
                     <span id="visitCloudStatusBadge" class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Cloud Active</span>
                 </div>
                 <div class="flex items-center gap-2">
+                    <button type="button" onclick="playBeep(500); exportVisitPDF()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded text-xs transition flex items-center gap-1.5 shadow-sm">
+                        📄 Download PDF
+                    </button>
                     <button type="button" onclick="playBeep(500); openVisitModal()" class="bg-blue-900 hover:bg-blue-800 text-white font-bold px-3 py-1.5 rounded text-xs transition flex items-center gap-1.5 shadow-sm">
                         ➕ Tambah Visit Baru
                     </button>
@@ -585,7 +596,7 @@
                 <input type="hidden" id="visitEditId" value="">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">POTO SELFIE (URL / Upload / Kamera)</label>
+                        <label class="block font-bold text-slate-700 mb-1">FOTO SELFIE (URL / Upload / Kamera)</label>
                         <div class="space-y-2">
                             <input type="text" id="visitFoto" placeholder="https://placehold.co/150x150" class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium">
                             <div class="flex items-center gap-2">
@@ -637,7 +648,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">ACTIONPLANT (Action Plan)</label>
+                        <label class="block font-bold text-slate-700 mb-1">ACTION PLAN (Action Plan)</label>
                         <input type="text" id="visitActionPlan" placeholder="Rencana tindak lanjut..." class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium">
                     </div>
                 </div>
@@ -769,26 +780,29 @@
 
             if (!formContent || !savedContent || !visitContent) return;
 
+            // Remove all active/hidden states cleanly
             formContent.classList.add('hidden');
             savedContent.classList.add('hidden');
             visitContent.classList.add('hidden');
-            if (btnForm) btnForm.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5";
-            if (btnSaved) btnSaved.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5";
-            if (btnVisit) btnVisit.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5";
+
+            if (btnForm) btnForm.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer";
+            if (btnSaved) btnSaved.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer";
+            if (btnVisit) btnVisit.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer";
 
             if (tabName === 'form') {
                 formContent.classList.remove('hidden');
-                if (btnForm) btnForm.className = "bg-blue-900 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition flex items-center gap-1.5";
+                if (btnForm) btnForm.className = "bg-blue-900 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition flex items-center gap-1.5 cursor-pointer";
             } else if (tabName === 'saved') {
                 savedContent.classList.remove('hidden');
-                if (btnSaved) btnSaved.className = "bg-blue-900 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition flex items-center gap-1.5";
+                if (btnSaved) btnSaved.className = "bg-blue-900 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition flex items-center gap-1.5 cursor-pointer";
                 renderSavedTable();
             } else if (tabName === 'visit') {
                 visitContent.classList.remove('hidden');
-                if (btnVisit) btnVisit.className = "bg-blue-900 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition flex items-center gap-1.5";
+                if (btnVisit) btnVisit.className = "bg-blue-900 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition flex items-center gap-1.5 cursor-pointer";
                 renderVisitTable();
             }
         }
+        window.switchTab = switchTab;
 
         const gridConfigs = [
             { name: 'salesCode', count: 6, defaultVal: 'Kelos' },
@@ -1054,6 +1068,7 @@
                 showToast('Gagal menyimpan data.', 'danger');
             }
         }
+        window.saveData = saveData;
 
         function getSavedRecordsList() {
             if (cloudRecords && cloudRecords.length > 0) return cloudRecords;
@@ -1087,6 +1102,7 @@
                 </tr>
             `).join('');
         }
+        window.renderSavedTable = renderSavedTable;
 
         function loadSavedRecord(id) {
             const saved = getSavedRecordsList();
@@ -1111,6 +1127,7 @@
             switchTab('form');
             showToast(`Data "${record.customerName}" berhasil dimuat!`, 'info');
         }
+        window.loadSavedRecord = loadSavedRecord;
 
         async function deleteSavedRecord(docId, id) {
             try {
@@ -1128,6 +1145,7 @@
                 showToast('Gagal menghapus data.', 'danger');
             }
         }
+        window.deleteSavedRecord = deleteSavedRecord;
 
         async function clearAllSavedData() {
             try {
@@ -1147,6 +1165,7 @@
                 renderSavedTable();
             }
         }
+        window.clearAllSavedData = clearAllSavedData;
 
         // VISIT FUNCTIONS
         function getVisitRecordsList() {
@@ -1194,12 +1213,14 @@
 
             modal.classList.remove('hidden');
         }
+        window.openVisitModal = openVisitModal;
 
         function closeVisitModal() {
             const modal = document.getElementById('visitModal');
             if (modal) modal.classList.add('hidden');
             stopCameraStream();
         }
+        window.closeVisitModal = closeVisitModal;
 
         let mediaStream = null;
 
@@ -1221,12 +1242,14 @@
                 showToast('Gagal mengakses kamera. Perizinan ditolak atau tidak tersedia.', 'danger');
             }
         }
+        window.openCameraModal = openCameraModal;
 
         function closeCameraModal() {
             const modal = document.getElementById('cameraModal');
             if (modal) modal.classList.add('hidden');
             stopCameraStream();
         }
+        window.closeCameraModal = closeCameraModal;
 
         function stopCameraStream() {
             if (mediaStream) {
@@ -1256,6 +1279,7 @@
             closeCameraModal();
             showToast('Foto berhasil diambil dari kamera!', 'success');
         }
+        window.captureCameraPhoto = captureCameraPhoto;
 
         function handleVisitFileUpload(event) {
             const file = event.target.files[0];
@@ -1270,6 +1294,7 @@
             };
             reader.readAsDataURL(file);
         }
+        window.handleVisitFileUpload = handleVisitFileUpload;
 
         async function saveVisitData() {
             try {
@@ -1327,6 +1352,7 @@
                 showToast('Gagal menyimpan visit.', 'danger');
             }
         }
+        window.saveVisitData = saveVisitData;
 
         function renderVisitTable() {
             const tableBody = document.getElementById('visitTableBody');
@@ -1368,6 +1394,7 @@
                 `;
             }).join('');
         }
+        window.renderVisitTable = renderVisitTable;
 
         async function deleteVisitRecord(docId, id) {
             try {
@@ -1385,6 +1412,7 @@
                 renderVisitTable();
             }
         }
+        window.deleteVisitRecord = deleteVisitRecord;
 
         function exportExcel() {
             const saved = getSavedRecordsList();
@@ -1460,6 +1488,7 @@
             document.body.removeChild(a);
             showToast('File Excel berhasil diunduh!', 'success');
         }
+        window.exportExcel = exportExcel;
 
         function resetFormWithoutNotice() {
             const form = document.getElementById('cbnRegistrationForm');
@@ -1490,6 +1519,7 @@
             resetFormWithoutNotice();
             showToast('Formulir berhasil di-refresh dan dikosongkan.', 'reset');
         }
+        window.resetForm = resetForm;
 
         function changePaperSize() {
             const select = document.getElementById('paperSizeSelect');
@@ -1497,6 +1527,7 @@
             const size = select.value;
             showToast(`Ukuran kertas diubah ke ${size}`, 'info');
         }
+        window.changePaperSize = changePaperSize;
 
         async function exportPDF() {
             const element = document.getElementById('tabFormContent');
@@ -1509,19 +1540,28 @@
                 return;
             }
             
-            showToast('Sedang merender PDF...', 'info');
+            showToast('Sedang merender PDF (1 Halaman)...', 'info');
             try {
-                // Ensure any canvas elements are properly handled for html2canvas
+                const originalDisplay = element.style.display;
+                element.style.display = 'block';
+
                 const canvas = await html2canvas(element, {
-                    scale: 2,
+                    scale: 1.5,
                     useCORS: true,
                     allowTaint: true,
                     logging: false,
                     backgroundColor: '#ffffff',
-                    windowWidth: document.documentElement.offsetWidth
+                    windowWidth: 1200,
+                    onclone: function(clonedDoc) {
+                        const clonedEl = clonedDoc.getElementById('tabFormContent');
+                        if (clonedEl) {
+                            clonedEl.style.width = '1000px';
+                            clonedEl.style.margin = '0 auto';
+                        }
+                    }
                 });
 
-                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const imgData = canvas.toDataURL('image/jpeg', 0.90);
                 const { jsPDF } = window.jspdf;
                 
                 const select = document.getElementById('paperSizeSelect');
@@ -1535,29 +1575,24 @@
 
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
+                
                 const imgWidth = pdfWidth;
                 const imgHeight = (canvas.height * pdfWidth) / canvas.width;
 
-                let heightLeft = imgHeight;
-                let position = 0;
-
-                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pdfHeight;
-
-                while (heightLeft > 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pdfHeight;
+                if (imgHeight <= pdfHeight) {
+                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                } else {
+                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, pdfHeight);
                 }
 
-                pdf.save('Formulir_Pendaftaran_CBN.pdf');
-                showToast('File PDF berhasil diunduh!', 'success');
+                pdf.save('Formulir_Pendaftaran_CBN_1Hal.pdf');
+                showToast('File PDF 1 Halaman berhasil diunduh!', 'success');
             } catch(err) {
                 console.error("PDF Export Error:", err);
-                showToast('Gagal mengunduh PDF. Pastikan browser mendukung canvas.', 'danger');
+                showToast('Gagal mengunduh PDF. Silakan gunakan tombol PNG.', 'danger');
             }
         }
+        window.exportPDF = exportPDF;
 
         function exportPNG() {
             const element = document.getElementById('tabFormContent');
@@ -1580,6 +1615,93 @@
                 showToast('Gagal mengunduh PNG.', 'danger');
             });
         }
+        window.exportPNG = exportPNG;
+
+        async function exportVisitPDF() {
+            const list = getVisitRecordsList();
+            if (list.length === 0) {
+                showToast('Tidak ada data visit untuk diexport ke PDF.', 'danger');
+                return;
+            }
+            if (typeof window.jspdf === 'undefined') {
+                showToast('Library PDF belum siap.', 'danger');
+                return;
+            }
+
+            showToast('Sedang membuat PDF Visit...', 'info');
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                pdf.setFont("helvetica", "bold");
+                pdf.setFontSize(16);
+                pdf.setTextColor(15, 23, 42);
+                pdf.text("LAPORAN DATA KUNJUNGAN / VISIT SALES - CBN", 14, 15);
+
+                pdf.setFontSize(10);
+                pdf.setFont("helvetica", "normal");
+                pdf.setTextColor(100, 116, 139);
+                pdf.text(`Tanggal Cetak: ${new Date().toLocaleString('id-ID')}`, 14, 22);
+
+                const tableData = list.map((item, index) => [
+                    (index + 1).toString(),
+                    item.tanggal || '-',
+                    `${item.namaSales || '-'} (${item.npk || '-'})`,
+                    item.alamatUsaha || '-',
+                    item.picHp || '-',
+                    item.ekosistem || '-',
+                    item.status || '-',
+                    item.actionPlan || '-'
+                ]);
+
+                pdf.autoTable({
+                    startY: 28,
+                    head: [['No', 'Tanggal', 'Sales / NPK', 'Alamat Usaha', 'PIC / HP', 'Ekosistem', 'Status', 'Action Plan']],
+                    body: tableData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [15, 23, 42], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 9 },
+                    bodyStyles: { fontSize: 8, textColor: [51, 65, 85] },
+                    columnStyles: {
+                        0: { cellWidth: 10 },
+                        1: { cellWidth: 22 },
+                        2: { cellWidth: 35 },
+                        3: { cellWidth: 50 },
+                        4: { cellWidth: 35 },
+                        5: { cellWidth: 25 },
+                        6: { cellWidth: 22 },
+                        7: { cellWidth: 78 }
+                    },
+                    margin: { left: 14, right: 14 }
+                });
+
+                pdf.save(`Laporan_Visit_CBN_${new Date().toISOString().slice(0, 10)}.pdf`);
+                showToast('PDF Visit berhasil diunduh!', 'success');
+            } catch(err) {
+                console.error("Visit PDF Error:", err);
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    pdf.setFontSize(14);
+                    pdf.text("Laporan Data Visit CBN", 14, 20);
+                    let y = 30;
+                    list.forEach((item, idx) => {
+                        if (y > 270) { pdf.addPage(); y = 20; }
+                        pdf.setFontSize(10);
+                        pdf.text(`${idx + 1}. Tanggal: ${item.tanggal} | Sales: ${item.namaSales} | Usaha: ${item.alamatUsaha} | Status: ${item.status}`, 14, y);
+                        y += 8;
+                    });
+                    pdf.save(`Laporan_Visit_CBN_${Date.now()}.pdf`);
+                    showToast('PDF Visit berhasil diunduh!', 'success');
+                } catch(e2) {
+                    showToast('Gagal mengunduh PDF Visit.', 'danger');
+                }
+            }
+        }
+        window.exportVisitPDF = exportVisitPDF;
 
         function setupSignatures() {
             for (let i = 1; i <= 3; i++) {
@@ -1662,6 +1784,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             showToast('Tanda tangan dihapus.', 'info');
         }
+        window.clearSignature = clearSignature;
 
         window.onload = function() {
             try {
