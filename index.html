@@ -1,3 +1,4 @@
+<!-- ...STREAMING_CHUNK:Updating saveData to clear form upon successful save... -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -384,7 +385,7 @@
                             <span class="font-semibold">Biaya Bulanan:</span>
                             <div class="flex items-center gap-1">
                                 <span class="font-bold">Rp</span>
-                                <input type="text" id="inputMonthlyFeeCustom" value="0" oninput="manualMonthlyOverride=true; calculateTotal()" class="border border-slate-300 rounded px-2 py-1 text-xs w-28 font-bold text-right">
+                                <input type="text" id="inputMonthlyFeeCustom" value="299000" oninput="calculateTotal()" class="border border-slate-300 rounded px-2 py-1 text-xs w-28 font-bold text-right">
                             </div>
                         </div>
                         <div class="flex justify-between items-center">
@@ -643,9 +644,8 @@
         }
 
         let manualTotalOverride = false;
-        let manualMonthlyOverride = false;
         function parseNumber(val) {
-            if (!val) return 0;
+            if (!val || val === '') return 0;
             const num = parseInt(val.toString().replace(/[^0-9]/g, ''));
             return isNaN(num) ? 0 : num;
         }
@@ -665,17 +665,13 @@
 
                 const regFee = parseNumber(document.getElementById('inputRegFee')?.value);
                 
-                let monthlyFee = paketPrice;
-                if (manualMonthlyOverride) {
-                    const monthlyInputElem = document.getElementById('inputMonthlyFeeCustom');
-                    if (monthlyInputElem && monthlyInputElem.value === '') {
+                const monthlyInputElem = document.getElementById('inputMonthlyFeeCustom');
+                let monthlyFee = 0;
+                if (monthlyInputElem) {
+                    if (monthlyInputElem.value === '') {
                         monthlyFee = 0;
                     } else {
-                        monthlyFee = parseNumber(monthlyInputElem?.value);
-                    }
-                } else {
-                    if (document.getElementById('inputMonthlyFeeCustom')) {
-                        document.getElementById('inputMonthlyFeeCustom').value = monthlyFee;
+                        monthlyFee = parseNumber(monthlyInputElem.value);
                     }
                 }
 
@@ -783,14 +779,17 @@
                         const userId = window.auth.currentUser.uid;
                         const colRef = collection(window.db, 'artifacts', window.appId, 'users', userId, 'cbn_form_records');
                         await addDoc(colRef, data);
-                        showToast('Data berhasil disimpan ke Cloud & Lokal!', 'success');
+                        showToast('Data berhasil dikirim ke Cloud & Lokal, Formulir dikosongkan!', 'success');
                     } catch (cloudErr) {
                         console.warn("Cloud write failed, stored locally:", cloudErr);
-                        showToast('Data berhasil disimpan (Mode Lokal).', 'success');
+                        showToast('Data berhasil dikirim (Mode Lokal), Formulir dikosongkan.', 'success');
                     }
                 } else {
-                    showToast('Data berhasil disimpan secara lokal.', 'success');
+                    showToast('Data berhasil dikirim ke Data Tersimpan.', 'success');
                 }
+
+                // Reset / clear form data after successful save
+                resetForm();
                 renderSavedTable();
             } catch(e) {
                 console.error("Save error:", e);
@@ -969,9 +968,21 @@
         function resetForm() {
             const form = document.getElementById('cbnRegistrationForm');
             if (form) form.reset();
-            manualMonthlyOverride = false;
+            
+            // Clear all grid boxes explicitly
+            gridConfigs.forEach(cfg => {
+                const container = document.querySelector(`[data-box-name="${cfg.name}"]`);
+                if (container) {
+                    container.querySelectorAll('.grid-box').forEach(b => b.value = '');
+                }
+            });
+
+            if (document.getElementById('tempatLahir')) document.getElementById('tempatLahir').value = '';
+            if (document.getElementById('inputMonthlyFeeCustom')) document.getElementById('inputMonthlyFeeCustom').value = '299000';
+            if (document.getElementById('inputAddonFeeCustom')) document.getElementById('inputAddonFeeCustom').value = '0';
+            if (document.getElementById('inputRegFee')) document.getElementById('inputRegFee').value = '100000';
+
             manualTotalOverride = false;
-            setupGridBoxes();
             calculateTotal();
             for (let i = 1; i <= 3; i++) clearSignature(i.toString());
             showToast('Formulir berhasil di-refresh dan dikosongkan.', 'info');
