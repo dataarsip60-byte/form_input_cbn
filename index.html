@@ -1,4 +1,4 @@
-<!-- ...STREAMING_CHUNK:Updating saveData to clear form upon successful save... -->
+<!-- ...STREAMING_CHUNK:Updating HTML artifact to add VISIT tab and modal... -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -38,11 +38,17 @@
                 if (typeof window.initCloudSync === 'function') {
                     window.initCloudSync();
                 }
+                if (typeof window.initVisitCloudSync === 'function') {
+                    window.initVisitCloudSync();
+                }
             } catch(e) {
                 console.warn("Firebase running in offline/local fallback mode:", e);
                 window.useLocalStorageOnly = true;
                 if (typeof window.renderSavedTable === 'function') {
                     window.renderSavedTable();
+                }
+                if (typeof window.renderVisitTable === 'function') {
+                    window.renderVisitTable();
                 }
             }
         };
@@ -107,6 +113,9 @@
             <button type="button" onclick="playBeep(400); switchTab('saved')" id="tabBtnSaved" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5">
                 💾 Data Tersimpan (<span id="savedBadge">0</span>)
             </button>
+            <button type="button" onclick="playBeep(400); switchTab('visit')" id="tabBtnVisit" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5">
+                📍 VISIT (<span id="visitBadge">0</span>)
+            </button>
         </div>
 
         <div class="flex items-center gap-3">
@@ -147,6 +156,7 @@
         </div>
     </div>
 
+    <!-- TAB 1: FORMULIR -->
     <div id="tabFormContent" class="max-w-5xl mx-auto bg-white p-6 sm:p-8 rounded-xl shadow-xl border border-slate-300 print-container">
         
         <!-- HEADER FORM -->
@@ -486,6 +496,7 @@
         </form>
     </div>
 
+    <!-- TAB 2: DATA TERSIMPAN -->
     <div id="tabSavedContent" class="max-w-5xl mx-auto hidden">
         <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
             <div class="flex justify-between items-center mb-4">
@@ -522,6 +533,135 @@
         </div>
     </div>
 
+    <!-- TAB 3: VISIT -->
+    <div id="tabVisitContent" class="max-w-5xl mx-auto hidden">
+        <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-2">
+                    <h2 class="font-bold text-slate-800 text-sm">📍 Data Kunjungan / Visit Sales</h2>
+                    <span id="visitCloudStatusBadge" class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Cloud Active</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="playBeep(500); openVisitModal()" class="bg-blue-900 hover:bg-blue-800 text-white font-bold px-3 py-1.5 rounded text-xs transition flex items-center gap-1.5 shadow-sm">
+                        ➕ Tambah Visit Baru
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs text-left text-slate-600 border border-slate-200 rounded" id="visitDataTable">
+                    <thead class="bg-slate-100 font-bold text-slate-800 uppercase border-b border-slate-200">
+                        <tr>
+                            <th class="p-2.5">Foto</th>
+                            <th class="p-2.5">Tanggal</th>
+                            <th class="p-2.5">Sales / NPK</th>
+                            <th class="p-2.5">Alamat Usaha</th>
+                            <th class="p-2.5">PIC / HP</th>
+                            <th class="p-2.5">Ekosistem</th>
+                            <th class="p-2.5">Aktivitas</th>
+                            <th class="p-2.5">Hasil Visit</th>
+                            <th class="p-2.5">Action Plan</th>
+                            <th class="p-2.5 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="visitTableBody" class="divide-y divide-slate-200 bg-white">
+                        <tr>
+                            <td colspan="10" class="p-4 text-center text-slate-400">Belum ada data visit tercatat.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP MODAL VISIT -->
+    <div id="visitModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 border border-slate-300 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
+                <h3 class="font-black text-blue-900 text-base uppercase">FORMULIR INPUT VISIT</h3>
+                <button type="button" onclick="closeVisitModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">✕</button>
+            </div>
+            <form id="visitForm" onsubmit="event.preventDefault(); saveVisitData();" class="space-y-3 text-xs">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">POTO SELFIE (URL / Upload / Kamera)</label>
+                        <div class="space-y-2">
+                            <input type="text" id="visitFoto" placeholder="https://placehold.co/150x150" class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium">
+                            <div class="flex items-center gap-2">
+                                <label class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-2.5 py-1 rounded cursor-pointer text-[11px] inline-flex items-center gap-1">
+                                    📁 Upload File
+                                    <input type="file" id="visitUploadFile" accept="image/*" class="hidden" onchange="handleVisitFileUpload(event)">
+                                </label>
+                                <button type="button" onclick="openCameraModal()" class="bg-blue-900 hover:bg-blue-800 text-white font-bold px-2.5 py-1 rounded text-[11px] inline-flex items-center gap-1">
+                                    📷 Buka Kamera
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">TANGGAL</label>
+                        <input type="date" id="visitTanggal" class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">NAMA SALES</label>
+                        <input type="text" id="visitNamaSales" placeholder="Nama Sales" class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">NPK</label>
+                        <input type="text" id="visitNpk" placeholder="Nomor Pokok Karyawan" class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">ALAMAT USAHA</label>
+                    <input type="text" id="visitAlamatUsaha" placeholder="Alamat Lokasi Kunjungan Usaha" class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">PIC / NO HP</label>
+                        <input type="text" id="visitPicHp" placeholder="Nama PIC & Nomor HP" class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">EKOSISTEM</label>
+                        <input type="text" id="visitEkosistem" placeholder="Contoh: Ruko, Mall, Sekolah, dll" class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">AKTIVITAS</label>
+                    <textarea id="visitAktivitas" rows="2" placeholder="Aktivitas kunjungan..." class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium"></textarea>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">HASIL VISIT</label>
+                    <textarea id="visitHasil" rows="2" placeholder="Hasil atau respon dari kunjungan..." class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium"></textarea>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">ACTIONPLANT (Action Plan)</label>
+                    <input type="text" id="visitActionPlan" placeholder="Rencana tindak lanjut..." class="w-full border border-slate-300 rounded px-2 py-1.5 font-medium">
+                </div>
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
+                    <button type="button" onclick="closeVisitModal()" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold px-4 py-2 rounded">Batal</button>
+                    <button type="submit" class="bg-blue-900 hover:bg-blue-800 text-white font-bold px-5 py-2 rounded">Simpan Visit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL KAMERA (UNTUK FOTO SELFIE) -->
+    <div id="cameraModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-5 border border-slate-300 text-center">
+            <h3 class="font-black text-blue-900 text-sm uppercase mb-3">Ambil Foto Kamera</h3>
+            <div class="relative w-full h-64 bg-black rounded overflow-hidden mb-3">
+                <video id="cameraVideo" autoplay playsinline class="w-full h-full object-cover"></video>
+                <canvas id="cameraCanvas" class="hidden"></canvas>
+            </div>
+            <div class="flex justify-center gap-2">
+                <button type="button" onclick="closeCameraModal()" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold px-4 py-2 rounded text-xs">Tutup</button>
+                <button type="button" onclick="captureCameraPhoto()" class="bg-blue-900 hover:bg-blue-800 text-white font-bold px-5 py-2 rounded text-xs">📸 Ambil Foto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
     <div id="toastNotification" class="fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-lg shadow-xl font-bold text-xs text-white transition-all transform translate-y-10 opacity-0 duration-300 flex items-center gap-2 pointer-events-none"></div>
 
     <script>
@@ -613,22 +753,31 @@
         function switchTab(tabName) {
             const formContent = document.getElementById('tabFormContent');
             const savedContent = document.getElementById('tabSavedContent');
+            const visitContent = document.getElementById('tabVisitContent');
             const btnForm = document.getElementById('tabBtnForm');
             const btnSaved = document.getElementById('tabBtnSaved');
+            const btnVisit = document.getElementById('tabBtnVisit');
 
-            if (!formContent || !savedContent) return;
+            if (!formContent || !savedContent || !visitContent) return;
+
+            formContent.classList.add('hidden');
+            savedContent.classList.add('hidden');
+            visitContent.classList.add('hidden');
+            if (btnForm) btnForm.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5";
+            if (btnSaved) btnSaved.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5";
+            if (btnVisit) btnVisit.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5";
 
             if (tabName === 'form') {
                 formContent.classList.remove('hidden');
-                savedContent.classList.add('hidden');
                 if (btnForm) btnForm.className = "bg-blue-900 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition flex items-center gap-1.5";
-                if (btnSaved) btnSaved.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5";
-            } else {
-                formContent.classList.add('hidden');
+            } else if (tabName === 'saved') {
                 savedContent.classList.remove('hidden');
                 if (btnSaved) btnSaved.className = "bg-blue-900 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition flex items-center gap-1.5";
-                if (btnForm) btnForm.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5";
                 renderSavedTable();
+            } else if (tabName === 'visit') {
+                visitContent.classList.remove('hidden');
+                if (btnVisit) btnVisit.className = "bg-blue-900 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition flex items-center gap-1.5";
+                renderVisitTable();
             }
         }
 
@@ -779,6 +928,9 @@
         let cloudRecords = [];
         let unsubscribeCloud = null;
 
+        let visitRecords = [];
+        let unsubscribeVisitCloud = null;
+
         function initCloudSync() {
             try {
                 if (!window.db || !window.auth || !window.auth.currentUser) {
@@ -812,6 +964,40 @@
             }
         }
         window.initCloudSync = initCloudSync;
+
+        function initVisitCloudSync() {
+            try {
+                if (!window.db || !window.auth || !window.auth.currentUser) {
+                    setTimeout(initVisitCloudSync, 1000);
+                    return;
+                }
+                const userId = window.auth.currentUser.uid;
+                const colRef = collection(window.db, 'artifacts', window.appId, 'users', userId, 'cbn_visit_records');
+                
+                if (unsubscribeVisitCloud) unsubscribeVisitCloud();
+
+                unsubscribeVisitCloud = onSnapshot(colRef, (snapshot) => {
+                    visitRecords = [];
+                    snapshot.forEach((docSnap) => {
+                        visitRecords.push({ docId: docSnap.id, ...docSnap.data() });
+                    });
+                    visitRecords.sort((a, b) => (b.id || 0) - (a.id || 0));
+                    renderVisitTable();
+                }, (error) => {
+                    console.warn("Visit cloud sync snapshot fallback:", error);
+                    const badge = document.getElementById('visitCloudStatusBadge');
+                    if (badge) {
+                        badge.innerText = 'Local Mode';
+                        badge.className = 'bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full';
+                    }
+                    renderVisitTable();
+                });
+            } catch(e) {
+                console.warn("Error setting up visit cloud sync:", e);
+                renderVisitTable();
+            }
+        }
+        window.initVisitCloudSync = initVisitCloudSync;
 
         async function saveData() {
             try {
@@ -950,6 +1136,180 @@
             } catch(e) {
                 console.error("Clear all error:", e);
                 renderSavedTable();
+            }
+        }
+
+        // VISIT FUNCTIONS
+        function openVisitModal() {
+            const modal = document.getElementById('visitModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                const dateInput = document.getElementById('visitTanggal');
+                if (dateInput && !dateInput.value) {
+                    dateInput.value = new Date().toISOString().slice(0, 10);
+                }
+            }
+        }
+
+        function closeVisitModal() {
+            const modal = document.getElementById('visitModal');
+            if (modal) modal.classList.add('hidden');
+            stopCameraStream();
+        }
+
+        let mediaStream = null;
+
+        async function openCameraModal() {
+            const camModal = document.getElementById('cameraModal');
+            const video = document.getElementById('cameraVideo');
+            if (!camModal || !video) return;
+            camModal.classList.remove('hidden');
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+                video.srcObject = mediaStream;
+            } catch(e) {
+                console.error("Camera access error:", e);
+                showToast("Gagal mengakses kamera. Perizinan ditolak.", "danger");
+                camModal.classList.add('hidden');
+            }
+        }
+
+        function closeCameraModal() {
+            const camModal = document.getElementById('cameraModal');
+            if (camModal) camModal.classList.add('hidden');
+            stopCameraStream();
+        }
+
+        function stopCameraStream() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+        }
+
+        function captureCameraPhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('cameraCanvas');
+            const fotoInput = document.getElementById('visitFoto');
+            if (!video || !canvas || !fotoInput) return;
+
+            canvas.width = video.videoWidth || 320;
+            canvas.height = video.videoHeight || 240;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            fotoInput.value = dataUrl;
+            closeCameraModal();
+            showToast("Foto selfie berhasil diambil!", "success");
+        }
+
+        function handleVisitFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fotoInput = document.getElementById('visitFoto');
+                if (fotoInput) {
+                    fotoInput.value = e.target.result;
+                    showToast("File foto berhasil diunggah!", "success");
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function getVisitRecordsList() {
+            if (visitRecords && visitRecords.length > 0) return visitRecords;
+            return JSON.parse(localStorage.getItem('cbn_visit_records') || '[]');
+        }
+
+        async function saveVisitData() {
+            try {
+                const visitItem = {
+                    id: Date.now(),
+                    foto: document.getElementById('visitFoto')?.value || 'https://placehold.co/100x100/1e3a8a/ffffff?text=Selfie',
+                    tanggal: document.getElementById('visitTanggal')?.value || new Date().toISOString().slice(0, 10),
+                    namaSales: document.getElementById('visitNamaSales')?.value || '',
+                    npk: document.getElementById('visitNpk')?.value || '',
+                    alamatUsaha: document.getElementById('visitAlamatUsaha')?.value || '',
+                    picHp: document.getElementById('visitPicHp')?.value || '',
+                    ekosistem: document.getElementById('visitEkosistem')?.value || '',
+                    aktivitas: document.getElementById('visitAktivitas')?.value || '',
+                    hasil: document.getElementById('visitHasil')?.value || '',
+                    actionPlan: document.getElementById('visitActionPlan')?.value || ''
+                };
+
+                let saved = JSON.parse(localStorage.getItem('cbn_visit_records') || '[]');
+                saved.unshift(visitItem);
+                localStorage.setItem('cbn_visit_records', JSON.stringify(saved));
+
+                if (window.db && window.auth && window.auth.currentUser) {
+                    try {
+                        const userId = window.auth.currentUser.uid;
+                        const colRef = collection(window.db, 'artifacts', window.appId, 'users', userId, 'cbn_visit_records');
+                        await addDoc(colRef, visitItem);
+                    } catch(e) {
+                        console.warn("Visit cloud write failed, stored locally:", e);
+                    }
+                }
+
+                showToast('Data Visit sudah di Simpan', 'success');
+                closeVisitModal();
+                document.getElementById('visitForm').reset();
+                renderVisitTable();
+            } catch(e) {
+                console.error("Visit save error:", e);
+                showToast('Gagal menyimpan visit.', 'danger');
+            }
+        }
+
+        function renderVisitTable() {
+            const tableBody = document.getElementById('visitTableBody');
+            const visitBadge = document.getElementById('visitBadge');
+            if (!tableBody) return;
+
+            const list = getVisitRecordsList();
+            if (visitBadge) visitBadge.innerText = list.length;
+
+            if (list.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-slate-400">Belum ada data visit tercatat.</td></tr>`;
+                return;
+            }
+
+            tableBody.innerHTML = list.map((item) => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-2.5">
+                        <img src="${item.foto}" alt="Selfie" class="w-10 h-10 object-cover rounded border border-slate-300" onerror="this.src='https://placehold.co/100x100/1e3a8a/ffffff?text=Selfie'">
+                    </td>
+                    <td class="p-2.5 text-slate-600">${item.tanggal}</td>
+                    <td class="p-2.5 font-bold text-slate-800">${item.namaSales}<br><span class="text-[10px] text-slate-500 font-normal">NPK: ${item.npk || '-'}</span></td>
+                    <td class="p-2.5 text-slate-600">${item.alamatUsaha}</td>
+                    <td class="p-2.5 text-slate-600">${item.picHp}</td>
+                    <td class="p-2.5 text-slate-600 font-semibold">${item.ekosistem}</td>
+                    <td class="p-2.5 text-slate-600">${item.aktivitas}</td>
+                    <td class="p-2.5 text-slate-600">${item.hasil}</td>
+                    <td class="p-2.5 text-blue-800 font-bold">${item.actionPlan}</td>
+                    <td class="p-2.5 text-center">
+                        <button type="button" onclick="playBeep(250); deleteVisitRecord('${item.docId || ''}', ${item.id})" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2.5 py-1 rounded text-[10px] font-bold">Hapus</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function deleteVisitRecord(docId, id) {
+            try {
+                if (docId && docId !== 'undefined' && window.db && window.auth && window.auth.currentUser) {
+                    const userId = window.auth.currentUser.uid;
+                    await deleteDoc(doc(window.db, 'artifacts', window.appId, 'users', userId, 'cbn_visit_records', docId));
+                }
+                let saved = JSON.parse(localStorage.getItem('cbn_visit_records') || '[]');
+                saved = saved.filter(r => r.id !== id);
+                localStorage.setItem('cbn_visit_records', JSON.stringify(saved));
+                renderVisitTable();
+                showToast('Data visit berhasil dihapus.', 'info');
+            } catch(e) {
+                console.error("Visit delete error:", e);
+                renderVisitTable();
             }
         }
 
