@@ -378,14 +378,14 @@
                             <span class="font-semibold">Biaya Pendaftaran:</span>
                             <div class="flex items-center gap-1">
                                 <span class="font-bold">Rp</span>
-                                <input type="text" id="inputRegFee" value="100000" oninput="calculateTotal()" class="border border-slate-300 rounded px-2 py-1 text-xs w-28 font-bold text-right">
+                                <input type="text" id="inputRegFee" value="" oninput="calculateTotal()" class="border border-slate-300 rounded px-2 py-1 text-xs w-28 font-bold text-right">
                             </div>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="font-semibold">Biaya Bulanan:</span>
                             <div class="flex items-center gap-1">
                                 <span class="font-bold">Rp</span>
-                                <input type="text" id="inputMonthlyFeeCustom" value="299000" oninput="calculateTotal()" class="border border-slate-300 rounded px-2 py-1 text-xs w-28 font-bold text-right">
+                                <input type="text" id="inputMonthlyFeeCustom" value="299000" oninput="manualMonthlyEdited=true; calculateTotal()" class="border border-slate-300 rounded px-2 py-1 text-xs w-28 font-bold text-right">
                             </div>
                         </div>
                         <div class="flex justify-between items-center">
@@ -460,7 +460,7 @@
                             <canvas id="sigCanvas1" class="w-full h-full cursor-crosshair"></canvas>
                         </div>
                         <button type="button" onclick="clearSignature('1')" class="text-[10px] text-rose-600 hover:underline mb-1 font-bold">Hapus Tanda Tangan</button>
-                        <input type="text" placeholder="Nama Terang Pelanggan" class="w-full border border-slate-300 rounded px-2 py-1 text-center font-bold text-xs">
+                        <input type="text" id="sigName1" placeholder="Nama Terang Pelanggan" class="w-full border border-slate-300 rounded px-2 py-1 text-center font-bold text-xs">
                     </div>
                     <!-- Sales -->
                     <div class="border border-slate-300 rounded p-2 flex flex-col items-center bg-slate-50">
@@ -469,7 +469,7 @@
                             <canvas id="sigCanvas2" class="w-full h-full cursor-crosshair"></canvas>
                         </div>
                         <button type="button" onclick="clearSignature('2')" class="text-[10px] text-rose-600 hover:underline mb-1 font-bold">Hapus Tanda Tangan</button>
-                        <input type="text" placeholder="Nama Terang Sales" class="w-full border border-slate-300 rounded px-2 py-1 text-center font-bold text-xs">
+                        <input type="text" id="sigName2" placeholder="Nama Terang Sales" class="w-full border border-slate-300 rounded px-2 py-1 text-center font-bold text-xs">
                     </div>
                     <!-- Verifikator -->
                     <div class="border border-slate-300 rounded p-2 flex flex-col items-center bg-slate-50">
@@ -478,7 +478,7 @@
                             <canvas id="sigCanvas3" class="w-full h-full cursor-crosshair"></canvas>
                         </div>
                         <button type="button" onclick="clearSignature('3')" class="text-[10px] text-rose-600 hover:underline mb-1 font-bold">Hapus Tanda Tangan</button>
-                        <input type="text" placeholder="Nama Terang Verifikator" class="w-full border border-slate-300 rounded px-2 py-1 text-center font-bold text-xs">
+                        <input type="text" id="sigName3" placeholder="Nama Terang Verifikator" class="w-full border border-slate-300 rounded px-2 py-1 text-center font-bold text-xs">
                     </div>
                 </div>
             </div>
@@ -644,6 +644,8 @@
         }
 
         let manualTotalOverride = false;
+        let manualMonthlyEdited = false;
+
         function parseNumber(val) {
             if (!val || val === '') return 0;
             const num = parseInt(val.toString().replace(/[^0-9]/g, ''));
@@ -658,23 +660,18 @@
                 else if (activePaket === '2') paketPrice = parseNumber(document.getElementById('paketPrice2')?.value);
                 else if (activePaket === '3') paketPrice = parseNumber(document.getElementById('paketPrice3')?.value);
 
+                if (!manualMonthlyEdited) {
+                    const monthlyInputElem = document.getElementById('inputMonthlyFeeCustom');
+                    if (monthlyInputElem) monthlyInputElem.value = paketPrice;
+                }
+
                 let addonSum = 0;
                 if (document.getElementById('addon1')?.checked) addonSum += parseNumber(document.getElementById('addonPrice1')?.value);
                 if (document.getElementById('addon2')?.checked) addonSum += parseNumber(document.getElementById('addonPrice2')?.value);
                 if (document.getElementById('addon3')?.checked) addonSum += parseNumber(document.getElementById('addonPrice3')?.value);
 
                 const regFee = parseNumber(document.getElementById('inputRegFee')?.value);
-                
-                const monthlyInputElem = document.getElementById('inputMonthlyFeeCustom');
-                let monthlyFee = 0;
-                if (monthlyInputElem) {
-                    if (monthlyInputElem.value === '') {
-                        monthlyFee = 0;
-                    } else {
-                        monthlyFee = parseNumber(monthlyInputElem.value);
-                    }
-                }
-
+                const monthlyFee = parseNumber(document.getElementById('inputMonthlyFeeCustom')?.value);
                 const addonFee = parseNumber(document.getElementById('inputAddonFeeCustom')?.value);
 
                 const subtotal = regFee + monthlyFee + addonFee;
@@ -779,16 +776,15 @@
                         const userId = window.auth.currentUser.uid;
                         const colRef = collection(window.db, 'artifacts', window.appId, 'users', userId, 'cbn_form_records');
                         await addDoc(colRef, data);
-                        showToast('Data berhasil dikirim ke Cloud & Lokal, Formulir dikosongkan!', 'success');
+                        showToast('Data berhasil disimpan ke Cloud & Lokal, Formulir dikosongkan!', 'success');
                     } catch (cloudErr) {
                         console.warn("Cloud write failed, stored locally:", cloudErr);
-                        showToast('Data berhasil dikirim (Mode Lokal), Formulir dikosongkan.', 'success');
+                        showToast('Data berhasil disimpan (Mode Lokal), Formulir dikosongkan.', 'success');
                     }
                 } else {
-                    showToast('Data berhasil dikirim ke Data Tersimpan.', 'success');
+                    showToast('Data berhasil disimpan ke Data Tersimpan.', 'success');
                 }
 
-                // Reset / clear form data after successful save
                 resetForm();
                 renderSavedTable();
             } catch(e) {
@@ -980,11 +976,16 @@
             if (document.getElementById('tempatLahir')) document.getElementById('tempatLahir').value = '';
             if (document.getElementById('inputMonthlyFeeCustom')) document.getElementById('inputMonthlyFeeCustom').value = '299000';
             if (document.getElementById('inputAddonFeeCustom')) document.getElementById('inputAddonFeeCustom').value = '0';
-            if (document.getElementById('inputRegFee')) document.getElementById('inputRegFee').value = '100000';
+            if (document.getElementById('inputRegFee')) document.getElementById('inputRegFee').value = '';
 
             manualTotalOverride = false;
+            manualMonthlyEdited = false;
             calculateTotal();
-            for (let i = 1; i <= 3; i++) clearSignature(i.toString());
+            for (let i = 1; i <= 3; i++) {
+                clearSignature(i.toString());
+                const sigName = document.getElementById(`sigName${i}`);
+                if (sigName) sigName.value = '';
+            }
             showToast('Formulir berhasil di-refresh dan dikosongkan.', 'info');
         }
 
@@ -1082,31 +1083,69 @@
                 const ctx = canvas.getContext('2d');
                 let drawing = false;
 
-                canvas.width = canvas.parentElement.clientWidth;
-                canvas.height = canvas.parentElement.clientHeight;
+                // Ensure canvas size is properly set based on container dimensions
+                const rect = canvas.getBoundingClientRect();
+                canvas.width = rect.width || 250;
+                canvas.height = rect.height || 96;
 
-                canvas.addEventListener('mousedown', (e) => { drawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
-                canvas.addEventListener('mousemove', (e) => { if (drawing) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } });
-                window.addEventListener('mouseup', () => { drawing = false; });
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                const getPos = (e) => {
+                    const r = canvas.getBoundingClientRect();
+                    const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+                    const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+                    return {
+                        x: (clientX - r.left) * (canvas.width / r.width),
+                        y: (clientY - r.top) * (canvas.height / r.height)
+                    };
+                };
+
+                canvas.addEventListener('mousedown', (e) => {
+                    drawing = true;
+                    const pos = getPos(e);
+                    ctx.beginPath();
+                    ctx.moveTo(pos.x, pos.y);
+                    e.preventDefault();
+                });
+
+                canvas.addEventListener('mousemove', (e) => {
+                    if (!drawing) return;
+                    const pos = getPos(e);
+                    ctx.lineTo(pos.x, pos.y);
+                    ctx.stroke();
+                    e.preventDefault();
+                });
+
+                canvas.addEventListener('mouseup', () => {
+                    drawing = false;
+                });
+
+                canvas.addEventListener('mouseleave', () => {
+                    drawing = false;
+                });
 
                 canvas.addEventListener('touchstart', (e) => {
                     drawing = true;
-                    const rect = canvas.getBoundingClientRect();
-                    const touch = e.touches[0];
+                    const pos = getPos(e);
                     ctx.beginPath();
-                    ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                    ctx.moveTo(pos.x, pos.y);
                     e.preventDefault();
                 }, { passive: false });
+
                 canvas.addEventListener('touchmove', (e) => {
-                    if (drawing) {
-                        const rect = canvas.getBoundingClientRect();
-                        const touch = e.touches[0];
-                        ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
-                        ctx.stroke();
-                    }
+                    if (!drawing) return;
+                    const pos = getPos(e);
+                    ctx.lineTo(pos.x, pos.y);
+                    ctx.stroke();
                     e.preventDefault();
                 }, { passive: false });
-                window.addEventListener('touchend', () => { drawing = false; });
+
+                canvas.addEventListener('touchend', () => {
+                    drawing = false;
+                });
             }
         }
 
