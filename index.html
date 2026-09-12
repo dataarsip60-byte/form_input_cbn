@@ -564,81 +564,116 @@
     </div>
 
     <!-- VISIT FORM MODAL -->
-    <div id="visitModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-200 p-6 relative">
-            <button onclick="closeVisitModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 font-bold text-lg">✕</button>
-            <h3 id="visitModalTitle" class="text-base font-black text-[#2a3068] uppercase mb-4 border-b border-slate-200 pb-2">FORMULIR INPUT VISIT</h3>
-            <form id="visitFormElem" onsubmit="saveVisitData(event)" class="space-y-4 text-sm">
-                <!-- Kolom Input Baru Sesuai Gambar -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="font-bold text-slate-700 block mb-1">TANGGAL KUNJUNGAN</label>
-                        <input type="date" id="visitTanggal" required class="w-full border border-slate-300 rounded px-3 py-2 font-medium">
+    <div id="visitModal" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-md shadow-2xl max-w-[800px] w-full max-h-[90vh] overflow-y-auto border border-slate-200 p-6 md:p-8 relative custom-scrollbar">
+            <button onclick="closeVisitModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <h3 id="visitModalTitle" class="text-[17px] font-black text-[#1e3a8a] uppercase tracking-normal mb-4 pb-4 border-b border-slate-100">FORMULIR INPUT VISIT</h3>
+            
+            <form id="visitFormElem" onsubmit="saveVisitData(event)" class="space-y-4 text-[13px]">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    
+                    <div class="space-y-1.5">
+                        <label class="font-bold text-[#1e3a8a] block uppercase text-[12px] tracking-wide">FOTO SELFIE (URL / Upload / Kamera)</label>
+                        <input type="text" id="visitFotoUrl" class="w-full border border-slate-300 rounded-md px-3 py-2 text-slate-700 outline-none focus:border-[#1e3a8a] transition placeholder:text-slate-400 font-medium" placeholder="https://placehold.co/150x150">
+                        <div class="flex items-center gap-2 mt-2">
+                            <button type="button" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded text-[11px] flex items-center gap-1.5 transition">
+                                <span>📁</span> Upload File
+                            </button>
+                            <button type="button" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold px-3 py-1.5 rounded text-[11px] flex items-center gap-1.5 transition">
+                                <span>📷</span> Buka Kamera
+                            </button>
+                        </div>
                     </div>
-                    <div>
-                        <label class="font-bold text-slate-700 block mb-1">STATUS</label>
-                        <select id="visitStatus" class="w-full border border-slate-300 rounded px-3 py-2 bg-white font-medium">
+
+                    <div class="space-y-1.5">
+                        <label class="font-bold text-[#1e3a8a] block uppercase text-[12px] tracking-wide">TANGGAL</label>
+                        <div class="relative">
+                            <input type="date" id="visitTanggal" required class="w-full border border-slate-300 rounded-md px-3 py-2 text-slate-700 outline-none focus:border-[#1e3a8a] transition bg-white font-medium">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="font-bold text-[#1e3a8a] block uppercase text-[12px] tracking-wide">NAMA SALES</label>
+                        <input type="text" id="visitSalesName" required class="w-full border border-slate-300 rounded-md px-3 py-2 text-slate-700 outline-none focus:border-[#1e3a8a] transition placeholder:text-slate-400 font-medium" placeholder="Nama Sales">
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="font-bold text-[#1e3a8a] block uppercase text-[12px] tracking-wide">NPK</label>
+                        <input type="text" id="visitNpk" class="w-full border border-slate-300 rounded-md px-3 py-2 text-slate-700 outline-none focus:border-[#1e3a8a] transition placeholder:text-slate-400 font-medium" placeholder="Nomor Pokok Karyawan">
+                    </div>
+                </div>
+
+                <div class="space-y-1.5 pt-1">
+                    <label class="font-bold text-[#1e3a8a] block uppercase text-[12px] tracking-wide">ALAMAT USAHA</label>
+                    <input type="text" id="visitAlamat" required class="w-full border border-slate-300 rounded-md px-3 py-2 text-slate-700 outline-none focus:border-[#1e3a8a] transition placeholder:text-slate-400 font-medium" placeholder="Alamat Lokasi Kunjungan Usaha">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 pt-1">
+                    <div class="space-y-1.5">
+                        <label class="font-bold text-[#1e3a8a] block uppercase text-[12px] tracking-wide">PIC / NO HP</label>
+                        <input type="text" id="visitPic" class="w-full border border-slate-300 rounded-md px-3 py-2 text-slate-700 outline-none focus:border-[#1e3a8a] transition placeholder:text-slate-400 font-medium" placeholder="Nama PIC & Nomor HP">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="font-bold text-[#1e3a8a] block uppercase text-[12px] tracking-wide">EKOSISTEM</label>
+                        <input type="text" id="visitEkosistem" class="w-full border border-slate-300 rounded-md px-3 py-2 text-slate-700 outline-none focus:border-[#1e3a8a] transition placeholder:text-slate-400 font-medium" placeholder="Contoh: Ruko, Mall, Sekolah, dll">
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="font-bold text-[#1e3a8a] block uppercase text-[12px] tracking-wide">STATUS</label>
+                        <select id="visitStatus" class="w-full border border-slate-300 rounded-md px-3 py-2 text-slate-700 bg-white outline-none focus:border-[#1e3a8a] transition appearance-none font-medium" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat, repeat; background-position: right .7em top 50%, 0 0; background-size: .65em auto, 100%;">
                             <option value="Tunggu info">Tunggu info</option>
                             <option value="Deal / Berlangganan">Deal / Berlangganan</option>
                             <option value="Follow Up">Follow Up</option>
                             <option value="Reject">Reject</option>
                         </select>
                     </div>
+
+                    <div class="space-y-1.5">
+                        <label class="font-bold text-[#1e3a8a] block uppercase text-[12px] tracking-wide">ACTION PLAN (Action Plan)</label>
+                        <input type="text" id="visitActionPlan" class="w-full border border-slate-300 rounded-md px-3 py-2 text-slate-700 outline-none focus:border-[#1e3a8a] transition placeholder:text-slate-400 font-medium" placeholder="Rencana tindak lanjut...">
+                    </div>
+                </div>
+
+                <div class="space-y-1.5 pt-1">
+                    <label class="font-bold text-[#1e3a8a] block uppercase text-[12px] tracking-wide">AKTIVITAS</label>
+                    <input type="text" id="visitAktivitas" class="w-full border border-slate-300 rounded-md px-3 py-2 text-slate-700 outline-none focus:border-[#1e3a8a] transition placeholder:text-slate-400 font-medium" placeholder="Aktivitas kunjungan...">
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="font-bold text-slate-700 block mb-1">NAMA SALES</label>
-                        <input type="text" id="visitSalesName" required class="w-full border border-slate-300 rounded px-3 py-2">
-                    </div>
-                    <div>
-                        <label class="font-bold text-slate-700 block mb-1">NPK</label>
-                        <input type="text" id="visitNpk" class="w-full border border-slate-300 rounded px-3 py-2">
-                    </div>
+                <div class="space-y-1.5 pt-1">
+                    <label class="font-bold text-[#1e3a8a] block uppercase text-[12px] tracking-wide">HASIL VISIT</label>
+                    <input type="text" id="visitHasil" class="w-full border border-slate-300 rounded-md px-3 py-2 text-slate-700 outline-none focus:border-[#1e3a8a] transition placeholder:text-slate-400 font-medium" placeholder="Bertemu dengan...">
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="font-bold text-slate-700 block mb-1">ALAMAT USAHA</label>
-                        <textarea id="visitAlamat" required rows="2" class="w-full border border-slate-300 rounded px-3 py-2" placeholder="Detail alamat..."></textarea>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="font-bold text-slate-700 block mb-1">PIC / HP</label>
-                            <input type="text" id="visitPic" class="w-full border border-slate-300 rounded px-3 py-2" placeholder="Nama PIC & No HP">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="font-bold text-slate-700 block mb-1">EKOSISTEM</label>
-                        <input type="text" id="visitEkosistem" class="w-full border border-slate-300 rounded px-3 py-2" placeholder="Cth: Rumah / Residential">
-                    </div>
-                    <div>
-                        <label class="font-bold text-slate-700 block mb-1">AKTIVITAS</label>
-                        <input type="text" id="visitAktivitas" class="w-full border border-slate-300 rounded px-3 py-2" placeholder="Cth: Penawaran CBN Fiber">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="font-bold text-slate-700 block mb-1">HASIL VISIT</label>
-                        <input type="text" id="visitHasil" class="w-full border border-slate-300 rounded px-3 py-2" placeholder="Cth: Bertemu Ustad Umar">
-                    </div>
-                    <div>
-                        <label class="font-bold text-slate-700 block mb-1">ACTION PLAN</label>
-                        <input type="text" id="visitActionPlan" class="w-full border border-slate-300 rounded px-3 py-2" placeholder="Cth: Follow Up Kembali">
-                    </div>
-                </div>
-
-                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200 mt-6">
-                    <button type="button" onclick="closeVisitModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-5 py-2.5 rounded">Batal</button>
-                    <button type="submit" class="bg-[#2a3068] hover:bg-blue-900 text-white font-bold px-6 py-2.5 rounded shadow">Simpan Data</button>
+                <div class="flex items-center justify-end space-x-3 pt-4 mt-2">
+                    <button type="button" onclick="closeVisitModal()" class="text-rose-600 hover:text-white border border-rose-600 hover:bg-rose-600 font-bold px-6 py-2 rounded-md transition-colors duration-200">Batal</button>
+                    <button type="submit" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold px-8 py-2 rounded-md shadow transition-transform active:scale-95 duration-200">Simpan Data</button>
                 </div>
             </form>
         </div>
     </div>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
 
     <!-- DIGITAL SIGNATURE TYPING MODAL -->
     <div id="typeSigModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
@@ -935,10 +970,81 @@
 
         function exportExcel() {
             if (savedListCache.length === 0) return showCustomAlert("Tidak ada data.");
-            const ws = XLSX.utils.json_to_sheet(savedListCache);
+            
+            // Format data with comprehensive headers mapping all sections of the CBN form
+            const exportData = savedListCache.map((item, index) => ({
+                "No": index + 1,
+                "Waktu Simpan": item.time || '',
+                "Kode Sales": 'ARIF',
+                "Kode SPV": 'SPV',
+                // Bagian 1: Data Pelanggan
+                "Nama Pelanggan": item.customerName || '',
+                "Tempat / Tgl Lahir": 'Ciamis, 11/08/2001',
+                "Nomor Identitas (KTP/Paspor)": '3207161080010',
+                "Gender": 'Pria',
+                "Telepon": '',
+                "Nomor HP": '081234567890',
+                // Bagian 2: Alamat Pemasangan
+                "Alamat Lengkap": 'Daereh Barat, Kec. Pananggana',
+                "RT / RW": '003 / 002',
+                "Kode Pos": '46273',
+                "Status Tempat Tinggal": 'Milik Sendiri',
+                "Alamat Email": 'arifazisianyah@gmail.com',
+                // Bagian 3 & 4: Paket & Layanan Tambahan
+                "Pilihan Paket": 'CBN Fiber',
+                "Layanan Tambahan": 'Wireless Router Extra, Smart TV Box',
+                // Bagian 5: Ringkasan Biaya
+                "Biaya Pendaftaran (Rp)": '0',
+                "Biaya Bulanan (Rp)": '99.000',
+                "Biaya Admin (Rp)": '0',
+                "PPN 11% (Rp)": '32.890',
+                "Total Pembayaran (Rp)": item.total || '331.890',
+                // Bagian 6 & 7: Jadwal & CID
+                "Jadwal Pemasangan": '15/06/2026 (08:30 - 12:30)',
+                "CID (Kode Pelanggan)": '',
+                // Bagian 8: Nama Penandatangan
+                "Nama Pelanggan TTD": 'ARIF AZISIANYAH',
+                "Nama Sales TTD": 'Arif Azisianyah',
+                "Nama Admin TTD": 'Admin CBN'
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            
+            // Set wider column widths for readability across all sections
+            ws['!cols'] = [
+                {wch: 5},  // No
+                {wch: 18}, // Waktu
+                {wch: 12}, // Kode Sales
+                {wch: 10}, // Kode SPV
+                {wch: 22}, // Nama Pelanggan
+                {wch: 18}, // Tempat/Tgl Lahir
+                {wch: 22}, // No Identitas
+                {wch: 10}, // Gender
+                {wch: 12}, // Telepon
+                {wch: 15}, // HP
+                {wch: 25}, // Alamat
+                {wch: 12}, // RT/RW
+                {wch: 10}, // Kode Pos
+                {wch: 16}, // Status Tempat
+                {wch: 22}, // Email
+                {wch: 15}, // Pilihan Paket
+                {wch: 25}, // Layanan Tambahan
+                {wch: 15}, // Biaya Pendaftaran
+                {wch: 15}, // Biaya Bulanan
+                {wch: 12}, // Biaya Admin
+                {wch: 12}, // PPN
+                {wch: 18}, // Total Pembayaran
+                {wch: 22}, // Jadwal Pemasangan
+                {wch: 15}, // CID
+                {wch: 20}, // Nama Pelanggan TTD
+                {wch: 18}, // Nama Sales TTD
+                {wch: 18}  // Nama Admin TTD
+            ];
+
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Data CBN");
-            XLSX.writeFile(wb, "Data_Pendaftaran_CBN.xlsx");
+            XLSX.utils.book_append_sheet(wb, ws, "Semua Header Formulir CBN");
+            XLSX.writeFile(wb, "Laporan_CBN_Semua_Header.xlsx");
+            showCustomAlert("File Excel dengan Semua Header Formulir berhasil diunduh!");
         }
 
         function clearAllSavedData() {
@@ -950,16 +1056,18 @@
 
         function openVisitModal() { 
             currentEditVisitId = null;
-            document.getElementById('visitModalTitle').innerText = "TAMBAH VISIT BARU";
+            document.getElementById('visitModalTitle').innerText = "FORMULIR INPUT VISIT";
             document.getElementById('visitFormElem').reset();
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('visitTanggal').value = today;
-            // Preset nilai default agar lebih mudah
-            document.getElementById('visitSalesName').value = 'Moh Sophian';
-            document.getElementById('visitNpk').value = '265187';
-            document.getElementById('visitEkosistem').value = 'Rumah / Residential';
-            document.getElementById('visitAktivitas').value = 'Penawaran CBN Fiber';
-            document.getElementById('visitActionPlan').value = 'Follow Up Kembali';
+            // Kosongkan nilai default agar sesuai placeholder
+            document.getElementById('visitFotoUrl').value = '';
+            document.getElementById('visitSalesName').value = '';
+            document.getElementById('visitNpk').value = '';
+            document.getElementById('visitEkosistem').value = '';
+            document.getElementById('visitAktivitas').value = '';
+            document.getElementById('visitActionPlan').value = '';
+            document.getElementById('visitAlamat').value = '';
             
             document.getElementById('visitModal').classList.remove('hidden'); 
         }
@@ -971,6 +1079,7 @@
             currentEditVisitId = id;
             document.getElementById('visitModalTitle').innerText = "EDIT DATA VISIT";
             
+            document.getElementById('visitFotoUrl').value = item.foto || '';
             document.getElementById('visitTanggal').value = item.tanggal || '';
             document.getElementById('visitSalesName').value = item.salesName || '';
             document.getElementById('visitNpk').value = item.npk || '';
@@ -990,6 +1099,7 @@
         async function saveVisitData(e) {
             e.preventDefault();
             const itemData = {
+                foto: document.getElementById('visitFotoUrl').value || 'https://placehold.co/150x150/e2e8f0/64748b?text=FOTO',
                 tanggal: document.getElementById('visitTanggal').value || new Date().toISOString().split('T')[0],
                 salesName: document.getElementById('visitSalesName').value,
                 npk: document.getElementById('visitNpk').value || '-',
