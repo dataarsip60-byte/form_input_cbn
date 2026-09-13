@@ -3,1517 +3,1427 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulir Pendaftaran Layanan CBN</title>
-    
+    <title>Formulir Pendaftaran CBN & Visit Sales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        cbn: {
-                            blue: '#005691',
-                            lightBlue: '#e6f0f8',
-                            darkBlue: '#003d66'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- html2canvas Library for Direct PNG & PDF Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- html2pdf Library for Direct PDF Downloading -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- SheetJS (XLSX) Library for Excel Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9;
-            color: #1e293b;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
-
-        body.dark {
-            background-color: #0f172a;
-            color: #f1f5f9;
-        }
-
-        /* Character Box Styling for Grid Inputs - Explicitly visible & bold, flexible case */
-        .char-box {
-            width: 18px;
-            height: 22px;
+        .form-grid-box {
+            border: 1px solid #1e3a8a;
+            background-color: #ffffff;
             text-align: center;
-            border: 1px solid #94a3b8 !important;
+            font-weight: 700;
+            color: #1e3a8a;
+            width: 15px;
+            height: 19px;
+            font-size: 10px;
+            line-height: 17px;
+            padding: 0;
+            margin: 0 0.5px;
             border-radius: 2px;
-            font-size: 12px;
-            font-weight: 800 !important;
-            background-color: #ffffff !important;
-            color: #020617 !important;
-            outline: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1px;
-            margin-bottom: 2px;
-            /* Removed global text-transform: uppercase; to allow flexible lowercase/uppercase/numbers */
         }
-
-        .char-box:focus {
-            border-color: #005691 !important;
-            box-shadow: 0 0 0 2px rgba(0, 86, 145, 0.2);
-            background-color: #e0f2fe !important;
+        .form-grid-dot {
+            border: 1px dotted #1e3a8a;
+            background-color: #ffffff;
+            text-align: center;
+            font-weight: 700;
+            color: #1e3a8a;
+            width: 15px;
+            height: 19px;
+            font-size: 10px;
+            line-height: 17px;
+            padding: 0;
+            margin: 0 0.5px;
+            border-radius: 2px;
         }
-        
-        body.dark .char-box {
-            background-color: #1e293b !important;
-            border-color: #475569 !important;
-            color: #f8fafc !important;
-        }
-
-        /* General Input Fields */
-        input[type="text"]:not(.char-box), input[type="number"], select {
-            font-weight: 700 !important;
-            color: #020617 !important;
-            font-size: 11px !important;
+        .form-grid-line {
+            border: none;
+            border-bottom: 1px solid #1e3a8a;
             background-color: transparent;
+            border-radius: 0;
+            font-weight: 600;
+            color: #1e3a8a;
+            height: 19px;
+            font-size: 10px;
+            padding: 0 2px;
         }
-        body.dark input[type="text"]:not(.char-box), body.dark input[type="number"], body.dark select {
-            color: #f8fafc !important;
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.2);
         }
-
-        /* Package Price Input */
-        .pkg-price-input {
-            font-size: 11px !important;
-            font-weight: 800 !important;
-            background-color: white !important;
+        .signature-canvas {
+            touch-action: none;
+            cursor: crosshair;
         }
-        body.dark .pkg-price-input {
-            background-color: #334155 !important;
-            color: white !important;
-        }
-
-        /* Print Media Queries */
         @media print {
+            body {
+                background-color: white;
+                margin: 0;
+                padding: 0;
+            }
             .no-print {
                 display: none !important;
             }
-            body {
-                background-color: #ffffff;
-                color: #000000;
-                padding: 0;
-            }
-            .print-container {
+            #sectionForm {
+                transform: scale(0.95);
+                transform-origin: top center;
                 box-shadow: none !important;
                 border: none !important;
-                padding: 0 !important;
                 width: 100% !important;
                 max-width: 100% !important;
+                margin: 0 auto !important;
             }
-            .char-box {
-                color: #000000 !important;
-                font-weight: 900 !important;
-                border-color: #000000 !important;
-                background-color: #ffffff !important;
-            }
-            /* Hide empty rows in print if needed, but usually keep structure */
         }
-
-        /* Signature Box Container */
-        .sig-box-container {
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            background-color: #ffffff;
-            position: relative;
-            height: 80px;
-            overflow: hidden;
-            cursor: crosshair;
-        }
-        body.dark .sig-box-container {
-            background-color: #1e293b;
-            border-color: #475569;
-        }
-        .sig-canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-        
-        /* Table Styles for Tab 2 */
-        .data-table th { background-color: #f8fafc; color: #475569; font-size: 11px; text-transform: uppercase; font-weight: 700; padding: 10px; border-bottom: 2px solid #e2e8f0;}
-        .data-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 12px; }
-        body.dark .data-table th { background-color: #0f172a; color: #94a3b8; border-color: #334155; }
-        body.dark .data-table td { border-color: #334155; }
-        
-        /* Tab content visibility */
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        
-        /* Hide scrollbar for grid boxes */
-        .grid-container { display: flex; flex-wrap: wrap; }
     </style>
 </head>
-<body class="py-6 px-2 sm:px-4">
+<body class="py-3 px-2 sm:px-4">
 
-    <div class="max-w-5xl mx-auto mb-4 no-print space-y-3">
-        <!-- Top Header & Global Actions -->
-        <div class="bg-white dark:bg-slate-800 p-3 sm:p-4 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-                <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-cbn-blue text-white font-bold text-base shadow-sm">
-                    <i class="fa-solid fa-file-signature"></i>
-                </span>
-                <div>
-                    <h1 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base leading-tight">Sistem Pendaftaran Layanan CBN</h1>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Pengisian Formulir & Manajemen Data Digital</p>
-                </div>
-                <!-- Status Badge -->
-                <div class="ml-2 text-[10px] px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold flex items-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-database text-emerald-600"></i> Memori Lokal Aktif
-                </div>
+    <div class="max-w-[880px] mx-auto mb-3 bg-white p-3 rounded-xl shadow-md border border-slate-200 no-print flex flex-col gap-2">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
+            <div class="flex items-center space-x-1.5">
+                <button id="tabForm" onclick="switchTab('form')" class="flex items-center space-x-1 px-3.5 py-1.5 text-xs font-bold rounded-lg bg-blue-900 text-white transition shadow">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span>Formulir Pendaftaran</span>
+                </button>
+                <button id="tabSaved" onclick="switchTab('saved')" class="flex items-center space-x-1 px-3.5 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    <span id="savedCountLabel">Tersimpan ( 3 )</span>
+                </button>
+                <button id="tabVisit" onclick="switchTab('visit')" class="flex items-center space-x-1 px-3.5 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <span id="visitCountLabel">VISIT SALES ( 11 )</span>
+                </button>
             </div>
 
-            <!-- Global Action Utilities (Lang & Theme Toggle) -->
-            <div class="flex items-center gap-2">
-                <button onclick="toggleLanguage()" id="langToggleBtn" class="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-600" title="Ubah Bahasa / Change Language">
-                    <i class="fa-solid fa-globe text-cbn-blue dark:text-blue-400"></i> <span id="currentLangLabel">ID</span>
-                </button>
-                <button onclick="toggleDarkMode()" id="themeToggleBtn" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs transition border border-slate-200 dark:border-slate-600" title="Ubah Mode Tampilan">
-                    <i id="themeIcon" class="fa-solid fa-moon text-cbn-blue dark:text-blue-400"></i>
-                </button>
+            <!-- Box Style Selectors -->
+            <div class="flex items-center space-x-2 text-xs">
+                <span class="font-bold text-slate-600">Gaya Kotak:</span>
+                <div class="inline-flex bg-slate-100 p-0.5 rounded border border-slate-200">
+                    <button id="btnBox" onclick="setBoxStyle('box')" class="px-2 py-0.5 text-[11px] font-bold rounded bg-blue-900 text-white transition">Kotak</button>
+                    <button id="btnDot" onclick="setBoxStyle('dot')" class="px-2 py-0.5 text-[11px] font-bold rounded text-slate-700 hover:text-slate-900 transition">Titik</button>
+                    <button id="btnLine" onclick="setBoxStyle('line')" class="px-2 py-0.5 text-[11px] font-bold rounded text-slate-700 hover:text-slate-900 transition">Garis</button>
+                </div>
             </div>
         </div>
 
-        <!-- Main Navigation Tabs & Form Actions -->
-        <div class="bg-white dark:bg-slate-800 p-2 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-2">
-            <!-- Tabs -->
-            <div class="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold w-full sm:w-auto overflow-x-auto">
-                <button id="navTabForm" onclick="switchMainTab('form')" class="px-4 py-2 rounded-lg bg-white dark:bg-slate-700 text-cbn-blue dark:text-white shadow-sm transition flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-pen-to-square"></i> <span>Formulir</span>
+        <!-- Action Buttons Row -->
+        <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap items-center gap-1.5">
+                <button onclick="saveCurrentData()" class="flex items-center space-x-1 bg-blue-800 hover:bg-blue-900 text-white px-3 py-1.5 rounded text-xs font-bold transition shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    <span>Simpan Data</span>
                 </button>
-                <button id="navTabSaved" onclick="switchMainTab('saved')" class="px-4 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-2 relative whitespace-nowrap">
-                    <i class="fa-solid fa-database"></i> <span>Data Tersimpan</span>
-                    <span id="savedCountBadge" class="bg-cbn-blue text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">0</span>
-                </button>
-                <button id="navTabDashboard" onclick="switchMainTab('dashboard')" class="px-4 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-2 relative whitespace-nowrap">
-                    <i class="fa-solid fa-chart-pie"></i> <span>Dashboard & Analitik</span>
+                <button onclick="resetForm()" class="flex items-center space-x-1 bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-xs font-bold transition shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    <span>Reset Form</span>
                 </button>
             </div>
-
-            <!-- Form Action Buttons (Visible only on Form tab) -->
-            <div id="formActionBar" class="flex flex-wrap items-center gap-2">
-                <button onclick="saveFormData()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition flex items-center gap-1.5 text-xs whitespace-nowrap">
-                    <i class="fa-solid fa-floppy-disk"></i> <span>Simpan Data</span>
+            <div class="flex items-center space-x-2">
+                <button onclick="exportPDF()" class="flex items-center space-x-1 bg-red-600 hover:bg-red-700 text-white px-3.5 py-1.5 rounded text-xs font-bold transition shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span>Ekspor PDF A4</span>
                 </button>
-                <button onclick="fillSampleData()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm transition flex items-center gap-1.5 text-xs whitespace-nowrap">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Isi Sample</span>
-                </button>
-                <button onclick="resetForm()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-medium rounded-lg transition flex items-center gap-1.5 text-xs whitespace-nowrap border border-slate-200 dark:border-slate-600" title="Reset Formulir">
-                    <i class="fa-solid fa-arrows-rotate text-cbn-blue dark:text-blue-400"></i>
-                </button>
-                <button onclick="downloadPDF()" class="px-3 py-1.5 bg-cbn-blue hover:bg-cbn-darkBlue text-white font-medium rounded-lg shadow-sm transition flex items-center gap-1.5 text-xs whitespace-nowrap">
-                    <i class="fa-solid fa-file-pdf"></i> PDF (1 Halaman)
-                </button>
-                <button onclick="downloadPNG()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm transition flex items-center gap-1.5 text-xs whitespace-nowrap">
-                    <i class="fa-solid fa-image"></i> Download PNG
+                <button onclick="exportPNG()" class="flex items-center space-x-1 bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded text-xs font-bold transition shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span>Ekspor PNG</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- TAB 1: FORMULIR -->
-    <div id="tabForm" class="tab-content active">
-        <!-- MAIN FORM CONTAINER (A4 Sheet Simulation) -->
-        <div id="formPrintArea" class="print-container max-w-[850px] mx-auto bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-lg shadow-xl border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 relative text-[10px] leading-tight font-medium">
-            
-            <!-- FORM HEADER & LOGO -->
-            <div class="flex justify-between items-start border-b-2 border-cbn-blue pb-3 mb-4">
+    <div id="sectionForm" class="max-w-[820px] mx-auto bg-white border border-slate-300 shadow-2xl rounded-sm text-slate-800 relative text-[9px] p-3 sm:p-4 space-y-2">
+        
+        <!-- Header Section -->
+        <div class="px-3 py-2 bg-slate-50 border-b-2 border-blue-900 flex flex-row justify-between items-center gap-2">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-900 text-white font-black text-sm px-2.5 py-1 rounded tracking-wider shadow">CBN</div>
                 <div>
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="font-extrabold text-3xl text-cbn-blue tracking-wider">CBN</span>
-                        <span class="text-[11px] text-slate-500 font-semibold border-l-2 border-slate-300 pl-2 ml-1">Cyberindo Aditama</span>
-                    </div>
-                    <h2 class="font-extrabold text-[13px] text-slate-900 dark:text-white tracking-wide mt-2">FORMULIR PENDAFTARAN LAYANAN</h2>
-                    <p class="italic text-[9px] text-slate-500 font-normal">SERVICE APPLICATION FORM</p>
+                    <div class="text-[7px] font-bold text-slate-500 uppercase tracking-widest">PT CYBERINDO ADITAMA</div>
+                    <h1 class="text-xs sm:text-sm font-black text-blue-950 uppercase tracking-wide">FORMULIR PENDAFTARAN LAYANAN & BERLAGGANAN</h1>
                 </div>
-                
-                <div class="text-right space-y-1.5 pt-2">
-                    <div class="flex items-center justify-end gap-2">
-                        <span class="font-bold text-[9px] text-slate-700 dark:text-slate-300">KODE SALES:</span>
-                        <div id="salesCodeBoxes" data-grid-count="9" class="grid-container"></div>
+            </div>
+            <div class="bg-white p-1.5 rounded border border-slate-300 shadow-sm space-y-1">
+                <div class="flex items-center justify-end space-x-1">
+                    <span class="font-extrabold text-[7.5px] text-slate-700">KODE SALES:</span>
+                    <div class="flex" id="salesCodeGroup">
+                        <input type="text" maxlength="1" value="A" class="grid-input form-grid-box">
+                        <input type="text" maxlength="1" value="R" class="grid-input form-grid-box">
+                        <input type="text" maxlength="1" value="I" class="grid-input form-grid-box">
+                        <input type="text" maxlength="1" value="F" class="grid-input form-grid-box">
+                        <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                        <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
                     </div>
-                    <div class="flex items-center justify-end gap-2">
-                        <span class="font-bold text-[9px] text-slate-700 dark:text-slate-300">KODE SPV:</span>
-                        <div id="spvCodeBoxes" data-grid-count="9" class="grid-container"></div>
+                </div>
+                <div class="flex items-center justify-end space-x-1">
+                    <span class="font-extrabold text-[7.5px] text-slate-700">KODE SPV:</span>
+                    <div class="flex" id="spvCodeGroup">
+                        <input type="text" maxlength="1" value="S" class="grid-input form-grid-box">
+                        <input type="text" maxlength="1" value="P" class="grid-input form-grid-box">
+                        <input type="text" maxlength="1" value="V" class="grid-input form-grid-box">
+                        <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                        <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                        <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- 1. DATA PELANGGAN / CUSTOMER DATA -->
-            <div class="mb-4">
-                <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px] flex justify-between items-center rounded-t">
-                    <span>DATA PELANGGAN / CUSTOMER DATA</span>
+        <div class="space-y-2">
+
+            <!-- Section 1: Data Pelanggan -->
+            <div class="border border-blue-900 rounded-sm overflow-hidden shadow-sm">
+                <div class="bg-blue-900 text-white px-2 py-1 font-bold text-[9px] flex justify-between items-center tracking-wide">
+                    <span>1. DATA PELANGGAN / CUSTOMER DATA</span>
+                    <span class="text-[7px] italic text-blue-200">Gunakan huruf cetak / kapital</span>
                 </div>
-                <div class="border-x border-b border-cbn-blue p-2 bg-slate-50/50 dark:bg-slate-900/50 space-y-2">
-                    
+                <div class="p-2 space-y-1.5 bg-white">
                     <!-- Nama Pelanggan -->
-                    <div class="flex items-start gap-1">
-                        <div class="w-40 pt-1 flex-shrink-0">
-                            <span class="font-bold block text-slate-800 dark:text-slate-200">NAMA PELANGGAN</span>
-                            <span class="italic text-[8px] text-slate-500 font-normal">Full Name</span>
+                    <div class="grid grid-cols-12 gap-1 items-center">
+                        <div class="col-span-4 sm:col-span-3">
+                            <div class="font-bold text-slate-900 text-[9px]">NAMA LENGKAP</div>
+                            <div class="text-[6.5px] text-slate-500">Sesuai KTP / Paspor</div>
                         </div>
-                        <div id="fullNameBoxes" data-grid-count="32" class="grid-container flex-1"></div>
-                    </div>
-
-                    <!-- Tempat / Tanggal Lahir -->
-                    <div class="flex items-center gap-1">
-                        <div class="w-40 flex-shrink-0">
-                            <span class="font-bold block text-slate-800 dark:text-slate-200">TEMPAT/TANGGAL LAHIR</span>
-                            <span class="italic text-[8px] text-slate-500 font-normal">Place/Date of birth</span>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2 flex-1">
-                            <input type="text" id="pobInput" placeholder="KOTA" class="border border-slate-400 dark:border-slate-600 rounded px-1.5 py-1 text-[10px] font-bold uppercase w-32 outline-none focus:border-cbn-blue">
-                            <span class="text-[8px] text-slate-400 italic">dd/mm/yyyy</span>
-                            <div id="dobBoxes" data-grid-count="8" class="grid-container"></div>
-                        </div>
-                    </div>
-
-                    <!-- Nomor Identitas & Jenis Kelamin -->
-                    <div class="flex flex-wrap items-center gap-1">
-                        <div class="w-40 flex-shrink-0">
-                            <span class="font-bold block text-slate-800 dark:text-slate-200">NOMOR IDENTITAS</span>
-                            <span class="italic text-[8px] text-slate-500 font-normal">ID Card No.</span>
-                        </div>
-                        <div id="idCardBoxes" data-grid-count="16" class="grid-container"></div>
-                        
-                        <div class="flex items-center gap-3 bg-white dark:bg-slate-800 px-3 py-1 border border-slate-300 dark:border-slate-600 rounded ml-4">
-                            <span class="font-bold text-[9px] text-slate-800 dark:text-slate-200">JENIS KELAMIN <span class="italic font-normal text-slate-500">Gender</span>:</span>
-                            <label class="inline-flex items-center gap-1 cursor-pointer">
-                                <input type="radio" name="gender" value="Pria" class="accent-cbn-blue" checked> <span class="font-bold">Pria</span> <span class="text-slate-400 italic font-normal">Male</span>
-                            </label>
-                            <label class="inline-flex items-center gap-1 cursor-pointer">
-                                <input type="radio" name="gender" value="Wanita" class="accent-cbn-blue"> <span class="font-bold">Wanita</span> <span class="text-slate-400 italic font-normal">Female</span>
-                            </label>
+                        <div class="col-span-8 sm:col-span-9 flex flex-wrap items-center">
+                            <input type="text" maxlength="1" value="A" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="R" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="I" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="F" class="grid-input form-grid-box">
+                            <span class="w-1.5"></span>
+                            <input type="text" maxlength="1" value="A" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="Z" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="I" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="A" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="N" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="S" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="Y" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="A" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="H" class="grid-input form-grid-box">
                         </div>
                     </div>
 
-                    <!-- Telepon Rumah & Telepon Selular -->
-                    <div class="flex flex-wrap items-center gap-1">
-                        <div class="w-40 flex-shrink-0">
-                            <span class="font-bold block text-slate-800 dark:text-slate-200">TELEPON RUMAH</span>
-                            <span class="italic text-[8px] text-slate-500 font-normal">Home Phone</span>
+                    <!-- Tempat / Tgl Lahir -->
+                    <div class="grid grid-cols-12 gap-1 items-center border-t border-slate-100 pt-1">
+                        <div class="col-span-4 sm:col-span-3">
+                            <div class="font-bold text-slate-900 text-[9px]">TEMPAT / TANGGAL LAHIR</div>
+                            <div class="text-[6.5px] text-slate-500">DD / MM / YYYY</div>
                         </div>
-                        <div id="homePhoneBoxes" data-grid-count="12" class="grid-container"></div>
-                        
-                        <div class="flex items-center gap-2 ml-4">
-                            <div class="flex-shrink-0">
-                                <span class="font-bold block text-slate-800 dark:text-slate-200">TELEPON SELULAR</span>
-                                <span class="italic text-[8px] text-slate-500 font-normal">Mobile Phone</span>
-                            </div>
-                            <div id="mobilePhoneBoxes" data-grid-count="13" class="grid-container"></div>
-                        </div>
-                    </div>
-
-                    <p class="text-[7.5px] text-slate-500 italic border-t border-slate-200 dark:border-slate-700 pt-1 mt-1">
-                        * Data yang tercantum harus sesuai dengan ID identitas pelanggan yang berlaku. / The data declared above must match with valid ID card.
-                    </p>
-                </div>
-            </div>
-
-            <!-- 2. ALAMAT PEMASANGAN / INSTALLATION ADDRESS -->
-            <div class="mb-4">
-                <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px] flex justify-between items-center rounded-t">
-                    <span>ALAMAT PEMASANGAN / INSTALLATION ADDRESS</span>
-                </div>
-                <div class="border-x border-b border-cbn-blue p-2 bg-slate-50/50 dark:bg-slate-900/50 space-y-2">
-                    
-                    <div class="flex items-start gap-1">
-                        <div class="w-40 pt-1 flex-shrink-0">
-                            <span class="font-bold block text-slate-800 dark:text-slate-200">ALAMAT PEMASANGAN</span>
-                            <span class="italic text-[8px] text-slate-500 font-normal">Installation Address</span>
-                        </div>
-                        <div class="flex-1">
-                            <div id="addressRow1Boxes" data-grid-count="32" class="grid-container mb-1"></div>
-                            <div class="flex items-center gap-1">
-                                <div id="addressRow2Boxes" data-grid-count="20" class="grid-container"></div>
-                                <div class="flex items-center gap-1 ml-2">
-                                    <span class="font-bold text-[9px]">RT</span>
-                                    <div id="rtBoxes" data-grid-count="3" class="grid-container"></div>
-                                    <span class="font-bold text-[9px] ml-1">RW</span>
-                                    <div id="rwBoxes" data-grid-count="3" class="grid-container"></div>
-                                    <span class="font-bold text-[9px] ml-2 block leading-none">KODE POS <br><span class="italic text-slate-500 font-normal text-[7px]">Zip Code</span></span>
-                                    <div id="zipBoxes" data-grid-count="5" class="grid-container ml-1"></div>
+                        <div class="col-span-8 sm:col-span-9 flex flex-wrap items-center gap-2">
+                            <input type="text" value="Ciamis" class="border border-slate-300 rounded px-1.5 py-0.5 text-slate-800 text-[9px] w-28 bg-white font-semibold">
+                            <div class="flex items-center space-x-1">
+                                <div class="flex">
+                                    <input type="text" maxlength="1" value="1" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="1" class="grid-input form-grid-box">
+                                </div>
+                                <span class="font-bold text-slate-500">/</span>
+                                <div class="flex">
+                                    <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="8" class="grid-input form-grid-box">
+                                </div>
+                                <span class="font-bold text-slate-500">/</span>
+                                <div class="flex">
+                                    <input type="text" maxlength="1" value="1" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="9" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="9" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="8" class="grid-input form-grid-box">
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-1 border-t border-slate-200 dark:border-slate-700 pt-1.5">
-                        <div class="w-40 flex-shrink-0">
-                            <span class="font-bold block text-slate-800 dark:text-slate-200">STATUS KEPEMILIKAN</span>
-                            <span class="italic text-[8px] text-slate-500 font-normal">Ownership Status</span>
+                    <!-- Nomor Identitas & Gender -->
+                    <div class="grid grid-cols-12 gap-1 items-center border-t border-slate-100 pt-1">
+                        <div class="col-span-4 sm:col-span-3">
+                            <div class="font-bold text-slate-900 text-[9px]">NOMOR IDENTITAS (KTP)</div>
+                            <div class="text-[6.5px] text-slate-500">16 Digit KTP</div>
                         </div>
-                        <div class="flex items-center gap-6 flex-1">
-                            <label class="inline-flex items-center gap-1 cursor-pointer">
-                                <input type="radio" name="ownership" value="Pemilik" class="accent-cbn-blue" checked> <span class="font-bold">Pemilik</span> <span class="text-slate-400 italic font-normal">Owner</span>
-                            </label>
-                            <label class="inline-flex items-center gap-1 cursor-pointer">
-                                <input type="radio" name="ownership" value="Penyewa" class="accent-cbn-blue"> <span class="font-bold">Penyewa</span> <span class="text-slate-400 italic font-normal">Renter</span>
-                            </label>
+                        <div class="col-span-8 sm:col-span-9 flex flex-wrap items-center justify-between gap-1">
+                            <div class="flex flex-wrap">
+                                <input type="text" maxlength="1" value="3" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="2" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="7" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="1" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="6" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="1" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="1" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="8" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="1" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="1" class="grid-input form-grid-box">
+                                <input type="text" maxlength="1" value="5" class="grid-input form-grid-box">
+                            </div>
+                            <div class="flex items-center space-x-1.5 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+                                <span class="font-bold text-slate-700 text-[8.5px]">GENDER:</span>
+                                <label class="flex items-center space-x-0.5 cursor-pointer font-medium"><input type="radio" name="gender" checked class="accent-blue-900"><span>Pria</span></label>
+                                <label class="flex items-center space-x-0.5 cursor-pointer font-medium"><input type="radio" name="gender" class="accent-blue-900"><span>Wanita</span></label>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-1 border-t border-slate-200 dark:border-slate-700 pt-1.5">
-                        <div class="w-40 flex-shrink-0">
-                            <span class="font-bold block text-slate-800 dark:text-slate-200">ALAMAT EMAIL</span>
-                            <span class="italic text-[8px] text-slate-500 font-normal">Email Address</span>
+                    <!-- Telepon & HP -->
+                    <div class="grid grid-cols-12 gap-1 items-center border-t border-slate-100 pt-1">
+                        <div class="col-span-4 sm:col-span-3">
+                            <div class="font-bold text-slate-900 text-[9px]">NOMOR TELEPON & HP</div>
+                            <div class="text-[6.5px] text-slate-500">Phone & Mobile Number</div>
                         </div>
-                        <div id="emailBoxes" data-grid-count="32" class="grid-container flex-1"></div>
+                        <div class="col-span-8 sm:col-span-9 flex flex-wrap items-center justify-between gap-1">
+                            <div class="flex items-center space-x-1">
+                                <span class="text-[7.5px] font-bold text-slate-600">TELP:</span>
+                                <div class="flex">
+                                    <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <span class="text-[7.5px] font-bold text-slate-600">HP:</span>
+                                <div class="flex flex-wrap">
+                                    <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="8" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="1" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="2" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="3" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="4" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="5" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="6" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="7" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="8" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="9" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. SERVICE PACKAGES & ADDITIONAL SERVICES GRID -->
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                
-                <!-- LEFT: PILIHAN PAKET LAYANAN -->
-                <div class="border border-cbn-blue rounded overflow-hidden flex flex-col">
-                    <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px]">
-                        PILIHAN PAKET LAYANAN / SERVICE PACKAGE OPTIONS
+            <div class="border border-blue-900 rounded-sm overflow-hidden shadow-sm">
+                <div class="bg-blue-900 text-white px-2 py-1 font-bold text-[9px] tracking-wide">2. ALAMAT PEMASANGAN / INSTALLATION ADDRESS</div>
+                <div class="p-2 space-y-1.5 bg-white">
+                    <!-- Alamat Lengkap -->
+                    <div class="grid grid-cols-12 gap-1 items-center">
+                        <div class="col-span-4 sm:col-span-3">
+                            <div class="font-bold text-slate-900 text-[9px]">ALAMAT PEMASANGAN</div>
+                            <div class="text-[6.5px] text-slate-500">Installation Address</div>
+                        </div>
+                        <div class="col-span-8 sm:col-span-9 flex flex-wrap items-center">
+                            <input type="text" maxlength="1" value="D" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="E" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="R" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="E" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="H" class="grid-input form-grid-box">
+                            <span class="w-1.5"></span>
+                            <input type="text" maxlength="1" value="B" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="A" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="R" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="A" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="T" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="." class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="C" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="I" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="A" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="M" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="I" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="S" class="grid-input form-grid-box">
+                        </div>
                     </div>
-                    <div class="p-3 space-y-3 bg-white dark:bg-slate-800 flex-1 flex flex-col justify-between">
-                        <div class="space-y-3">
-                            <!-- Package 1 -->
-                            <label class="flex items-center justify-between p-2 rounded cursor-pointer border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700">
-                                <div class="flex items-center gap-2">
-                                    <input type="radio" name="package" value="CBN Fiber" class="w-4 h-4 accent-cbn-blue" onchange="calculateCosts()">
+
+                    <!-- RT / RW / KODE POS -->
+                    <div class="grid grid-cols-12 gap-1 items-center border-t border-slate-100 pt-1">
+                        <div class="col-span-4 sm:col-span-3">
+                            <div class="font-bold text-slate-900 text-[9px]">RT / RW / KODE POS</div>
+                            <div class="text-[6.5px] text-slate-500">RT/RW & Postal Code</div>
+                        </div>
+                        <div class="col-span-8 sm:col-span-9 flex flex-wrap items-center justify-between gap-1">
+                            <div class="flex flex-wrap items-center space-x-1.5">
+                                <div class="flex items-center space-x-0.5">
+                                    <span class="text-[7.5px] font-bold text-slate-600">RT:</span>
+                                    <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="3" class="grid-input form-grid-box">
+                                </div>
+                                <div class="flex items-center space-x-0.5">
+                                    <span class="text-[7.5px] font-bold text-slate-600">RW:</span>
+                                    <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="2" class="grid-input form-grid-box">
+                                </div>
+                                <div class="flex items-center space-x-0.5">
+                                    <span class="text-[7.5px] font-bold text-slate-600">POS:</span>
+                                    <input type="text" maxlength="1" value="4" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="6" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="2" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="7" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="3" class="grid-input form-grid-box">
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-1.5 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+                                <span class="font-bold text-slate-700 text-[8.5px]">STATUS:</span>
+                                <label class="flex items-center space-x-0.5 cursor-pointer font-medium"><input type="radio" name="status" checked class="accent-blue-900"><span>Milik Sendiri</span></label>
+                                <label class="flex items-center space-x-0.5 cursor-pointer font-medium"><input type="radio" name="status" class="accent-blue-900"><span>Sewa</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email Address -->
+                    <div class="grid grid-cols-12 gap-1 items-center border-t border-slate-100 pt-1">
+                        <div class="col-span-4 sm:col-span-3">
+                            <div class="font-bold text-slate-900 text-[9px]">ALAMAT EMAIL</div>
+                            <div class="text-[6.5px] text-slate-500">Email Address</div>
+                        </div>
+                        <div class="col-span-8 sm:col-span-9 flex flex-wrap items-center">
+                            <input type="text" maxlength="1" value="A" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="r" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="i" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="f" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="a" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="z" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="i" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="a" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="n" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="y" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="a" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="h" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="@" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="g" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="m" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="a" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="i" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="l" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="." class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="c" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="o" class="grid-input form-grid-box">
+                            <input type="text" maxlength="1" value="m" class="grid-input form-grid-box">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <!-- Paket Layanan -->
+                <div class="border border-blue-900 rounded-sm overflow-hidden flex flex-col shadow-sm">
+                    <div class="bg-blue-900 text-white px-2 py-1 font-bold text-[9px] tracking-wide">3. PILIHAN PAKET LAYANAN</div>
+                    <div class="p-1.5 space-y-1.5 bg-white flex-1 flex flex-col justify-between">
+                        <div class="space-y-1">
+                            <label class="flex items-center justify-between p-1.5 border border-slate-200 bg-slate-50 rounded cursor-pointer hover:border-blue-700 transition">
+                                <div class="flex items-center space-x-2">
+                                    <input type="radio" name="package" checked class="w-3.5 h-3.5 accent-blue-900" onchange="calculateTotal()">
                                     <div>
-                                        <div class="font-extrabold text-[11px]">CBN Fiber</div>
-                                        <div class="text-[8px] text-slate-500 font-normal">Koneksi Internet Fiber Optic Cepat & Stabil.</div>
+                                        <div class="font-bold text-slate-900 text-[9px]">CBN Fiber (30 Mbps)</div>
                                     </div>
                                 </div>
-                                <input type="text" id="pkgPrice1" value="" placeholder="Isi..." class="pkg-price-input w-24 border border-slate-300 dark:border-slate-600 rounded px-1.5 py-1 text-right">
+                                <div class="flex items-center space-x-1">
+                                    <input type="text" id="pkgPrice1" value="299.000" oninput="calculateTotal()" class="w-24 border border-slate-300 rounded px-1.5 py-0.5 text-right font-bold text-slate-700 bg-white text-[9px]" placeholder="0">
+                                </div>
                             </label>
-                            
-                            <!-- Package 2 -->
-                            <label class="flex items-center justify-between p-2 rounded cursor-pointer border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700">
-                                <div class="flex items-center gap-2">
-                                    <input type="radio" name="package" value="CBN Fiber Safe" class="w-4 h-4 accent-cbn-blue" onchange="calculateCosts()">
+                            <label class="flex items-center justify-between p-1.5 border border-slate-200 bg-slate-50 rounded cursor-pointer hover:border-blue-700 transition">
+                                <div class="flex items-center space-x-2">
+                                    <input type="radio" name="package" class="w-3.5 h-3.5 accent-blue-900" onchange="calculateTotal()">
                                     <div>
-                                        <div class="font-extrabold text-[11px]">CBN Fiber Safe</div>
-                                        <div class="text-[8px] text-slate-500 font-normal">Paket internet dilengkapi perlindungan ekstra.</div>
+                                        <div class="font-bold text-slate-900 text-[9px]">CBN Fast (50 Mbps)</div>
                                     </div>
                                 </div>
-                                <input type="text" id="pkgPrice2" value="" placeholder="Isi..." class="pkg-price-input w-24 border border-slate-300 dark:border-slate-600 rounded px-1.5 py-1 text-right">
+                                <div class="flex items-center space-x-1">
+                                    <input type="text" id="pkgPrice2" value="399.000" oninput="calculateTotal()" class="w-24 border border-slate-300 rounded px-1.5 py-0.5 text-right font-bold text-slate-700 bg-white text-[9px]" placeholder="0">
+                                </div>
                             </label>
-
-                            <!-- Package 3 -->
-                            <label class="flex items-center justify-between p-2 rounded cursor-pointer border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 bg-blue-50/50 dark:bg-blue-900/20">
-                                <div class="flex items-center gap-2">
-                                    <input type="radio" name="package" value="CBN Fiber Pro" class="w-4 h-4 accent-cbn-blue" checked onchange="calculateCosts()">
+                            <label class="flex items-center justify-between p-1.5 border border-slate-200 bg-slate-50 rounded cursor-pointer hover:border-blue-700 transition">
+                                <div class="flex items-center space-x-2">
+                                    <input type="radio" name="package" class="w-3.5 h-3.5 accent-blue-900" onchange="calculateTotal()">
                                     <div>
-                                        <div class="font-extrabold text-[11px]">CBN Fiber Pro</div>
-                                        <div class="text-[8px] text-slate-500 font-normal">Koneksi premium dengan bandwidth khusus.</div>
+                                        <div class="font-bold text-slate-900 text-[9px]">CBN Pro (100 Mbps)</div>
                                     </div>
                                 </div>
-                                <input type="text" id="pkgPrice3" value="" placeholder="Isi..." class="pkg-price-input w-24 border border-slate-300 dark:border-slate-600 rounded px-1.5 py-1 text-right">
+                                <div class="flex items-center space-x-1">
+                                    <input type="text" id="pkgPrice3" value="599.000" oninput="calculateTotal()" class="w-24 border border-slate-300 rounded px-1.5 py-0.5 text-right font-bold text-slate-700 bg-white text-[9px]" placeholder="0">
+                                </div>
                             </label>
                         </div>
-                        
-                        <p class="text-[7px] text-slate-500 border-t border-slate-200 dark:border-slate-700 pt-1.5 mt-2 font-normal italic">
-                            * Informasi paket berlangganan 12 bulan. Pembatalan sepihak dikenakan denda sesuai ketentuan yang berlaku.
-                        </p>
                     </div>
                 </div>
 
-                <!-- RIGHT: PILIHAN LAYANAN TAMBAHAN -->
-                <div class="border border-cbn-blue rounded overflow-hidden flex flex-col">
-                    <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px]">
-                        PILIHAN LAYANAN TAMBAHAN / ADDITIONAL SERVICE OPTIONS
+                <!-- Layanan Tambahan -->
+                <div class="border border-blue-900 rounded-sm overflow-hidden flex flex-col shadow-sm">
+                    <div class="bg-blue-900 text-white px-2 py-1 font-bold text-[9px] tracking-wide">4. LAYANAN TAMBAHAN / ADDITIONAL</div>
+                    <div class="p-1.5 space-y-1.5 bg-white flex-1">
+                        <label class="flex items-center justify-between p-1.5 border border-slate-200 bg-slate-50 rounded cursor-pointer hover:border-blue-700 transition">
+                            <div class="flex items-center space-x-2">
+                                <input type="checkbox" id="add1" class="w-3.5 h-3.5 accent-blue-900" onchange="calculateTotal()">
+                                <span class="font-semibold text-slate-800 text-[9px]">Wireless Router Extra</span>
+                            </div>
+                            <input type="text" id="priceAdd1" value="50.000" oninput="calculateTotal()" class="w-24 border border-slate-300 rounded px-1.5 py-0.5 text-right font-bold text-slate-700 bg-white text-[9px]">
+                        </label>
+                        <label class="flex items-center justify-between p-1.5 border border-slate-200 bg-slate-50 rounded cursor-pointer hover:border-blue-700 transition">
+                            <div class="flex items-center space-x-2">
+                                <input type="checkbox" id="add2" class="w-3.5 h-3.5 accent-blue-900" onchange="calculateTotal()">
+                                <span class="font-semibold text-slate-800 text-[9px]">Smart TV Box</span>
+                            </div>
+                            <input type="text" id="priceAdd2" value="75.000" oninput="calculateTotal()" class="w-24 border border-slate-300 rounded px-1.5 py-0.5 text-right font-bold text-slate-700 bg-white text-[9px]">
+                        </label>
+                        <label class="flex items-center justify-between p-1.5 border border-slate-200 bg-slate-50 rounded cursor-pointer hover:border-blue-700 transition">
+                            <div class="flex items-center space-x-2">
+                                <input type="checkbox" id="add3" class="w-3.5 h-3.5 accent-blue-900" onchange="calculateTotal()">
+                                <span class="font-semibold text-slate-800 text-[9px]">Static IP Address</span>
+                            </div>
+                            <input type="text" id="priceAdd3" value="100.000" oninput="calculateTotal()" class="w-24 border border-slate-300 rounded px-1.5 py-0.5 text-right font-bold text-slate-700 bg-white text-[9px]">
+                        </label>
                     </div>
-                    <div class="p-3 bg-white dark:bg-slate-800 flex-1">
-                        <!-- Devices -->
-                        <div class="mb-3">
-                            <span class="font-extrabold text-[9px] block mb-2 border-b border-slate-200 pb-1">PERANGKAT TAMBAHAN / ADDITIONAL DEVICES</span>
-                            <div class="space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <label class="flex items-center gap-2 cursor-pointer font-bold text-[10px]">
-                                        <input type="checkbox" id="devRouter" class="w-3.5 h-3.5 accent-cbn-blue" checked onchange="calculateCosts()"> 
-                                        <span class="bg-cbn-blue text-white text-[8px] px-1 rounded mr-1">R</span> Wireless Router (Rp 150k)
-                                    </label>
-                                    <input type="number" id="qtyRouter" min="1" max="10" value="1" class="w-12 border border-slate-400 dark:border-slate-600 rounded px-1 py-0.5 text-center text-[10px] font-bold" oninput="calculateCosts()">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <!-- Section 5: Ringkasan Biaya -->
+                <div class="border border-blue-900 rounded-sm overflow-hidden shadow-sm flex flex-col">
+                    <div class="bg-blue-900 text-white px-2 py-1 font-bold text-[9px] tracking-wide">5. RINGKASAN BIAYA / PAYMENT SUMMARY</div>
+                    <div class="p-2 bg-white space-y-1.5 flex-1 flex flex-col justify-between">
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-slate-700">Biaya Pendaftaran:</span>
+                                <div class="flex items-center space-x-1">
+                                    <span class="text-slate-500 font-bold">Rp</span>
+                                    <input type="text" id="regFee" value="0" oninput="calculateTotal()" class="w-24 border border-slate-300 rounded px-1.5 py-0.5 text-right font-bold text-slate-700 bg-white text-[9px]">
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <label class="flex items-center gap-2 cursor-pointer font-bold text-[10px]">
-                                        <input type="checkbox" id="devSmartbox" class="w-3.5 h-3.5 accent-cbn-blue" checked onchange="calculateCosts()"> 
-                                        <span class="bg-indigo-500 text-white text-[8px] px-1 rounded mr-1">S</span> Smartbox (Rp 200k)
-                                    </label>
-                                    <input type="number" id="qtySmartbox" min="1" max="10" value="1" class="w-12 border border-slate-400 dark:border-slate-600 rounded px-1 py-0.5 text-center text-[10px] font-bold" oninput="calculateCosts()">
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-slate-700">Biaya Bulanan:</span>
+                                <div class="flex items-center space-x-1">
+                                    <span class="text-slate-500 font-bold">Rp</span>
+                                    <input type="text" id="monthlyFee" value="299.000" oninput="calculateTotal()" class="w-24 border border-slate-300 rounded px-1.5 py-0.5 text-right font-bold text-slate-700 bg-white text-[9px]">
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-slate-700">Biaya Admin:</span>
+                                <div class="flex items-center space-x-1">
+                                    <span class="text-slate-500 font-bold">Rp</span>
+                                    <input type="text" id="adminFee" value="5.000" oninput="calculateTotal()" class="w-24 border border-slate-300 rounded px-1.5 py-0.5 text-right font-bold text-slate-700 bg-white text-[9px]">
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-slate-700">PPN (11%):</span>
+                                <div class="flex items-center space-x-1">
+                                    <span class="text-slate-500 font-bold">Rp</span>
+                                    <input type="text" id="ppn" value="33.440" readonly class="w-24 border-none bg-slate-50 px-1.5 py-0.5 text-right font-bold text-slate-700 text-[9px]">
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Add-on TV -->
-                        <div class="mb-3">
-                            <span class="font-extrabold text-[9px] block mb-2 border-b border-slate-200 pb-1">PAKET ADD-ON TV / ADD-ON TV PACKAGE</span>
-                            <div class="space-y-2">
-                                <label class="flex items-center gap-2 cursor-pointer font-bold text-[10px]">
-                                    <input type="checkbox" id="addonDens" class="w-3.5 h-3.5 accent-cbn-blue" onchange="calculateCosts()"> 
-                                    Dens.TV+ Apps <span class="font-normal text-slate-500">(Rp 45k/bln)</span>
-                                </label>
-                                <label class="flex items-center gap-2 cursor-pointer font-bold text-[10px]">
-                                    <input type="checkbox" id="addonVision" class="w-3.5 h-3.5 accent-cbn-blue" checked onchange="calculateCosts()"> 
-                                    Vision+ Premium Sports <span class="font-normal text-slate-500">(Rp 65k/bln)</span>
-                                </label>
+                        <div class="mt-1.5 pt-1.5 border-t-2 border-blue-900 flex items-center justify-between">
+                            <span class="font-extrabold text-blue-950 text-[10.5px]">TOTAL PEMBAYARAN:</span>
+                            <div class="flex items-center space-x-1">
+                                <span class="text-blue-950 font-extrabold text-[10.5px]">Rp</span>
+                                <input type="text" id="totalPayment" value="337.440" readonly class="w-28 border border-blue-900 rounded px-1.5 py-0.5 text-right font-black text-blue-950 bg-blue-50 text-[10.5px]">
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Custom Add-ons -->
-                        <div class="space-y-2 mt-2">
-                            <div class="flex items-center gap-2">
-                                <input type="checkbox" id="addonCustom1Check" class="w-3.5 h-3.5 accent-cbn-blue">
-                                <input type="text" id="addonCustom1Text" class="flex-1 border-b-2 border-slate-400 dark:border-slate-500 border-dashed bg-transparent outline-none focus:border-solid focus:border-cbn-blue text-[10px] font-bold px-1" placeholder="Layanan lainnya...">
+                <!-- Section 6 & 7: Jadwal & Ketentuan -->
+                <div class="space-y-2 flex flex-col">
+                    <div class="border border-blue-900 rounded-sm overflow-hidden shadow-sm">
+                        <div class="bg-blue-900 text-white px-2 py-1 font-bold text-[9px] tracking-wide">6. JADWAL PEMASANGAN</div>
+                        <div class="p-2 bg-white space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-slate-900">Tanggal:</span>
+                                <div class="flex items-center space-x-1">
+                                    <div class="flex">
+                                        <input type="text" maxlength="1" value="1" class="grid-input form-grid-box">
+                                        <input type="text" maxlength="1" value="5" class="grid-input form-grid-box">
+                                    </div>
+                                    <span class="font-bold text-slate-500">/</span>
+                                    <div class="flex">
+                                        <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                        <input type="text" maxlength="1" value="9" class="grid-input form-grid-box">
+                                    </div>
+                                    <span class="font-bold text-slate-500">/</span>
+                                    <div class="flex">
+                                        <input type="text" maxlength="1" value="2" class="grid-input form-grid-box">
+                                        <input type="text" maxlength="1" value="0" class="grid-input form-grid-box">
+                                        <input type="text" maxlength="1" value="2" class="grid-input form-grid-box">
+                                        <input type="text" maxlength="1" value="6" class="grid-input form-grid-box">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <input type="checkbox" id="addonCustom2Check" class="w-3.5 h-3.5 accent-cbn-blue">
-                                <input type="text" id="addonCustom2Text" class="flex-1 border-b-2 border-slate-400 dark:border-slate-500 border-dashed bg-transparent outline-none focus:border-solid focus:border-cbn-blue text-[10px] font-bold px-1" placeholder="Layanan lainnya...">
+                            <div class="flex items-center space-x-3 bg-slate-50 p-1.5 rounded border border-slate-200">
+                                <label class="flex items-center space-x-1 cursor-pointer font-medium"><input type="radio" name="schTime" checked class="accent-blue-900"><span>08:00 - 12:00</span></label>
+                                <label class="flex items-center space-x-1 cursor-pointer font-medium"><input type="radio" name="schTime" class="accent-blue-900"><span>13:00 - 17:00</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-blue-900 rounded-sm overflow-hidden shadow-sm flex-1">
+                        <div class="bg-blue-900 text-white px-2 py-1 font-bold text-[9px] tracking-wide">7. KETENTUAN & CUSTOMER ID</div>
+                        <div class="p-2 bg-white space-y-1.5">
+                            <p class="text-[7px] text-slate-600 leading-tight">Dengan menandatangani formulir ini, pelanggan menyetujui Syarat & Ketentuan CBN.</p>
+                            <div class="flex items-center justify-between pt-0.5">
+                                <span class="font-bold text-slate-900">CID:</span>
+                                <div class="flex">
+                                    <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                                    <input type="text" maxlength="1" value="" class="grid-input form-grid-box">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. PAYMENT METHOD & COST DETAILS -->
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                
-                <!-- LEFT: PEMBAYARAN KARTU KREDIT -->
-                <div class="border border-slate-300 dark:border-slate-600 rounded overflow-hidden">
-                    <div class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white px-2 py-1.5 font-bold text-[10px]">
-                        PEMBAYARAN VIA KARTU KREDIT / CC PAYMENT METHOD
-                    </div>
-                    <div class="p-3 space-y-3 bg-white dark:bg-slate-800 h-full flex flex-col justify-between">
-                        <div class="space-y-2">
-                            <div class="flex items-end gap-2">
-                                <span class="w-28 font-bold text-[9px] pb-1">Nama pada kartu:</span>
-                                <input type="text" id="ccName" class="flex-1 border-b border-slate-400 dark:border-slate-500 outline-none focus:border-cbn-blue px-1 uppercase font-extrabold text-[11px] pb-1">
-                            </div>
-                            <div class="flex items-end gap-2">
-                                <span class="w-28 font-bold text-[9px] pb-1">Nomor kartu:</span>
-                                <input type="text" id="ccNumber" placeholder="XXXX-XXXX-XXXX-XXXX" class="flex-1 border-b border-slate-400 dark:border-slate-500 outline-none focus:border-cbn-blue px-1 font-extrabold text-[11px] pb-1 tracking-widest">
-                            </div>
-                            <div class="flex items-end gap-2">
-                                <span class="w-28 font-bold text-[9px] pb-1">Masa berlaku:</span>
-                                <input type="text" id="ccExpiry" placeholder="MM/YY" class="w-24 border-b border-slate-400 dark:border-slate-500 outline-none focus:border-cbn-blue px-1 font-extrabold text-[11px] pb-1">
-                            </div>
-                            <div class="flex items-end gap-2">
-                                <span class="w-28 font-bold text-[9px] pb-1">Nama Bank:</span>
-                                <input type="text" id="ccBank" class="flex-1 border-b border-slate-400 dark:border-slate-500 outline-none focus:border-cbn-blue px-1 uppercase font-extrabold text-[11px] pb-1">
-                            </div>
+            <div class="border border-blue-900 rounded-sm overflow-hidden shadow-sm">
+                <div class="bg-blue-900 text-white px-2 py-1 font-bold text-[9px] tracking-wide">8. TANDA TANGAN DIGITAL / SIGNATURES</div>
+                <div class="p-2 bg-white grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <!-- Pelanggan -->
+                    <div class="flex flex-col items-center space-y-1">
+                        <div class="font-bold text-slate-800 text-[9px]">PELANGGAN / CUSTOMER</div>
+                        <div class="w-full border-2 border-dashed border-slate-300 rounded bg-slate-50 relative h-16 flex items-center justify-center">
+                            <canvas id="sigCustomer" class="signature-canvas w-full h-full absolute inset-0"></canvas>
+                            <span class="text-[7px] text-slate-400 pointer-events-none absolute">Tandatangani</span>
                         </div>
-                        
-                        <p class="text-[7.5px] text-slate-500 font-normal italic mt-4">
-                            Dengan mengisi kolom ini, pelanggan memberi kuasa kepada CBN untuk memotong rekening kartu kredit secara otomatis sesuai total tagihan.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- RIGHT: RINCIAN BIAYA -->
-                <div class="border border-cbn-blue rounded overflow-hidden">
-                    <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px]">
-                        RINCIAN BIAYA / PAYMENT DETAILS
-                    </div>
-                    <div class="p-3 bg-slate-50 dark:bg-slate-900 h-full">
-                        <table class="w-full text-[10px] font-bold">
-                            <tbody>
-                                <tr class="border-b border-slate-200 dark:border-slate-700">
-                                    <td class="py-1.5 text-slate-600 dark:text-slate-400">Biaya Pemasangan</td>
-                                    <td class="py-1.5 text-right w-32">
-                                        <div class="flex items-center justify-between border border-slate-300 bg-white dark:bg-slate-800 rounded px-1">
-                                            <span class="text-[8px] text-slate-400 font-normal">Rp</span>
-                                            <input type="text" id="costInstall" value="500.000" class="w-full text-right outline-none bg-transparent py-0.5" oninput="calculateCosts()">
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="border-b border-slate-200 dark:border-slate-700">
-                                    <td class="py-1.5 text-slate-600 dark:text-slate-400">Biaya Paket</td>
-                                    <td class="py-1.5 text-right">
-                                        <div class="flex items-center justify-between border border-slate-300 bg-white dark:bg-slate-800 rounded px-1">
-                                            <span class="text-[8px] text-slate-400 font-normal">Rp</span>
-                                            <input type="text" id="costPackage" value="799.000" class="w-full text-right outline-none bg-transparent py-0.5 text-cbn-blue" oninput="calculateCosts()">
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="border-b border-slate-200 dark:border-slate-700">
-                                    <td class="py-1.5 text-slate-600 dark:text-slate-400">Biaya Admin</td>
-                                    <td class="py-1.5 text-right">
-                                        <div class="flex items-center justify-between border border-slate-300 bg-white dark:bg-slate-800 rounded px-1">
-                                            <span class="text-[8px] text-slate-400 font-normal">Rp</span>
-                                            <input type="text" id="costAdmin" value="150.000" class="w-full text-right outline-none bg-transparent py-0.5" oninput="calculateCosts()">
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="border-b-2 border-slate-400 dark:border-slate-600">
-                                    <td class="py-1.5 text-slate-600 dark:text-slate-400">Biaya Add-on</td>
-                                    <td class="py-1.5 text-right">
-                                        <div class="flex items-center justify-between border border-slate-300 bg-white dark:bg-slate-800 rounded px-1">
-                                            <span class="text-[8px] text-slate-400 font-normal">Rp</span>
-                                            <input type="text" id="costAddon" value="0" class="w-full text-right outline-none bg-transparent py-0.5" oninput="calculateCosts()">
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 font-extrabold text-[11px]">SUBTOTAL</td>
-                                    <td class="py-2 text-right font-extrabold text-[11px]" id="calcSubtotal">Rp 0</td>
-                                </tr>
-                                <tr class="border-b border-slate-300 dark:border-slate-600">
-                                    <td class="py-1 text-slate-500 font-normal text-[9px]">PPN (11%)</td>
-                                    <td class="py-1 text-right text-slate-500 font-normal text-[9px]" id="calcVat">Rp 0</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 pt-3 font-extrabold text-[13px] text-cbn-blue dark:text-blue-400">TOTAL PEMBAYARAN</td>
-                                    <td class="py-2 pt-3 text-right font-extrabold text-[14px] text-cbn-blue dark:text-blue-400" id="calcTotal">Rp 0</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5. AKTIVASI LAYANAN & JADWAL PEMASANGAN -->
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                
-                <!-- LEFT: AKTIVASI LAYANAN / SERVICE ACTIVATION -->
-                <div class="border border-cbn-blue rounded overflow-hidden flex flex-col justify-between">
-                    <div>
-                        <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px]">
-                            AKTIVASI LAYANAN / SERVICE ACTIVATION
+                        <div class="flex justify-between w-full text-[7px]">
+                            <button onclick="clearSig('sigCustomer')" class="text-red-600 hover:underline font-bold">Hapus</button>
                         </div>
-                        <div class="p-2 space-y-1 bg-white dark:bg-slate-800 text-[8px] text-slate-600 dark:text-slate-300">
-                            <p>Username dan password akan digunakan untuk akun Dens.TV, layanan internet dan Member Center Anda.</p>
-                            <p class="italic text-slate-500">Username and password will be used for Dens.TV, internet service and your Member Center.</p>
-                            <p>Username diawali dengan huruf dan diakhiri dengan huruf atau angka, minimal 3 karakter dan maksimal 16 karakter. Harus berupa huruf kecil dan/atau simbol garis bawah (_), titik (.), simbol minus (-).</p>
-                            <p class="italic text-slate-500">Username must be started with a character and ended with character or number, minimum 3 characters and maximum 16 characters. Must consist of lowercase and/or underscore (_), dot (.), dash (-).</p>
+                        <input type="text" placeholder="Nama Terang" class="w-full border border-slate-300 rounded px-1.5 py-0.5 text-center font-semibold text-slate-800 text-[9px]">
+                    </div>
+                    <!-- Sales -->
+                    <div class="flex flex-col items-center space-y-1">
+                        <div class="font-bold text-slate-800 text-[9px]">SALES REPRESENTATIVE</div>
+                        <div class="w-full border-2 border-dashed border-slate-300 rounded bg-slate-50 relative h-16 flex items-center justify-center">
+                            <canvas id="sigSales" class="signature-canvas w-full h-full absolute inset-0"></canvas>
+                            <span class="text-[7px] text-slate-400 pointer-events-none absolute">Tandatangani</span>
                         </div>
-                        <div class="px-2 pb-2 bg-white dark:bg-slate-800">
-                            <div class="font-bold text-[9px] mb-1">USERNAME</div>
-                            <div class="flex items-center gap-1">
-                                <div id="usernameBoxes" data-grid-count="16" class="grid-container"></div>
-                                <span class="font-bold text-[10px] text-slate-700 dark:text-slate-300 ml-1">@ cbn.net.id</span>
-                            </div>
+                        <div class="flex justify-between w-full text-[7px]">
+                            <button onclick="clearSig('sigSales')" class="text-red-600 hover:underline font-bold">Hapus</button>
                         </div>
+                        <input type="text" value="Arif Aziansyah (NPK: 16538)" class="w-full border border-slate-300 rounded px-1.5 py-0.5 text-center font-semibold text-slate-800 text-[9px]">
                     </div>
-                    <div class="p-2 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 text-[7px] text-slate-500 space-y-1">
-                        <p><strong class="text-slate-700 dark:text-slate-300">Syarat dan ketentuan:</strong> Saya dengan ini menyatakan bahwa semua keuangan yang diisi adalah benar, serta menerima dan bersedia untuk terikat pada seluruh ketentuan berlangganan yang telah ditetapkan CBN seperti yang tertera pada <span class="text-cbn-blue underline">https://www.cbn.id/terms-of-service.html</span></p>
-                        <p>CBN berhak menolak permohonan berlangganan ini berdasarkan dengan peraturan dan ketentuan yang berlaku di CBN.</p>
-                        <p class="italic">Terms and conditions: I hereby declare that all the information above are true and consent to terms that CBN has assigned as written on <span class="text-cbn-blue underline">https://www.cbn.id/terms-of-service.html</span>. CBN has the right to reject the application based on terms and conditions that applied for CBN.</p>
-                    </div>
-                </div>
-
-                <!-- RIGHT: JADWAL PEMASANGAN / INSTALLATION SCHEDULE -->
-                <div class="border border-cbn-blue rounded overflow-hidden flex flex-col justify-between">
-                    <div>
-                        <div class="bg-cbn-blue text-white px-2 py-1.5 font-bold text-[10px]">
-                            JADWAL PEMASANGAN / INSTALLATION SCHEDULE
+                    <!-- Verifikator / Admin -->
+                    <div class="flex flex-col items-center space-y-1">
+                        <div class="font-bold text-slate-800 text-[9px]">VERIFIKATOR / ADMIN</div>
+                        <div class="w-full border-2 border-dashed border-slate-300 rounded bg-slate-50 relative h-16 flex items-center justify-center">
+                            <canvas id="sigAdmin" class="signature-canvas w-full h-full absolute inset-0"></canvas>
+                            <span class="text-[7px] text-slate-400 pointer-events-none absolute">Tandatangani</span>
                         </div>
-                        <div class="p-2 space-y-2 bg-white dark:bg-slate-800">
-                            <div>
-                                <span class="font-bold block text-[9px] text-slate-800 dark:text-slate-200">TANGGAL PEMASANGAN - INSTALLATION DATE</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="font-bold text-[9px]">Hari - day</span>
-                                <input type="text" id="installDayInput" value="segera" class="border border-slate-400 dark:border-slate-600 rounded px-2 py-1 text-[10px] font-bold uppercase w-24 outline-none focus:border-cbn-blue bg-white dark:bg-slate-700">
-                                <span class="text-[8px] text-slate-400 italic">dd/mm/yyyy</span>
-                                <div id="installDateBoxes" data-grid-count="8" class="grid-container"></div>
-                            </div>
-                            <div class="pt-1">
-                                <span class="font-bold block text-[9px] text-slate-800 dark:text-slate-200 mb-1.5">WAKTU PEMASANGAN - INSTALLATION TIME</span>
-                                <div class="grid grid-cols-2 gap-2 text-[9px]">
-                                    <label class="flex items-center gap-1.5 cursor-pointer">
-                                        <input type="radio" name="installTime" value="09.00-11.00" class="accent-cbn-blue" checked> 09.00-11.00
-                                    </label>
-                                    <label class="flex items-center gap-1.5 cursor-pointer">
-                                        <input type="radio" name="installTime" value="11.00-13.00" class="accent-cbn-blue"> 11.00-13.00
-                                    </label>
-                                    <label class="flex items-center gap-1.5 cursor-pointer">
-                                        <input type="radio" name="installTime" value="13.00-15.00" class="accent-cbn-blue"> 13.00-15.00
-                                    </label>
-                                    <label class="flex items-center gap-1.5 cursor-pointer">
-                                        <input type="radio" name="installTime" value="15.00-17.00" class="accent-cbn-blue"> 15.00-17.00
-                                    </label>
-                                </div>
-                            </div>
+                        <div class="flex justify-between w-full text-[7px]">
+                            <button onclick="clearSig('sigAdmin')" class="text-red-600 hover:underline font-bold">Hapus</button>
                         </div>
+                        <input type="text" placeholder="Nama Terang Admin" class="w-full border border-slate-300 rounded px-1.5 py-0.5 text-center font-semibold text-slate-800 text-[9px]">
                     </div>
-                    <div class="p-2 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50">
-                        <p class="text-[7px] text-slate-500 mb-1">
-                            Jadwal pemasangan dapat berubah sewaktu-waktu sesuai dengan slot jadwal yang tersedia.<br>
-                            <em class="italic">The installation schedule is subject to change depends on the schedule slot availability.</em>
-                        </p>
-                        <div class="flex items-center gap-2 mt-2 pt-1 border-t border-slate-200 dark:border-slate-700">
-                            <span class="font-bold text-[9px] text-slate-700 dark:text-slate-300">Notes:</span>
-                            <input type="text" id="installNotesInput" value="regular promo july 2026-nab" class="flex-1 border-b border-dashed border-slate-400 dark:border-slate-500 outline-none focus:border-solid focus:border-cbn-blue text-[10px] font-bold px-1 bg-transparent">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 6. SIGNATURES -->
-            <div class="grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-slate-300 dark:border-slate-700">
-                <!-- Tanda Tangan Pelanggan -->
-                <div class="text-center">
-                    <div class="sig-box-container mb-1 group">
-                        <canvas id="sigCanvas1" class="sig-canvas"></canvas>
-                        <button type="button" onclick="clearSignature('sigCanvas1')" class="absolute bottom-1 right-1 text-[8px] bg-slate-200/80 hover:bg-red-100 text-slate-600 hover:text-red-600 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity no-print z-10"><i class="fa-solid fa-eraser"></i> Hapus</button>
-                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 text-[10px] italic z-0 no-print" id="sigPlaceholder1"><i class="fa-solid fa-pen-nib mr-1"></i> Area tanda tangan</div>
-                    </div>
-                    <div class="my-1.5">
-                        <input type="text" id="signerName1" placeholder="( Nama Jelas / Manual )" class="w-full text-center border-b border-dashed border-slate-400 dark:border-slate-500 outline-none focus:border-solid focus:border-cbn-blue text-[10px] font-bold pb-0.5 bg-transparent uppercase">
-                    </div>
-                    <div class="text-[9px] font-bold">Tanda tangan pelanggan</div>
-                    <div class="text-[7px] text-slate-400 italic font-normal">Customer signature</div>
-                </div>
-
-                <!-- Tanda Tangan Sales -->
-                <div class="text-center">
-                    <div class="sig-box-container mb-1 group">
-                        <canvas id="sigCanvas2" class="sig-canvas"></canvas>
-                        <button type="button" onclick="clearSignature('sigCanvas2')" class="absolute bottom-1 right-1 text-[8px] bg-slate-200/80 hover:bg-red-100 text-slate-600 hover:text-red-600 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity no-print z-10"><i class="fa-solid fa-eraser"></i> Hapus</button>
-                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 text-[10px] italic z-0 no-print" id="sigPlaceholder2"><i class="fa-solid fa-pen-nib mr-1"></i> Area tanda tangan</div>
-                    </div>
-                    <div class="my-1.5">
-                        <input type="text" id="signerName2" placeholder="( Nama Jelas / Manual )" class="w-full text-center border-b border-dashed border-slate-400 dark:border-slate-500 outline-none focus:border-solid focus:border-cbn-blue text-[10px] font-bold pb-0.5 bg-transparent uppercase">
-                    </div>
-                    <div class="text-[9px] font-bold">Tanda tangan sales</div>
-                    <div class="text-[7px] text-slate-400 italic font-normal">Sales signature</div>
-                </div>
-
-                <!-- Tanda Tangan SPV -->
-                <div class="text-center">
-                    <div class="sig-box-container mb-1 group">
-                        <canvas id="sigCanvas3" class="sig-canvas"></canvas>
-                        <button type="button" onclick="clearSignature('sigCanvas3')" class="absolute bottom-1 right-1 text-[8px] bg-slate-200/80 hover:bg-red-100 text-slate-600 hover:text-red-600 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity no-print z-10"><i class="fa-solid fa-eraser"></i> Hapus</button>
-                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 text-[10px] italic z-0 no-print" id="sigPlaceholder3"><i class="fa-solid fa-pen-nib mr-1"></i> Area tanda tangan</div>
-                    </div>
-                    <div class="my-1.5">
-                        <input type="text" id="signerName3" placeholder="( Nama Jelas / Manual )" class="w-full text-center border-b border-dashed border-slate-400 dark:border-slate-500 outline-none focus:border-solid focus:border-cbn-blue text-[10px] font-bold pb-0.5 bg-transparent uppercase">
-                    </div>
-                    <div class="text-[9px] font-bold">Tanda tangan SPV</div>
-                    <div class="text-[7px] text-slate-400 italic font-normal">Supervisor signature</div>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- TAB 2: DATA TERSIMPAN -->
-    <div id="tabSaved" class="tab-content max-w-5xl mx-auto">
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 overflow-hidden">
-            <!-- Header section of Tab 2 -->
-            <div class="p-4 sm:p-6 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div id="sectionSaved" class="max-w-[880px] mx-auto bg-white border border-slate-300 shadow-2xl rounded-sm text-slate-800 p-4 hidden space-y-3">
+        <div class="flex items-center justify-between border-b pb-2">
+            <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <h2 class="font-bold text-xs text-slate-900 uppercase">History Data Tersimpan</h2>
+            </div>
+            <div class="flex space-x-2">
+                <button onclick="exportSavedExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded text-xs font-bold transition">Ekspor Excel</button>
+                <button onclick="clearSavedData()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-bold transition">Hapus Semua</button>
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                    <tr class="bg-slate-100 text-slate-700 border-b">
+                        <th class="p-2.5 font-bold">WAKTU</th>
+                        <th class="p-2.5 font-bold">NAMA PELANGGAN</th>
+                        <th class="p-2.5 font-bold">NO. IDENTITAS</th>
+                        <th class="p-2.5 font-bold">KODE SALES</th>
+                        <th class="p-2.5 font-bold">TOTAL PEMBAYARAN</th>
+                        <th class="p-2.5 font-bold text-center">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody id="savedTableBody" class="divide-y divide-slate-200">
+                    <!-- Populated via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="sectionVisit" class="max-w-[880px] mx-auto bg-white border border-slate-300 shadow-2xl rounded-sm text-slate-800 p-4 hidden space-y-3">
+        <div class="flex items-center justify-between border-b pb-2">
+            <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <h2 class="font-bold text-xs text-slate-900 uppercase">Data Kunjungan / Visit Sales</h2>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="exportVisitPDF()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-bold transition">PDF</button>
+                <button onclick="openAddVisitModal()" class="bg-blue-900 hover:bg-blue-950 text-white px-3 py-1 rounded text-xs font-bold transition flex items-center space-x-1">
+                    <span>+ Tambah Visit</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-50 p-2.5 rounded border border-slate-200 text-xs">
+            <div class="flex flex-wrap items-center space-x-2 gap-y-1">
+                <span class="font-bold text-slate-700">Filter:</span>
+                <input type="date" id="filterStart" class="border rounded px-2 py-1 bg-white">
+                <span>s/d</span>
+                <input type="date" id="filterEnd" class="border rounded px-2 py-1 bg-white">
+                <button onclick="filterVisits()" class="bg-slate-700 text-white px-3 py-1 rounded font-bold">Filter</button>
+                <button onclick="resetVisitFilter()" class="bg-slate-200 text-slate-700 px-3 py-1 rounded font-bold">Reset</button>
+            </div>
+            <div class="font-bold text-slate-600" id="totalVisitCount">Total Visit: 11</div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                    <tr class="bg-slate-100 text-slate-700 border-b">
+                        <th class="p-2 font-bold">FOTO</th>
+                        <th class="p-2 font-bold">TANGGAL</th>
+                        <th class="p-2 font-bold">SALES / NPK</th>
+                        <th class="p-2 font-bold">ALAMAT USAHA</th>
+                        <th class="p-2 font-bold">PIC / HP</th>
+                        <th class="p-2 font-bold">EKOSISTEM</th>
+                        <th class="p-2 font-bold">AKTIVITAS</th>
+                        <th class="p-2 font-bold">HASIL VISIT</th>
+                        <th class="p-2 font-bold text-center">STATUS</th>
+                        <th class="p-2 font-bold">ACTION PLAN</th>
+                        <th class="p-2 font-bold text-center">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody id="visitTableBody" class="divide-y divide-slate-200 text-[11px]">
+                    <!-- Populated via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="visitModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-3 hidden">
+        <div class="bg-white rounded-lg shadow-2xl max-w-xl w-full overflow-hidden border border-slate-300 max-h-[90vh] flex flex-col">
+            <div class="bg-blue-900 text-white px-4 py-2.5 flex justify-between items-center">
+                <h3 id="visitModalTitle" class="font-bold text-xs uppercase tracking-wide">FORMULIR INPUT VISIT</h3>
+                <button onclick="closeVisitModal()" class="text-white hover:text-slate-200 font-bold text-sm">✕</button>
+            </div>
+            <div class="p-4 space-y-2.5 text-xs overflow-y-auto flex-1">
+                <input type="hidden" id="editVisitId">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-blue-950 mb-1 text-[10px] uppercase">FOTO SELFIES (URL / UPLOAD / KAMERA)</label>
+                        <div class="space-y-1">
+                            <input type="text" id="modalPhoto" value="https://placehold.co/150x150" placeholder="https://placehold.co/150x150" class="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white font-medium text-slate-700">
+                            <div class="flex items-center space-x-1.5">
+                                <label class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-2.5 py-1 rounded text-[10px] font-bold cursor-pointer transition flex items-center space-x-1">
+                                    <span>📁 Upload File</span>
+                                    <input type="file" id="modalUploadFile" accept="image/*" class="hidden" onchange="handleModalImageUpload(event)">
+                                </label>
+                                <button type="button" onclick="openCameraCapture()" class="bg-blue-900 hover:bg-blue-950 text-white px-2.5 py-1 rounded text-[10px] font-bold transition">📷 Buka Kamera</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-blue-950 mb-1 text-[10px] uppercase">TANGGAL</label>
+                        <input type="date" id="modalDate" class="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white font-medium text-slate-700">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-blue-950 mb-1 text-[10px] uppercase">NAMA SALES</label>
+                        <input type="text" id="modalSalesName" placeholder="Nama Sales" class="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white font-medium text-slate-700">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-blue-950 mb-1 text-[10px] uppercase">NPK</label>
+                        <input type="text" id="modalNpk" placeholder="Nomor Pokok Karyawan" class="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white font-medium text-slate-700">
+                    </div>
+                </div>
+
                 <div>
-                    <h2 class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-database text-cbn-blue"></i> Data Pendaftaran Tersimpan
-                    </h2>
-                    <p class="text-sm text-slate-500 mt-1">Daftar riwayat pendaftaran pelanggan yang telah disimpan dalam sesi ini.</p>
+                    <label class="block font-bold text-blue-950 mb-1 text-[10px] uppercase">ALAMAT USAHA</label>
+                    <input type="text" id="modalAddress" placeholder="Alamat Lokasi Kunjungan Usaha" class="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white font-medium text-slate-700">
                 </div>
-                <div class="flex items-center gap-3 w-full sm:w-auto">
-                    <div class="relative flex-1 sm:w-64">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                            <i class="fa-solid fa-search"></i>
-                        </span>
-                        <input type="text" id="searchInput" placeholder="Cari nama, KTP, atau sales..." class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cbn-blue focus:bg-white dark:focus:bg-slate-800 transition">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-blue-950 mb-1 text-[10px] uppercase">PIC / NO HP</label>
+                        <input type="text" id="modalPic" placeholder="Nama PIC & Nomor HP" class="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white font-medium text-slate-700">
                     </div>
-                    <button onclick="exportToExcel()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm transition flex items-center gap-2 whitespace-nowrap">
-                        <i class="fa-solid fa-file-excel"></i> Export Excel
-                    </button>
+                    <div>
+                        <label class="block font-bold text-blue-950 mb-1 text-[10px] uppercase">EKOSISTEM</label>
+                        <input type="text" id="modalEkosistemText" placeholder="Contoh: Ruko, Mall, Sekolah, dll" class="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white font-medium text-slate-700">
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Table Section -->
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse data-table" id="savedDataTable">
-                    <thead>
-                        <tr>
-                            <th class="w-24">NO. / ID</th>
-                            <th>PELANGGAN</th>
-                            <th>NO. KTP</th>
-                            <th>PAKET LAYANAN</th>
-                            <th>TOTAL BIAYA</th>
-                            <th class="text-center">STATUS TTD</th>
-                            <th class="text-center">AKSI</th>
-                        </tr>
-                    </thead>
-                    <tbody id="savedDataBody">
-                        <!-- Data will be populated here via JS -->
-                        <tr>
-                            <td colspan="7" class="text-center py-8 text-slate-500 italic">Belum ada data tersimpan.</td>
-                        </tr>
-                    </tbody>
-                </table>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-blue-950 mb-1 text-[10px] uppercase">STATUS</label>
+                        <select id="modalStatus" class="w-full border border-slate-300 rounded px-2 py-1.5 bg-white font-medium text-slate-700">
+                            <option value="Tunggu info">Tunggu info</option>
+                            <option value="Prospek">Prospek</option>
+                            <option value="Deal">Deal</option>
+                            <option value="Reject">Reject</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-blue-950 mb-1 text-[10px] uppercase">ACTION PLAN (ACTION PLAN)</label>
+                        <input type="text" id="modalAction" placeholder="Rencana tindak lanjut..." class="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white font-medium text-slate-700">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-blue-950 mb-1 text-[10px] uppercase">AKTIVITAS</label>
+                    <input type="text" id="modalAktivitas" placeholder="Aktivitas kunjungan..." class="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white font-medium text-slate-700">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-blue-950 mb-1 text-[10px] uppercase">HASIL VISIT</label>
+                    <input type="text" id="modalHasil" placeholder="Bertemu dengan..." class="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white font-medium text-slate-700">
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-2 border-t border-slate-200">
+                    <button onclick="closeVisitModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-1.5 rounded font-bold transition">Batal</button>
+                    <button onclick="saveVisitModal()" class="bg-blue-900 hover:bg-blue-950 text-white px-4 py-1.5 rounded font-bold transition">Simpan</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- TAB 3: DASHBOARD -->
-    <div id="tabDashboard" class="tab-content max-w-5xl mx-auto">
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 p-6 flex items-center justify-center min-h-[400px]">
-            <div class="text-center">
-                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-700 mb-4 text-slate-400">
-                    <i class="fa-solid fa-chart-column text-4xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Dashboard Analitik</h3>
-                <p class="text-slate-500 max-w-md mx-auto">Fitur analitik sedang dalam pengembangan. Nantinya akan menampilkan grafik pendaftaran harian dan performa paket layanan.</p>
+    <div id="cameraModal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-3 hidden">
+        <div class="bg-white rounded-lg shadow-2xl max-w-sm w-full p-4 text-center space-y-3">
+            <h4 class="font-bold text-sm text-blue-950">Ambil Foto Kamera</h4>
+            <div class="bg-slate-900 h-48 rounded flex items-center justify-center text-white text-xs relative overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center text-slate-400">Pratinjau Kamera Aktif</div>
+            </div>
+            <div class="flex justify-center space-x-2">
+                <button onclick="closeCameraCapture()" class="bg-slate-300 hover:bg-slate-400 text-slate-800 px-3.5 py-1.5 rounded font-bold text-xs">Batal</button>
+                <button onclick="captureCameraPhoto()" class="bg-blue-900 hover:bg-blue-950 text-white px-4 py-1.5 rounded font-bold text-xs">Ambil Foto</button>
             </div>
         </div>
     </div>
-
 
     <script>
-        // --- UTILITY FUNCTIONS & INITIALIZATION ---
-        
-        // Tab Switching Logic
-        function switchMainTab(tabId) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            // Remove active style from all buttons
-            document.querySelectorAll('[id^="navTab"]').forEach(el => {
-                el.classList.remove('bg-white', 'dark:bg-slate-700', 'text-cbn-blue', 'dark:text-white', 'shadow-sm');
-                el.classList.add('text-slate-600', 'dark:text-slate-400');
+        let savedRecords = JSON.parse(localStorage.getItem('cbn_saved_records')) || [
+            { id: 1, time: '13/09/2026 18:25:37', name: 'YUNIFA TRIANA SARI', idCard: '3207036503950002', sales: 'KBS029', total: '331.890' },
+            { id: 2, time: '13/09/2026 18:20:12', name: 'AHMAD TORFAIN', idCard: '3207030202900008', sales: 'KBS029', total: '331.890' },
+            { id: 3, time: '13/09/2026 18:05:48', name: 'ARIF AZIANSYAH', idCard: '3207161108010015', sales: 'KBS029', total: '0' }
+        ];
+
+        let visitRecords = JSON.parse(localStorage.getItem('cbn_visit_records')) || [
+            { id: 1, photo: 'https://placehold.co/40x40/1e3a8a/ffffff?text=V1', date: '2026-09-08', sales: 'Muh. Sophian\nNPK: 160307', address: 'Kp. Cicalid', pic: '08127878788', ekosistem: 'Rumah', aktivitas: 'Pemasaran', hasil: 'Bertemu Bapa', status: 'Tunggu info', action: 'Follow Up' },
+            { id: 2, photo: 'https://placehold.co/40x40/1e3a8a/ffffff?text=V2', date: '2026-09-08', sales: 'Zainal\nNPK: -', address: 'Grand Harmony', pic: '-', ekosistem: 'Rumah', aktivitas: 'Pemasaran', hasil: '-', status: 'Tunggu info', action: 'Follow Up' },
+            { id: 3, photo: 'https://placehold.co/40x40/1e3a8a/ffffff?text=V3', date: '2026-09-08', sales: 'Muh. Sophian\nNPK: 160307', address: 'Kp. Cicalid', pic: '-', ekosistem: 'Rumah', aktivitas: 'Pemasaran', hasil: 'Bertemu Ustad', status: 'Tunggu info', action: 'Follow Up' },
+            { id: 4, photo: 'https://placehold.co/40x40/1e3a8a/ffffff?text=V4', date: '2026-09-08', sales: 'Muh. Sophian\nNPK: 160307', address: 'Cicalid', pic: '-', ekosistem: 'Rumah', aktivitas: 'Pemasaran', hasil: 'Bertemu Ustad', status: 'Tunggu info', action: 'Follow Up' },
+            { id: 5, photo: 'https://placehold.co/40x40/1e3a8a/ffffff?text=V5', date: '2026-09-08', sales: 'Mansur\nNPK: -', address: 'Jl Pangrango', pic: '-', ekosistem: 'Rumah', aktivitas: 'Pemasaran', hasil: '-', status: 'Tunggu info', action: 'Follow Up' },
+            { id: 6, photo: 'https://placehold.co/40x40/1e3a8a/ffffff?text=V6', date: '2026-09-08', sales: 'Mansur\nNPK: -', address: 'Jln cikalid', pic: '-', ekosistem: 'Toko', aktivitas: 'Pemasaran', hasil: '-', status: 'Tunggu info', action: 'Follow Up' },
+            { id: 7, photo: 'https://placehold.co/40x40/1e3a8a/ffffff?text=V7', date: '2026-09-08', sales: 'Mansur\nNPK: -', address: 'Jln Cikalid Timur', pic: '-', ekosistem: 'Rumah', aktivitas: 'Pemasaran', hasil: '-', status: 'Tunggu info', action: 'Follow Up' },
+            { id: 8, photo: 'https://placehold.co/40x40/1e3a8a/ffffff?text=V8', date: '2026-09-08', sales: 'Muh. Sophian\nNPK: 160307', address: 'Jln Ruko Asom', pic: '-', ekosistem: '-', aktivitas: 'Pemasaran', hasil: '-', status: 'Tunggu info', action: 'Follow Up' },
+            { id: 9, photo: 'https://placehold.co/40x40/1e3a8a/ffffff?text=V9', date: '2026-09-07', sales: 'Muh. Sophian\nNPK: 160307', address: 'Masjid Al Hidayah', pic: '085271810529', ekosistem: 'Masjid', aktivitas: 'Pemasaran', hasil: '-', status: 'Tunggu info', action: 'Follow Up' },
+            { id: 10, photo: 'https://placehold.co/40x40/1e3a8a/ffffff?text=V10', date: '2026-09-08', sales: 'Muh. Sophian\nNPK: 160307', address: 'Perum TTC', pic: '08277872788', ekosistem: '-', aktivitas: 'Pemasaran', hasil: 'Bertemu Bapa', status: 'Tunggu info', action: 'Follow Up' },
+            { id: 11, photo: 'https://placehold.co/40x40/1e3a8a/ffffff?text=V11', date: '2026-09-08', sales: 'Mansur\nNPK: -', address: 'Citereuk', pic: '-', ekosistem: 'Rumah', aktivitas: 'Pemasaran', hasil: '-', status: 'Tunggu info', action: 'Follow Up' }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            calculateTotal();
+            initSignatures();
+            renderSavedTable();
+            renderVisitTable();
+            
+            document.querySelectorAll('#add1, #add2, #add3, #priceAdd1, #priceAdd2, #priceAdd3, input[name="package"], #pkgPrice1, #pkgPrice2, #pkgPrice3, #monthlyFee, #adminFee, #regFee').forEach(el => {
+                el.addEventListener('change', calculateTotal);
+                el.addEventListener('input', calculateTotal);
+            });
+        });
+
+        // Tab Switcher
+        function switchTab(tabName) {
+            document.getElementById('sectionForm').classList.add('hidden');
+            document.getElementById('sectionSaved').classList.add('hidden');
+            document.getElementById('sectionVisit').classList.add('hidden');
+
+            document.getElementById('tabForm').className = 'flex items-center space-x-1 px-3.5 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+            document.getElementById('tabSaved').className = 'flex items-center space-x-1 px-3.5 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+            document.getElementById('tabVisit').className = 'flex items-center space-x-1 px-3.5 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+
+            if (tabName === 'form') {
+                document.getElementById('sectionForm').classList.remove('hidden');
+                document.getElementById('tabForm').className = 'flex items-center space-x-1 px-3.5 py-1.5 text-xs font-bold rounded-lg bg-blue-900 text-white transition shadow';
+            } else if (tabName === 'saved') {
+                document.getElementById('sectionSaved').classList.remove('hidden');
+                document.getElementById('tabSaved').className = 'flex items-center space-x-1 px-3.5 py-1.5 text-xs font-bold rounded-lg bg-blue-900 text-white transition shadow';
+                renderSavedTable();
+            } else if (tabName === 'visit') {
+                document.getElementById('sectionVisit').classList.remove('hidden');
+                document.getElementById('tabVisit').className = 'flex items-center space-x-1 px-3.5 py-1.5 text-xs font-bold rounded-lg bg-blue-900 text-white transition shadow';
+                renderVisitTable();
+            }
+        }
+
+        function calculateTotal() {
+            const parseVal = (id) => {
+                const el = document.getElementById(id);
+                if (!el) return 0;
+                const val = el.value.replace(/\D/g, '');
+                return val ? parseInt(val) : 0;
+            };
+
+            const reg = parseVal('regFee');
+            
+            let monthly = 0;
+            const packageRadios = document.querySelectorAll('input[name="package"]');
+            if (packageRadios[0] && packageRadios[0].checked) monthly = parseVal('pkgPrice1');
+            else if (packageRadios[1] && packageRadios[1].checked) monthly = parseVal('pkgPrice2');
+            else if (packageRadios[2] && packageRadios[2].checked) monthly = parseVal('pkgPrice3');
+            else monthly = parseVal('monthlyFee');
+
+            const monthlyField = document.getElementById('monthlyFee');
+            if (monthlyField && monthlyField !== document.activeElement) {
+                monthlyField.value = monthly.toLocaleString('id-ID');
+            }
+
+            const admin = parseVal('adminFee');
+            
+            let addonTotal = 0;
+            if (document.getElementById('add1') && document.getElementById('add1').checked) addonTotal += parseVal('priceAdd1');
+            if (document.getElementById('add2') && document.getElementById('add2').checked) addonTotal += parseVal('priceAdd2');
+            if (document.getElementById('add3') && document.getElementById('add3').checked) addonTotal += parseVal('priceAdd3');
+
+            const subtotal = reg + monthly + admin + addonTotal;
+            const ppn = Math.round(subtotal * 0.11);
+            const total = subtotal + ppn;
+
+            const ppnEl = document.getElementById('ppn');
+            if (ppnEl) ppnEl.value = ppn.toLocaleString('id-ID');
+
+            const totalEl = document.getElementById('totalPayment');
+            if (totalEl) totalEl.value = total.toLocaleString('id-ID');
+        }
+
+        function setBoxStyle(styleType) {
+            const inputs = document.querySelectorAll('.grid-input');
+            inputs.forEach(input => {
+                input.classList.remove('form-grid-box', 'form-grid-dot', 'form-grid-line');
+                if (styleType === 'box') input.classList.add('form-grid-box');
+                else if (styleType === 'dot') input.classList.add('form-grid-dot');
+                else if (styleType === 'line') input.classList.add('form-grid-line');
             });
 
-            // Show selected tab
-            let targetTab = '';
-            let targetBtn = '';
+            ['btnBox', 'btnDot', 'btnLine'].forEach(id => {
+                const btn = document.getElementById(id);
+                if(btn) btn.className = 'px-2 py-0.5 text-[11px] font-bold rounded text-slate-700 hover:text-slate-900 transition';
+            });
+            const activeBtn = document.getElementById(styleType === 'box' ? 'btnBox' : styleType === 'dot' ? 'btnDot' : 'btnLine');
+            if(activeBtn) activeBtn.className = 'px-2 py-0.5 text-[11px] font-bold rounded bg-blue-900 text-white transition';
+        }
+
+        function saveCurrentData() {
+            const now = new Date();
+            const timeStr = now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID');
             
-            if(tabId === 'form') {
-                targetTab = 'tabForm'; targetBtn = 'navTabForm';
-                document.getElementById('formActionBar').style.display = 'flex';
-            } else if(tabId === 'saved') {
-                targetTab = 'tabSaved'; targetBtn = 'navTabSaved';
-                document.getElementById('formActionBar').style.display = 'none';
-                renderSavedTable(); // Refresh table when opening
-            } else if(tabId === 'dashboard') {
-                targetTab = 'tabDashboard'; targetBtn = 'navTabDashboard';
-                document.getElementById('formActionBar').style.display = 'none';
-            }
-
-            document.getElementById(targetTab).classList.add('active');
-            let btn = document.getElementById(targetBtn);
-            btn.classList.remove('text-slate-600', 'dark:text-slate-400');
-            btn.classList.add('bg-white', 'dark:bg-slate-700', 'text-cbn-blue', 'dark:text-white', 'shadow-sm');
-        }
-
-        // Dark Mode Toggle
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark');
-            const icon = document.getElementById('themeIcon');
-            if (document.body.classList.contains('dark')) {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            }
-        }
-
-        // Dummy Language Toggle (Visual only for this demo)
-        let isId = true;
-        function toggleLanguage() {
-            isId = !isId;
-            document.getElementById('currentLangLabel').textContent = isId ? 'ID' : 'EN';
-            // In a real app, you would translate elements marked with data-i18n
-        }
-
-        // Number Formatting (Rupiah)
-        function formatIDR(number) {
-            return new Intl.NumberFormat('id-ID').format(number);
-        }
-
-        function parseIDR(str) {
-            return parseInt(str.replace(/\./g, '')) || 0;
-        }
-
-        // Function to generate grid boxes dynamically
-        function setupGridBoxes() {
-            const gridContainers = document.querySelectorAll('.grid-container');
-            
-            gridContainers.forEach(container => {
-                const count = parseInt(container.getAttribute('data-grid-count'));
-                const isEmail = container.id === 'emailBoxes'; 
-                const isUsername = container.id === 'usernameBoxes'; 
-                
-                for (let i = 0; i < count; i++) {
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.maxLength = 1;
-                    input.className = 'char-box';
-                    
-                    // Allow flexible input (uppercase, lowercase, numbers without forcing uppercase)
-                    input.oninput = function() { 
-                        // Keeps exact characters as typed by user (flexible: upper, lower, numbers)
-                        this.value = this.value; 
-                    }
-
-                    // Navigation logic between boxes
-                    input.addEventListener('input', function(e) {
-                        if (this.value.length === 1) {
-                            const next = this.nextElementSibling;
-                            if (next && next.classList.contains('char-box')) {
-                                next.focus();
-                            }
-                        }
-                    });
-
-                    input.addEventListener('keydown', function(e) {
-                        if (e.key === 'Backspace' && this.value === '') {
-                            const prev = this.previousElementSibling;
-                            if (prev && prev.classList.contains('char-box')) {
-                                prev.focus();
-                            }
-                        } else if (e.key === 'ArrowLeft') {
-                            const prev = this.previousElementSibling;
-                            if (prev && prev.classList.contains('char-box')) prev.focus();
-                        } else if (e.key === 'ArrowRight') {
-                            const next = this.nextElementSibling;
-                            if (next && next.classList.contains('char-box')) next.focus();
-                        }
-                    });
-
-                    // Mirror Name to Signature area
-                    if (container.id === 'fullNameBoxes') {
-                         input.addEventListener('keyup', updateSignatureName);
-                    }
-
-                    container.appendChild(input);
+            const formData = {};
+            document.querySelectorAll('#sectionForm input, #sectionForm select, #sectionForm textarea').forEach((el, index) => {
+                if (el.type === 'radio' || el.type === 'checkbox') {
+                    formData['el_' + index] = { type: el.type, checked: el.checked, name: el.name, value: el.value };
+                } else {
+                    formData['el_' + index] = { type: el.type || 'text', value: el.value };
                 }
             });
-        }
 
-        // Helper to get string from grid container
-        function getGridValue(containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return '';
-            let val = '';
-            container.querySelectorAll('.char-box').forEach(input => {
-                val += input.value;
-            });
-            return val.trim();
-        }
-
-        // Helper to set string to grid container
-        function setGridValue(containerId, valueStr) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const inputs = container.querySelectorAll('.char-box');
+            const totalVal = document.getElementById('totalPayment') ? document.getElementById('totalPayment').value : '0';
             
-            // clear first
-            inputs.forEach(i => i.value = '');
-            
-            const chars = valueStr.split('');
-            for (let i = 0; i < Math.min(chars.length, inputs.length); i++) {
-                inputs[i].value = chars[i];
-            }
-        }
-        
-        function updateSignatureName() {
-            // Auto-fill customer name if empty or match full name grid
-            const customerNameInput = document.getElementById('signerName1');
-            if (customerNameInput && !customerNameInput.value) {
-                customerNameInput.value = getGridValue('fullNameBoxes');
-            }
-        }
-
-        // Form Calculations
-        function calculateCosts() {
-            // 1. Get Package Price text value directly
-            const selectedPkgRadio = document.querySelector('input[name="package"]:checked');
-            let pkgInputVal = document.getElementById('costPackage').value;
-            
-            // Try parsing numeric value if possible for totals, or 0 if text/empty
-            let pkgPrice = parseIDR(pkgInputVal);
-
-            // 2. Get Fixed Costs
-            let installCost = parseIDR(document.getElementById('costInstall').value);
-            let adminCost = parseIDR(document.getElementById('costAdmin').value);
-
-            // 3. Calculate Add-ons (allow manual editing or auto calculation override)
-            let addonCost = parseIDR(document.getElementById('costAddon').value);
-            // If user just checked/unchecked items or loaded sample, we can check if addon input was modified or initialize it.
-            // To make it fully editable while keeping functionality: we read from #costAddon input directly.
-
-            // 4. Calculate Totals
-            let subtotal = installCost + pkgPrice + adminCost + addonCost;
-            let vat = subtotal * 0.11; // 11% PPN
-            let grandTotal = subtotal + vat;
-
-            // 5. Update DOM
-            document.getElementById('calcSubtotal').textContent = 'Rp ' + formatIDR(subtotal);
-            document.getElementById('calcVat').textContent = 'Rp ' + formatIDR(Math.floor(vat));
-            document.getElementById('calcTotal').textContent = 'Rp ' + formatIDR(Math.floor(grandTotal));
-        }
-
-        // Signature Pad Logic
-        const signaturePads = {};
-
-        function initSignature(canvasId) {
-            const canvas = document.getElementById(canvasId);
-            const ctx = canvas.getContext('2d');
-            const container = canvas.parentElement;
-            
-            // Set canvas resolution
-            function resizeCanvas() {
-                canvas.width = container.clientWidth;
-                canvas.height = container.clientHeight;
-                ctx.lineWidth = 2;
-                ctx.lineCap = 'round';
-                ctx.strokeStyle = '#020617'; // Dark slate
-            }
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-
-            let isDrawing = false;
-            let hasDrawn = false;
-            let lastX = 0;
-            let lastY = 0;
-            
-            const placeholder = document.getElementById('sigPlaceholder' + canvasId.replace('sigCanvas', ''));
-
-            function startDrawing(e) {
-                isDrawing = true;
-                hasDrawn = true;
-                if(placeholder) placeholder.style.display = 'none';
-                [lastX, lastY] = getCoordinates(e);
-            }
-
-            function draw(e) {
-                if (!isDrawing) return;
-                e.preventDefault();
-                const [currentX, currentY] = getCoordinates(e);
-                ctx.beginPath();
-                ctx.moveTo(lastX, lastY);
-                ctx.lineTo(currentX, currentY);
-                ctx.stroke();
-                [lastX, lastY] = [currentX, currentY];
-            }
-
-            function stopDrawing() {
-                isDrawing = false;
-            }
-
-            function getCoordinates(e) {
-                const rect = canvas.getBoundingClientRect();
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return [clientX - rect.left, clientY - rect.top];
-            }
-
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
-            canvas.addEventListener('mouseup', stopDrawing);
-            canvas.addEventListener('mouseout', stopDrawing);
-
-            // Touch support
-            canvas.addEventListener('touchstart', startDrawing, {passive: false});
-            canvas.addEventListener('touchmove', draw, {passive: false});
-            canvas.addEventListener('touchend', stopDrawing);
-
-            signaturePads[canvasId] = {
-                canvas: canvas,
-                ctx: ctx,
-                hasDrawn: () => hasDrawn,
-                clear: () => {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    hasDrawn = false;
-                    if(placeholder) placeholder.style.display = 'flex';
+            let extractedName = '';
+            const section1GridInputs = document.querySelectorAll('#sectionForm .border-blue-900:nth-of-type(1) .grid-input');
+            section1GridInputs.forEach(input => {
+                if (input && input.value) {
+                    extractedName += input.value;
                 }
-            };
-        }
-
-        function clearSignature(canvasId) {
-            if(signaturePads[canvasId]) {
-                signaturePads[canvasId].clear();
-            }
-        }
-
-
-        // --- DATA MANAGEMENT ---
-        
-        let savedData = JSON.parse(localStorage.getItem('cbnFormData')) || [];
-
-        function saveFormData() {
-            // Basic validation
-            const fullName = getGridValue('fullNameBoxes');
-            const idCard = getGridValue('idCardBoxes');
-            
-            if (!fullName || fullName.length < 3) {
-                alert('Silakan isi Nama Pelanggan minimal 3 karakter.');
-                return;
+            });
+            extractedName = extractedName.trim();
+            if (!extractedName) {
+                extractedName = 'PELANGGAN CBN';
             }
 
-            // Generate simple ID or check if editing existing
-            const dateStr = new Date().toLocaleDateString('id-ID');
-            const timeStr = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
-            const regId = 'REG-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-            
-            const selectedPkg = document.querySelector('input[name="package"]:checked').value;
-            const totalStr = document.getElementById('calcTotal').textContent;
-            
-            // Count signatures
-            let sigCount = 0;
-            if(signaturePads['sigCanvas1'].hasDrawn()) sigCount++;
-            if(signaturePads['sigCanvas2'].hasDrawn()) sigCount++;
-            if(signaturePads['sigCanvas3'].hasDrawn()) sigCount++;
-
-            // Gather complete form state to ensure detailed viewing works perfectly
-            const fullRawData = {
-                salesCode: getGridValue('salesCodeBoxes'),
-                spvCode: getGridValue('spvCodeBoxes'),
-                fullName: getGridValue('fullNameBoxes'),
-                pob: document.getElementById('pobInput').value,
-                dob: getGridValue('dobBoxes'),
-                idCard: getGridValue('idCardBoxes'),
-                gender: document.querySelector('input[name="gender"]:checked')?.value || 'Pria',
-                homePhone: getGridValue('homePhoneBoxes'),
-                mobilePhone: getGridValue('mobilePhoneBoxes'),
-                address1: getGridValue('addressRow1Boxes'),
-                address2: getGridValue('addressRow2Boxes'),
-                rt: getGridValue('rtBoxes'),
-                rw: getGridValue('rwBoxes'),
-                zip: getGridValue('zipBoxes'),
-                ownership: document.querySelector('input[name="ownership"]:checked')?.value || 'Pemilik',
-                email: getGridValue('emailBoxes'),
-                package: selectedPkg,
-                pkgPrice1: document.getElementById('pkgPrice1').value,
-                pkgPrice2: document.getElementById('pkgPrice2').value,
-                pkgPrice3: document.getElementById('pkgPrice3').value,
-                costInstall: document.getElementById('costInstall').value,
-                costPackage: document.getElementById('costPackage').value,
-                costAdmin: document.getElementById('costAdmin').value,
-                costAddon: document.getElementById('costAddon').value,
-                devRouter: document.getElementById('devRouter').checked,
-                qtyRouter: document.getElementById('qtyRouter').value,
-                devSmartbox: document.getElementById('devSmartbox').checked,
-                qtySmartbox: document.getElementById('qtySmartbox').value,
-                addonDens: document.getElementById('addonDens').checked,
-                addonVision: document.getElementById('addonVision').checked,
-                addonCustom1Check: document.getElementById('addonCustom1Check').checked,
-                addonCustom1Text: document.getElementById('addonCustom1Text').value,
-                addonCustom2Check: document.getElementById('addonCustom2Check').checked,
-                addonCustom2Text: document.getElementById('addonCustom2Text').value,
-                ccName: document.getElementById('ccName').value,
-                ccNumber: document.getElementById('ccNumber').value,
-                ccExpiry: document.getElementById('ccExpiry').value,
-                ccBank: document.getElementById('ccBank').value,
-                username: getGridValue('usernameBoxes'),
-                installDay: document.getElementById('installDayInput').value,
-                installDate: getGridValue('installDateBoxes'),
-                installTime: document.querySelector('input[name="installTime"]:checked')?.value || '09.00-11.00',
-                installNotes: document.getElementById('installNotesInput').value,
-                signerName1: document.getElementById('signerName1').value,
-                signerName2: document.getElementById('signerName2').value,
-                signerName3: document.getElementById('signerName3').value
+            const newRecord = {
+                id: Date.now(),
+                time: timeStr,
+                name: extractedName,
+                idCard: '3207161108010015',
+                sales: 'KBS029',
+                total: totalVal,
+                formData: formData
             };
 
-            // Create data object
-            const formData = {
-                id: regId,
-                date: `${dateStr}, ${timeStr}`,
-                customerName: fullName,
-                salesCode: getGridValue('salesCodeBoxes') || '-',
-                idCard: idCard || '-',
-                package: selectedPkg,
-                total: totalStr,
-                sigStatus: `${sigCount}/3 TTD`,
-                raw: fullRawData
-            };
+            savedRecords.unshift(newRecord);
+            localStorage.setItem('cbn_saved_records', JSON.stringify(savedRecords));
+            renderSavedTable();
 
-            // Save to array and local storage
-            savedData.unshift(formData);
-            localStorage.setItem('cbnFormData', JSON.stringify(savedData));
-            
-            // Update UI
-            updateBadge();
-            
-            // Automatically clear form after saving successfully
-            document.querySelectorAll('.char-box').forEach(input => input.value = '');
-            document.querySelectorAll('input[type="text"]:not(.char-box):not(#searchInput), input[type="number"]').forEach(input => input.value = '');
-            clearSignature('sigCanvas1');
-            clearSignature('sigCanvas2');
-            clearSignature('sigCanvas3');
-            calculateCosts();
-
-            alert(`Data berhasil disimpan dengan ID: ${regId}`);
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-emerald-600 text-white px-4 py-2 rounded shadow-lg text-xs z-50 font-bold transition-all';
+            notification.innerText = 'Data berhasil disimpan ke Riwayat Tersimpan!';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 2500);
         }
 
-        function updateBadge() {
-            const badge = document.getElementById('savedCountBadge');
-            badge.textContent = savedData.length;
+        function resetForm() {
+            document.querySelectorAll('#sectionForm input[type="text"]').forEach(el => {
+                if (!el.readOnly && !el.classList.contains('grid-input')) {
+                    el.value = '';
+                }
+            });
+
+            document.querySelectorAll('#sectionForm .grid-input').forEach(el => {
+                el.value = '';
+            });
+
+            document.querySelectorAll('#sectionForm input[type="checkbox"]').forEach(el => {
+                el.checked = false;
+            });
+
+            ['regFee', 'monthlyFee', 'adminFee', 'pkgPrice1', 'pkgPrice2', 'pkgPrice3', 'priceAdd1', 'priceAdd2', 'priceAdd3'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el && !el.readOnly) el.value = '0';
+            });
+
+            clearAllSigs();
+            calculateTotal();
         }
 
         function renderSavedTable() {
-            const tbody = document.getElementById('savedDataBody');
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
+            const tbody = document.getElementById('savedTableBody');
+            if(!tbody) return;
             tbody.innerHTML = '';
-            
-            let filteredData = savedData.filter(item => 
-                item.customerName.toLowerCase().includes(searchTerm) || 
-                item.idCard.includes(searchTerm) ||
-                item.salesCode.toLowerCase().includes(searchTerm) ||
-                item.id.toLowerCase().includes(searchTerm)
-            );
+            document.getElementById('savedCountLabel').innerText = `Tersimpan ( ${savedRecords.length} )`;
 
-            if (filteredData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-500 italic bg-white dark:bg-slate-800">Tidak ada data tersimpan.</td></tr>`;
+            if(savedRecords.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">Belum ada data tersimpan.</td></tr>`;
                 return;
             }
 
-            filteredData.forEach((item, index) => {
+            savedRecords.forEach((rec) => {
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-700/50 transition bg-white dark:bg-slate-800';
-                
+                tr.className = 'hover:bg-slate-50 transition';
                 tr.innerHTML = `
-                    <td class="font-bold text-cbn-blue dark:text-blue-400">
-                        ${item.id}
-                        <div class="text-[9px] font-normal text-slate-500 mt-1">${item.date}</div>
-                    </td>
-                    <td class="font-bold text-slate-800 dark:text-slate-200">
-                        ${item.customerName}
-                        <div class="text-[10px] font-normal text-slate-500 mt-1">Sales: ${item.salesCode}</div>
-                    </td>
-                    <td class="text-slate-600 dark:text-slate-400">${item.idCard}</td>
-                    <td>
-                        <span class="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-cbn-blue dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded text-[10px] font-bold">
-                            ${item.package}
-                        </span>
-                    </td>
-                    <td class="font-bold text-slate-800 dark:text-slate-200">${item.total}</td>
-                    <td class="text-center">
-                        <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-[9px] font-bold border border-slate-200 dark:border-slate-600">
-                            ${item.sigStatus}
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        <div class="flex items-center justify-center gap-1.5">
-                            <button onclick="viewSavedData(${index})" class="w-6 h-6 rounded bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition flex items-center justify-center" title="Lihat Detail & Muat ke Form"><i class="fa-solid fa-eye text-[10px]"></i></button>
-                            <button onclick="downloadSavedPDF(${index})" class="w-6 h-6 rounded bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 transition flex items-center justify-center" title="Download PDF"><i class="fa-solid fa-file-pdf text-[10px]"></i></button>
-                            <button onclick="downloadSavedPNG(${index})" class="w-6 h-6 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 transition flex items-center justify-center" title="Download PNG"><i class="fa-solid fa-image text-[10px]"></i></button>
-                            <button onclick="deleteData(${index})" class="w-6 h-6 rounded bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 transition flex items-center justify-center" title="Hapus"><i class="fa-solid fa-trash text-[10px]"></i></button>
-                        </div>
+                    <td class="p-2.5 font-medium text-slate-700">${rec.time}</td>
+                    <td class="p-2.5 font-bold text-slate-900">${rec.name}</td>
+                    <td class="p-2.5 text-slate-600">${rec.idCard}</td>
+                    <td class="p-2.5 font-bold text-blue-900">${rec.sales}</td>
+                    <td class="p-2.5 font-bold text-slate-900">Rp ${rec.total}</td>
+                    <td class="p-2.5 text-center space-x-1 whitespace-nowrap">
+                        <button onclick="loadRecord(${rec.id})" class="bg-blue-100 text-blue-800 hover:bg-blue-200 px-3 py-1 rounded font-bold text-[10.5px] transition">Muat</button>
+                        <button onclick="deleteSavedRecord(${rec.id})" class="bg-red-100 text-red-800 hover:bg-red-200 px-3 py-1 rounded font-bold text-[10.5px] transition">Hapus</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function viewSavedData(index) {
-            const item = savedData[index];
-            if (!item || !item.raw) {
-                alert('Detail data tidak ditemukan.');
+        function loadRecord(id) {
+            const rec = savedRecords.find(r => r.id === id);
+            if(!rec) return;
+
+            switchTab('form');
+
+            if (rec.formData) {
+                document.querySelectorAll('#sectionForm input, #sectionForm select, #sectionForm textarea').forEach((el, index) => {
+                    const savedElData = rec.formData['el_' + index];
+                    if (savedElData) {
+                        if (savedElData.type === 'radio' || savedElData.type === 'checkbox') {
+                            el.checked = savedElData.checked;
+                        } else {
+                            el.value = savedElData.value;
+                        }
+                    }
+                });
+            }
+
+            calculateTotal();
+        }
+
+        function deleteSavedRecord(id) {
+            savedRecords = savedRecords.filter(r => r.id !== id);
+            localStorage.setItem('cbn_saved_records', JSON.stringify(savedRecords));
+            renderSavedTable();
+        }
+
+        function clearSavedData() {
+            savedRecords = [];
+            localStorage.removeItem('cbn_saved_records');
+            renderSavedTable();
+        }
+
+        function renderVisitTable() {
+            renderFilteredVisitTable(visitRecords);
+        }
+
+        function deleteVisit(id) {
+            visitRecords = visitRecords.filter(v => v.id !== id);
+            localStorage.setItem('cbn_visit_records', JSON.stringify(visitRecords));
+            renderVisitTable();
+        }
+
+        function openAddVisitModal() {
+            document.getElementById('visitModalTitle').innerText = 'FORMULIR INPUT VISIT';
+            document.getElementById('editVisitId').value = '';
+            document.getElementById('modalPhoto').value = 'https://placehold.co/150x150';
+            document.getElementById('modalDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('modalSalesName').value = 'Arif Aziansyah';
+            document.getElementById('modalNpk').value = '16538';
+            document.getElementById('modalAddress').value = '';
+            document.getElementById('modalPic').value = '';
+            document.getElementById('modalEkosistemText').value = 'Rumah';
+            document.getElementById('modalStatus').value = 'Tunggu info';
+            document.getElementById('modalAction').value = 'Follow Up';
+            document.getElementById('modalAktivitas').value = 'Pemasaran';
+            document.getElementById('modalHasil').value = '';
+            document.getElementById('visitModal').classList.remove('hidden');
+        }
+
+        function openEditVisitModal(id) {
+            const v = visitRecords.find(item => item.id === id);
+            if(!v) return;
+
+            document.getElementById('visitModalTitle').innerText = 'EDIT FORMULIR INPUT VISIT';
+            document.getElementById('editVisitId').value = v.id;
+            document.getElementById('modalPhoto').value = v.photo || 'https://placehold.co/150x150';
+            document.getElementById('modalDate').value = v.date;
+            
+            const salesParts = (v.sales || '').split('\nNPK: ');
+            document.getElementById('modalSalesName').value = salesParts[0] || '';
+            document.getElementById('modalNpk').value = salesParts[1] || '';
+
+            document.getElementById('modalAddress').value = v.address;
+            document.getElementById('modalPic').value = v.pic;
+            document.getElementById('modalEkosistemText').value = v.ekosistem || '';
+            document.getElementById('modalStatus').value = v.status || 'Tunggu info';
+            document.getElementById('modalAction').value = v.action;
+            document.getElementById('modalAktivitas').value = v.aktivitas || 'Pemasaran';
+            document.getElementById('modalHasil').value = v.hasil;
+            document.getElementById('visitModal').classList.remove('hidden');
+        }
+
+        function closeVisitModal() {
+            document.getElementById('visitModal').classList.add('hidden');
+        }
+
+        function openCameraCapture() {
+            document.getElementById('cameraModal').classList.remove('hidden');
+        }
+
+        function closeCameraCapture() {
+            document.getElementById('cameraModal').classList.add('hidden');
+        }
+
+        function captureCameraPhoto() {
+            document.getElementById('modalPhoto').value = 'https://placehold.co/150x150/1e3a8a/ffffff?text=Selfie_OK';
+            closeCameraCapture();
+        }
+
+        function handleModalImageUpload(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('modalPhoto').value = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveVisitModal() {
+            const editId = document.getElementById('editVisitId').value;
+            const photo = document.getElementById('modalPhoto').value.trim() || 'https://placehold.co/40x40/1e3a8a/ffffff?text=V';
+            const date = document.getElementById('modalDate').value || new Date().toISOString().split('T')[0];
+            const salesName = document.getElementById('modalSalesName').value.trim() || 'Arif Aziansyah';
+            const npk = document.getElementById('modalNpk').value.trim() || '-';
+            const salesFull = `${salesName}\nNPK: ${npk}`;
+            const address = document.getElementById('modalAddress').value.trim() || 'Alamat Lokasi';
+            const pic = document.getElementById('modalPic').value.trim() || '-';
+            const ekosistem = document.getElementById('modalEkosistemText').value.trim() || '-';
+            const status = document.getElementById('modalStatus').value;
+            const action = document.getElementById('modalAction').value.trim() || 'Follow Up';
+            const aktivitas = document.getElementById('modalAktivitas').value.trim() || 'Pemasaran';
+            const hasil = document.getElementById('modalHasil').value.trim() || '-';
+
+            if(editId) {
+                const v = visitRecords.find(item => item.id == editId);
+                if(v) {
+                    v.photo = photo;
+                    v.date = date;
+                    v.sales = salesFull;
+                    v.address = address;
+                    v.pic = pic;
+                    v.ekosistem = ekosistem;
+                    v.status = status;
+                    v.action = action;
+                    v.aktivitas = aktivitas;
+                    v.hasil = hasil;
+                }
+            } else {
+                const newV = {
+                    id: Date.now(),
+                    photo: photo,
+                    date: date,
+                    sales: salesFull,
+                    address: address,
+                    pic: pic,
+                    ekosistem: ekosistem,
+                    aktivitas: aktivitas,
+                    hasil: hasil,
+                    status: status,
+                    action: action
+                };
+                visitRecords.unshift(newV);
+            }
+
+            localStorage.setItem('cbn_visit_records', JSON.stringify(visitRecords));
+            renderVisitTable();
+            closeVisitModal();
+        }
+
+        function filterVisits() {
+            const start = document.getElementById('filterStart').value;
+            const end = document.getElementById('filterEnd').value;
+            if(!start || !end) return;
+            const filtered = visitRecords.filter(v => v.date >= start && v.date <= end);
+            renderFilteredVisitTable(filtered);
+        }
+
+        function renderFilteredVisitTable(records) {
+            const tbody = document.getElementById('visitTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            document.getElementById('totalVisitCount').innerText = `Total Visit: ${records.length}`;
+            document.getElementById('visitCountLabel').innerText = `VISIT SALES ( ${visitRecords.length} )`;
+
+            if(records.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="11" class="p-4 text-center text-slate-500">Tidak ada data visit pada rentang tanggal tersebut.</td></tr>`;
                 return;
             }
 
-            const raw = item.raw;
-
-            // Populate all fields back into the form
-            setGridValue('salesCodeBoxes', raw.salesCode || '');
-            setGridValue('spvCodeBoxes', raw.spvCode || '');
-            setGridValue('fullNameBoxes', raw.fullName || '');
-            document.getElementById('pobInput').value = raw.pob || '';
-            setGridValue('dobBoxes', raw.dob || '');
-            setGridValue('idCardBoxes', raw.idCard || '');
-            
-            if (raw.gender) {
-                const genderRadio = document.querySelector(`input[name="gender"][value="${raw.gender}"]`);
-                if (genderRadio) genderRadio.checked = true;
-            }
-
-            setGridValue('homePhoneBoxes', raw.homePhone || '');
-            setGridValue('mobilePhoneBoxes', raw.mobilePhone || '');
-            setGridValue('addressRow1Boxes', raw.address1 || '');
-            setGridValue('addressRow2Boxes', raw.address2 || '');
-            setGridValue('rtBoxes', raw.rt || '');
-            setGridValue('rwBoxes', raw.rw || '');
-            setGridValue('zipBoxes', raw.zip || '');
-
-            if (raw.ownership) {
-                const ownRadio = document.querySelector(`input[name="ownership"][value="${raw.ownership}"]`);
-                if (ownRadio) ownRadio.checked = true;
-            }
-
-            setGridValue('emailBoxes', raw.email || '');
-
-            if (raw.package) {
-                const pkgRadio = document.querySelector(`input[name="package"][value="${raw.package}"]`);
-                if (pkgRadio) pkgRadio.checked = true;
-            }
-
-            document.getElementById('pkgPrice1').value = raw.pkgPrice1 || '';
-            document.getElementById('pkgPrice2').value = raw.pkgPrice2 || '';
-            document.getElementById('pkgPrice3').value = raw.pkgPrice3 || '';
-            document.getElementById('costInstall').value = raw.costInstall || '500.000';
-            document.getElementById('costPackage').value = raw.costPackage || '799.000';
-            document.getElementById('costAdmin').value = raw.costAdmin || '150.000';
-            document.getElementById('costAddon').value = raw.costAddon || '0';
-
-            document.getElementById('devRouter').checked = !!raw.devRouter;
-            document.getElementById('qtyRouter').value = raw.qtyRouter || 1;
-            document.getElementById('devSmartbox').checked = !!raw.devSmartbox;
-            document.getElementById('qtySmartbox').value = raw.qtySmartbox || 1;
-
-            document.getElementById('addonDens').checked = !!raw.addonDens;
-            document.getElementById('addonVision').checked = !!raw.addonVision;
-            document.getElementById('addonCustom1Check').checked = !!raw.addonCustom1Check;
-            document.getElementById('addonCustom1Text').value = raw.addonCustom1Text || '';
-            document.getElementById('addonCustom2Check').checked = !!raw.addonCustom2Check;
-            document.getElementById('addonCustom2Text').value = raw.addonCustom2Text || '';
-
-            document.getElementById('ccName').value = raw.ccName || '';
-            document.getElementById('ccNumber').value = raw.ccNumber || '';
-            document.getElementById('ccExpiry').value = raw.ccExpiry || '';
-            document.getElementById('ccBank').value = raw.ccBank || '';
-
-            setGridValue('usernameBoxes', raw.username || '');
-            document.getElementById('installDayInput').value = raw.installDay || 'segera';
-            setGridValue('installDateBoxes', raw.installDate || '');
-
-            if (raw.installTime) {
-                const timeRadio = document.querySelector(`input[name="installTime"][value="${raw.installTime}"]`);
-                if (timeRadio) timeRadio.checked = true;
-            }
-
-            document.getElementById('installNotesInput').value = raw.installNotes || '';
-            document.getElementById('signerName1').value = raw.signerName1 || '';
-            document.getElementById('signerName2').value = raw.signerName2 || '';
-            document.getElementById('signerName3').value = raw.signerName3 || '';
-
-            calculateCosts();
-            
-            // Switch to form tab to view loaded record
-            switchMainTab('form');
+            records.forEach((v) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition border-b';
+                tr.innerHTML = `
+                    <td class="p-2"><img src="${v.photo}" class="w-8 h-8 rounded object-cover border" onerror="this.src='https://placehold.co/40x40/1e3a8a/ffffff?text=V'"></td>
+                    <td class="p-2 font-medium text-slate-700 whitespace-nowrap">${v.date}</td>
+                    <td class="p-2 font-bold text-slate-900 whitespace-nowrap">${v.sales}</td>
+                    <td class="p-2 text-slate-800">${v.address}</td>
+                    <td class="p-2 text-slate-600">${v.pic}</td>
+                    <td class="p-2 text-slate-700 whitespace-nowrap">${v.ekosistem}</td>
+                    <td class="p-2 text-slate-700">${v.aktivitas}</td>
+                    <td class="p-2 text-slate-700">${v.hasil}</td>
+                    <td class="p-2 text-center"><span class="bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded text-[9.5px] border border-amber-300">${v.status}</span></td>
+                    <td class="p-2 text-blue-900 font-bold whitespace-nowrap">${v.action}</td>
+                    <td class="p-2 text-center whitespace-nowrap space-x-1">
+                        <button onclick="openEditVisitModal(${v.id})" class="bg-blue-100 text-blue-800 hover:bg-blue-200 px-2 py-1 rounded font-bold text-[10px]">Edit</button>
+                        <button onclick="deleteVisit(${v.id})" class="bg-red-100 text-red-800 hover:bg-red-200 px-2 py-1 rounded font-bold text-[10px]">Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
-        function downloadSavedPDF(index) {
-            viewSavedData(index);
-            setTimeout(() => { downloadPDF(); }, 300);
+        function resetVisitFilter() {
+            document.getElementById('filterStart').value = '';
+            document.getElementById('filterEnd').value = '';
+            renderVisitTable();
         }
 
-        function downloadSavedPNG(index) {
-            viewSavedData(index);
-            setTimeout(() => { downloadPNG(); }, 300);
-        }
-
-        function deleteData(index) {
-            if(confirm('Apakah Anda yakin ingin menghapus data pendaftaran ini?')) {
-                savedData.splice(index, 1);
-                localStorage.setItem('cbnFormData', JSON.stringify(savedData));
-                updateBadge();
-                renderSavedTable();
-            }
-        }
-        
-        // Search listener
-        document.getElementById('searchInput').addEventListener('keyup', renderSavedTable);
-
-
-        // --- EXPORT FUNCTIONS ---
-        
-        function getPrintArea() {
-            return document.getElementById('formPrintArea');
-        }
-
-        async function downloadPNG() {
-            const element = getPrintArea();
-            // Force light mode for print/export to ensure it looks like a document
-            const wasDark = document.body.classList.contains('dark');
-            if(wasDark) document.body.classList.remove('dark');
-            
-            try {
-                const canvas = await html2canvas(element, {
-                    scale: 2, // High resolution
-                    useCORS: true,
-                    logging: false,
-                    backgroundColor: '#ffffff'
-                });
+        function initSignatures() {
+            ['sigCustomer', 'sigSales', 'sigAdmin'].forEach(id => {
+                const canvas = document.getElementById(id);
+                if(!canvas) return;
+                const ctx = canvas.getContext('2d');
                 
-                const image = canvas.toDataURL("image/png");
-                const link = document.createElement('a');
-                link.download = 'Formulir_Pendaftaran_CBN.png';
-                link.href = image;
-                link.click();
-            } catch (err) {
-                console.error('Error generating PNG', err);
-                alert('Gagal membuat PNG.');
-            } finally {
-                if(wasDark) document.body.classList.add('dark');
-            }
+                let rect = canvas.getBoundingClientRect();
+                canvas.width = rect.width || 200;
+                canvas.height = rect.height || 64;
+
+                let drawing = false;
+
+                canvas.addEventListener('mousedown', startDraw);
+                canvas.addEventListener('mousemove', draw);
+                canvas.addEventListener('mouseup', stopDraw);
+                canvas.addEventListener('mouseleave', stopDraw);
+
+                canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e.touches[0]); });
+                canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); });
+                canvas.addEventListener('touchend', (e) => { e.preventDefault(); stopDraw(); });
+
+                function startDraw(e) {
+                    drawing = true;
+                    ctx.beginPath();
+                    const r = canvas.getBoundingClientRect();
+                    ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
+                }
+
+                function draw(e) {
+                    if (!drawing) return;
+                    const r = canvas.getBoundingClientRect();
+                    ctx.lineWidth = 2;
+                    ctx.lineCap = 'round';
+                    ctx.strokeStyle = '#0f172a';
+                    ctx.lineTo(e.clientX - r.left, e.clientY - r.top);
+                    ctx.stroke();
+                }
+
+                function stopDraw() {
+                    drawing = false;
+                }
+            });
         }
 
-        function downloadPDF() {
-            const element = getPrintArea();
-            const wasDark = document.body.classList.contains('dark');
-            if(wasDark) document.body.classList.remove('dark');
+        function clearSig(id) {
+            const canvas = document.getElementById(id);
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
 
+        function clearAllSigs() {
+            clearSig('sigCustomer');
+            clearSig('sigSales');
+            clearSig('sigAdmin');
+        }
+
+        function prepareForExport() {
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(el => {
+                if(el.type === 'checkbox' || el.type === 'radio') {
+                    if(el.checked) el.setAttribute('checked', 'checked');
+                    else el.removeAttribute('checked');
+                } else {
+                    el.setAttribute('value', el.value);
+                }
+            });
+        }
+
+        function exportPDF() {
+            prepareForExport();
+            const element = document.getElementById('sectionForm');
             const opt = {
-                margin:       0.5,
+                margin:       [2, 2, 2, 2],
                 filename:     'Formulir_Pendaftaran_CBN.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true, windowWidth: 820 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait', putOnlyUsedFonts: true }
             };
-
-            // Needs a slight delay if toggling classes to let DOM settle
-            setTimeout(() => {
-                html2pdf().set(opt).from(element).save().then(() => {
-                    if(wasDark) document.body.classList.add('dark');
-                });
-            }, 100);
+            html2pdf().from(element).set(opt).save();
         }
-        
-        function exportToExcel() {
-            if(savedData.length === 0) {
-                alert('Tidak ada data untuk di-export.');
+
+        function exportPNG() {
+            prepareForExport();
+            const element = document.getElementById('sectionForm');
+            html2canvas(element, { scale: 2, useCORS: true, windowWidth: 820 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Formulir_Pendaftaran_CBN.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        function exportSavedExcel() {
+            if (savedRecords.length === 0) {
+                const notification = document.createElement('div');
+                notification.className = 'fixed bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded shadow-lg text-xs z-50 font-bold';
+                notification.innerText = 'Tidak ada data tersimpan untuk diexport!';
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 2500);
                 return;
             }
-            
-            // Format data with full header attributes for excel export
-            const wsData = savedData.map(item => ({
-                'ID Registrasi': item.id,
-                'Tanggal Pendaftaran': item.date,
-                'Kode Sales': item.salesCode,
-                'Kode SPV': item.raw?.spvCode || '-',
-                'Nama Lengkap Pelanggan': item.customerName,
-                'Tempat Lahir': item.raw?.pob || '-',
-                'Tanggal Lahir': item.raw?.dob || '-',
-                'Nomor Identitas (KTP)': item.idCard,
-                'Jenis Kelamin': item.raw?.gender || '-',
-                'Telepon Rumah': item.raw?.homePhone || '-',
-                'Telepon Selular': item.raw?.mobilePhone || '-',
-                'Alamat Pemasangan': item.raw?.address1 || '-',
-                'Detail Alamat': item.raw?.address2 || '-',
-                'RT': item.raw?.rt || '-',
-                'RW': item.raw?.rw || '-',
-                'Kode Pos': item.raw?.zip || '-',
-                'Status Kepemilikan': item.raw?.ownership || '-',
-                'Email': item.raw?.email || '-',
-                'Paket Layanan': item.package,
-                'Metode Pembayaran CC': item.raw?.ccName ? 'Kartu Kredit' : 'Regular',
-                'Status Tanda Tangan': item.sigStatus,
-                'Total Pembayaran': item.total
-            }));
 
-            const ws = XLSX.utils.json_to_sheet(wsData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Data Pendaftaran Lengkap");
-            
-            XLSX.writeFile(wb, "Data_Pendaftaran_CBN_Full_Header.xlsx");
-        }
+            let htmlContent = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/199/xlink">
+                <head>
+                    <meta charset="UTF-8">
+                    <!--[if gte mso 9]>
+                    <xml>
+                        <x:ExcelWorkbook>
+                            <x:ExcelWorksheets>
+                                <x:ExcelWorksheet>
+                                    <x:Name>Data Tersimpan CBN</x:Name>
+                                    <x:WorksheetOptions>
+                                        <x:DisplayGridlines/>
+                                    </x:WorksheetOptions>
+                                </x:ExcelWorksheet>
+                            </x:ExcelWorksheets>
+                        </x:ExcelWorkbook>
+                    </xml>
+                    <![endif]-->
+                    <style>
+                        table { border-collapse: collapse; width: 100%; font-family: 'Inter', Arial, sans-serif; }
+                        th { background-color: #1e3a8a; color: #ffffff; font-weight: bold; text-align: center; border: 1px solid #1e3a8a; padding: 10px; font-size: 11pt; }
+                        td { border: 1px solid #cbd5e1; padding: 8px; font-size: 10pt; vertical-align: middle; }
+                        .title-row { font-size: 14pt; font-weight: bold; color: #1e3a8a; text-align: center; background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; }
+                        .sub-row { font-size: 9pt; color: #64748b; text-align: center; background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 6px; }
+                        .text-center { text-align: center; }
+                        .text-right { text-align: right; }
+                    </style>
+                </head>
+                <body>
+                    <table>
+                        <tr>
+                            <td colspan="6" class="title-row">LAPORAN DATA PENDAFTARAN LAYANAN & BERLANGGANAN CBN</td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" class="sub-row">PT Cyberindo Aditama (CBN) - Diekspor pada: ${new Date().toLocaleString('id-ID')}</td>
+                        </tr>
+                        <tr>
+                            <th>NO</th>
+                            <th>WAKTU PENDAFTARAN</th>
+                            <th>NAMA LENGKAP PELANGGAN</th>
+                            <th>NOMOR IDENTITAS (KTP)</th>
+                            <th>KODE SALES</th>
+                            <th>TOTAL PEMBAYARAN (IDR)</th>
+                        </tr>
+            `;
 
-
-        // --- FILL SAMPLE DATA ---
-        function fillSampleData() {
-            // Match image data
-            setGridValue('salesCodeBoxes', 'SLS001');
-            setGridValue('spvCodeBoxes', 'SPV99');
-            
-            setGridValue('fullNameBoxes', 'BUDI SANTOSO');
-            document.getElementById('pobInput').value = 'JAKARTA';
-            setGridValue('dobBoxes', '15081985');
-            
-            setGridValue('idCardBoxes', '3171234567890001');
-            document.querySelector('input[name="gender"][value="Pria"]').checked = true;
-            
-            setGridValue('homePhoneBoxes', '0215551234');
-            setGridValue('mobilePhoneBoxes', '081234567890');
-            
-            setGridValue('addressRow1Boxes', 'JL SUDIRMAN KAV 123');
-            setGridValue('addressRow2Boxes', 'JAKARTA SELATAN');
-            setGridValue('rtBoxes', '001');
-            setGridValue('rwBoxes', '005');
-            setGridValue('zipBoxes', '12190');
-            
-            document.querySelector('input[name="ownership"][value="Pemilik"]').checked = true;
-            setGridValue('emailBoxes', 'budi@example.com');
-            
-            document.querySelector('input[name="package"][value="CBN Fiber Pro"]').checked = true;
-            
-            // Set sample values for editable cost fields
-            document.getElementById('pkgPrice1').value = '399.000';
-            document.getElementById('pkgPrice2').value = '499.000';
-            document.getElementById('pkgPrice3').value = '799.000';
-            document.getElementById('costPackage').value = '799.000';
-            document.getElementById('costAddon').value = '415.000';
-            
-            document.getElementById('devRouter').checked = true;
-            document.getElementById('qtyRouter').value = 1;
-            document.getElementById('devSmartbox').checked = true;
-            document.getElementById('qtySmartbox').value = 1;
-            
-            document.getElementById('addonDens').checked = false;
-            document.getElementById('addonVision').checked = true;
-            
-            document.getElementById('ccName').value = 'BUDI SANTOSO';
-            document.getElementById('ccNumber').value = '4111-2222-3333-4444';
-            document.getElementById('ccExpiry').value = '12/28';
-            document.getElementById('ccBank').value = 'BCA';
-
-            // Fill Activation & Schedule sample data matching image
-            setGridValue('usernameBoxes', 'mafazamursy');
-            document.getElementById('installDayInput').value = 'segera';
-            setGridValue('installDateBoxes', '');
-            document.getElementById('installNotesInput').value = 'regular promo july 2026-nab';
-            
-            // Fill Signer Names sample data
-            document.getElementById('signerName1').value = 'BUDI SANTOSO';
-            document.getElementById('signerName2').value = 'AHMAD FAUZI';
-            document.getElementById('signerName3').value = 'HENDRA WIJAYA';
-
-            calculateCosts();
-        }
-
-        function resetForm() {
-            if(confirm('Reset semua isian formulir? (Data tersimpan di Data Tersimpan aman dan tidak akan hilang)')) {
-                // Clear grid boxes
-                document.querySelectorAll('.char-box').forEach(input => input.value = '');
-                // Clear inputs
-                document.querySelectorAll('input[type="text"]:not(.char-box):not(#searchInput), input[type="number"]').forEach(input => input.value = '');
-                // Reset radios/checkboxes to default
-                document.querySelector('input[name="package"][value="CBN Fiber Pro"]').checked = true;
-                document.getElementById('devRouter').checked = true;
-                document.getElementById('qtyRouter').value = 1;
-                // Clear signatures
-                clearSignature('sigCanvas1');
-                clearSignature('sigCanvas2');
-                clearSignature('sigCanvas3');
-                
-                calculateCosts();
-            }
-        }
-
-
-        // --- ON LOAD ---
-        window.onload = function() {
-            setupGridBoxes();
-            initSignature('sigCanvas1');
-            initSignature('sigCanvas2');
-            initSignature('sigCanvas3');
-            
-            // Add listeners to package price inputs to recalculate dynamically on typing
-            ['pkgPrice1', 'pkgPrice2', 'pkgPrice3'].forEach(id => {
-                document.getElementById(id).addEventListener('input', calculateCosts);
+            savedRecords.forEach((r, index) => {
+                htmlContent += `
+                    <tr>
+                        <td class="text-center">${index + 1}</td>
+                        <td class="text-center">${r.time}</td>
+                        <td><b>${r.name}</b></td>
+                        <td class="text-center">${r.idCard}</td>
+                        <td class="text-center"><b>${r.sales}</b></td>
+                        <td class="text-right">Rp ${r.total}</td>
+                    </tr>
+                `;
             });
 
-            calculateCosts();
-            updateBadge();
-        };
+            htmlContent += `
+                    </table>
+                </body>
+                </html>
+            `;
 
+            const blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Data_Tersimpan_CBN_${new Date().toISOString().split('T')[0]}.xls`;
+            link.click();
+
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-emerald-600 text-white px-4 py-2 rounded shadow-lg text-xs z-50 font-bold';
+            notification.innerText = 'Data berhasil diexport ke Excel dengan Full Header!';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 2500);
+        }
+
+        function exportVisitPDF() {
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-blue-900 text-white px-4 py-2 rounded shadow-lg text-xs z-50 font-bold';
+            notification.innerText = 'Mengunduh Laporan Visit Sales PDF...';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 2500);
+        }
     </script>
 </body>
 </html>
