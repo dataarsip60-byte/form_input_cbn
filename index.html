@@ -123,6 +123,20 @@
                     </button>
                 </div>
 
+                <!-- REFERENCE TEMPLATE IMAGE CARD -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left space-y-3 mt-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-black text-slate-700 uppercase">📌 Panduan Referensi Gambar / Formulir Asli</span>
+                        <button onclick="toggleRefImage()" id="refToggleBtn" class="text-xs font-bold text-blue-700 hover:underline">Tampilkan / Sembunyikan</button>
+                    </div>
+                    <div id="refImageContainer" class="hidden">
+                        <div class="bg-white border border-slate-300 rounded-lg p-2 text-center shadow-inner">
+                            <img src="https://placehold.co/600x400/1e3a8a/ffffff?text=Referensi+Formulir+CBN" alt="Referensi Formulir CBN" class="mx-auto max-h-64 object-contain rounded border">
+                            <p class="text-[11px] text-slate-500 mt-2 font-medium">Gambar referensi struktur kotak pendaftaran CBN.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="pt-4 text-xs text-slate-400 font-medium border-t border-slate-100">
                     PT Cyberindo Aditama • Sistem Akses Cepat (Hyperlink Style)
                 </div>
@@ -543,16 +557,31 @@
         <!-- ================= VIEW 3: DATA TERSIMPAN ================= -->
         <div id="viewSaved" class="w-full max-w-5xl hidden space-y-4">
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
                     <div class="flex items-center space-x-3">
                         <button onclick="switchTab('home')" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow transition flex items-center space-x-1">
                             <span>🏠 Menu Utama</span>
                         </button>
                         <h2 class="text-lg font-black text-slate-800">Database Formulir Tersimpan</h2>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <button onclick="exportSavedToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow transition flex items-center space-x-1">
-                            <span>📊 Ekspor ke Excel</span>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <!-- Filter Sales/NPK pada Data Tersimpan -->
+                        <select id="filterSavedSales" onchange="filterSavedData()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:border-blue-600">
+                            <option value="">Semua Sales / NPK</option>
+                        </select>
+                        <!-- Filter Paket pada Data Tersimpan -->
+                        <select id="filterSavedPackage" onchange="filterSavedData()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:border-blue-600">
+                            <option value="">Semua Paket</option>
+                            <option value="CBN Fiber">CBN Fiber</option>
+                            <option value="CBN Gamer">CBN Gamer</option>
+                            <option value="CBN Enterprise">CBN Enterprise</option>
+                        </select>
+                        <button onclick="clearSavedFilters()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg transition">
+                            Reset Filter
+                        </button>
+                        <input type="text" id="savedSearchInput" oninput="filterSavedData()" placeholder="Cari nama pelanggan..." class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-700 focus:outline-none focus:border-blue-600 w-40">
+                        <button onclick="exportSavedToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow transition flex items-center space-x-1">
+                            <span>📊 Ekspor Excel</span>
                         </button>
                     </div>
                 </div>
@@ -562,6 +591,7 @@
                         <thead class="text-xs text-slate-700 uppercase bg-slate-50 border-b border-slate-200">
                             <tr>
                                 <th class="px-4 py-3">Waktu Simpan</th>
+                                <th class="px-4 py-3">Sales / NPK</th>
                                 <th class="px-4 py-3">Nama Pelanggan</th>
                                 <th class="px-4 py-3">No. HP</th>
                                 <th class="px-4 py-3">Paket</th>
@@ -570,7 +600,7 @@
                             </tr>
                         </thead>
                         <tbody id="savedTableBody">
-                            <tr><td colspan="6" class="px-4 py-8 text-center text-slate-400">Belum ada data tersimpan.</td></tr>
+                            <tr><td colspan="7" class="px-4 py-8 text-center text-slate-400">Belum ada data tersimpan.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -580,16 +610,35 @@
         <!-- ================= VIEW 4: VISIT SALES (LOG KUNJUNGAN) ================= -->
         <div id="viewVisit" class="w-full max-w-6xl hidden space-y-4">
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
                     <div class="flex items-center space-x-3">
                         <button onclick="switchTab('home')" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow transition flex items-center space-x-1">
                             <span>🏠 Menu Utama</span>
                         </button>
                         <h2 class="text-lg font-black text-slate-800">Log Kunjungan Sales (VISIT)</h2>
                     </div>
-                    <button onclick="openVisitModal()" class="bg-blue-900 hover:bg-blue-800 text-white text-xs font-bold px-4 py-2.5 rounded-lg flex items-center space-x-1 shadow transition">
-                        <span>➕ Form Input Visit</span>
-                    </button>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <!-- Filter Sales/NPK pada Visit -->
+                        <select id="filterVisitSales" onchange="filterVisitData()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:border-blue-600">
+                            <option value="">Semua Sales / NPK</option>
+                        </select>
+                        <!-- Filter Status pada Visit -->
+                        <select id="filterVisitStatus" onchange="filterVisitData()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:border-blue-600">
+                            <option value="">Semua Status</option>
+                            <option value="Tunggu info">Tunggu info</option>
+                            <option value="Follow Up">Follow Up</option>
+                            <option value="Tertarik">Tertarik</option>
+                            <option value="Close Deal">Close Deal</option>
+                            <option value="Tidak Tertarik">Tidak Tertarik</option>
+                        </select>
+                        <button onclick="clearVisitFilters()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg transition">
+                            Reset Filter
+                        </button>
+                        <input type="text" id="visitSearchInput" oninput="filterVisitData()" placeholder="Cari alamat / PIC..." class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-700 focus:outline-none focus:border-blue-600 w-40">
+                        <button onclick="openVisitModal()" class="bg-blue-900 hover:bg-blue-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 shadow transition">
+                            <span>➕ Input Visit</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -623,15 +672,19 @@
                         <h2 class="text-lg font-black text-slate-800">Database Sales (Google Sheets)</h2>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
-                        <!-- Filter NPK -->
+                        <!-- Filter NPK / Sales -->
                         <select id="filterNpk" onchange="filterGoogleSheetsData()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:border-blue-600">
-                            <option value="">Semua NPK</option>
+                            <option value="">Semua Sales / NPK</option>
                         </select>
-                        <!-- Filter Role / Status Akses -->
+                        <!-- Filter Status / Role Akses -->
                         <select id="filterRole" onchange="filterGoogleSheetsData()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:border-blue-600">
-                            <option value="">Semua Role / Status Akses</option>
+                            <option value="">Semua Status</option>
                         </select>
-                        <input type="text" id="dbSearchInput" oninput="filterGoogleSheetsData()" placeholder="Cari data sales..." class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-700 focus:outline-none focus:border-blue-600 w-48">
+                        <!-- Clear Filters Button -->
+                        <button onclick="clearDatabaseFilters()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg transition">
+                            Reset Filter
+                        </button>
+                        <input type="text" id="dbSearchInput" oninput="filterGoogleSheetsData()" placeholder="Cari data sales..." class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-700 focus:outline-none focus:border-blue-600 w-40">
                         <button onclick="fetchGoogleSheetsData()" class="bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow transition flex items-center space-x-1">
                             <span>🔄 Segarkan (Sync)</span>
                         </button>
@@ -676,6 +729,8 @@
             <!-- Modal Body Form -->
             <form id="visitModalForm" onsubmit="handleModalVisitSubmit(event)" class="p-5 space-y-4 max-h-[80vh] overflow-y-auto">
                 <input type="hidden" id="editVisitId" value="">
+
+                <!-- FOTO SELFIES -->
                 <div>
                     <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">FOTO SELFIES (URL / UPLOAD / KAMERA)</label>
                     <input type="text" id="modalFoto" value="https://placehold.co/150x150" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 focus:outline-none focus:border-blue-600 mb-2">
@@ -765,7 +820,18 @@
     <!-- MAIN JAVASCRIPT LOGIC -->
     <script>
         // --- DATA STORAGE & APP STATE ---
-        let savedForms = JSON.parse(localStorage.getItem('cbn_saved_forms')) || [];
+        let savedForms = JSON.parse(localStorage.getItem('cbn_saved_forms')) || [
+            {
+                id: 1726190000001,
+                timestamp: "05/09/2026 10:30:00",
+                npk: "16538",
+                salesName: "ARIF AZIANSYAH",
+                customerName: "BUDI SANTOSO",
+                hp: "081234567890",
+                package: "CBN Fiber",
+                total: "437.000"
+            }
+        ];
         let visitLogs = JSON.parse(localStorage.getItem('cbn_visit_logs')) || [
             {
                 id: 1726200000001,
@@ -783,6 +849,13 @@
             }
         ];
         let googleSheetsRawData = [];
+
+        function toggleRefImage() {
+            const container = document.getElementById('refImageContainer');
+            if(container) {
+                container.classList.toggle('hidden');
+            }
+        }
 
         // --- 1. TAB SWITCHING ---
         function switchTab(tab) {
@@ -814,9 +887,11 @@
                     initCanvas('sigAdmin');
                 }, 100);
             } else if(tab === 'saved') {
-                loadSavedData();
+                populateSavedFilters();
+                filterSavedData();
             } else if(tab === 'visit') {
-                loadVisitData();
+                populateVisitFilters();
+                filterVisitData();
             } else if(tab === 'database') {
                 fetchGoogleSheetsData();
             }
@@ -914,8 +989,8 @@
 
             const d1 = document.getElementById('summaryDaftar'); if(d1) d1.value = '0';
             const d2 = document.getElementById('summaryBulanan'); if(d2) d2.value = '0';
-            const d3 = document.getElementById('summaryAdmin'); if(d3) d3.value = '0';
-            const d4 = document.getElementById('summaryPPN'); if(d4) d4.value = '0';
+            const d3 = document.getElementById('summaryAdmin'); if(d3) d3.value = '5.000';
+            const d4 = document.getElementById('summaryPPN'); if(d4) d4.value = '550';
             const d5 = document.getElementById('summaryTotal'); if(d5) d5.innerText = '0';
 
             clearCanvas('sigCustomer');
@@ -1061,6 +1136,8 @@
             const data = {
                 id: Date.now(),
                 timestamp: new Date().toLocaleString('id-ID'),
+                npk: getGridValue('npkCodeGrid') || '16538',
+                salesName: getGridValue('salesCodeGrid') ? `Sales (${getGridValue('salesCodeGrid')})` : 'ARIF AZIANSYAH',
                 customerName: getGridValue('custNameGrid') || 'Tanpa Nama',
                 hp: getGridValue('hpGrid'),
                 package: document.querySelector('input[name="package"]:checked')?.value || 'CBN Fiber',
@@ -1073,19 +1150,63 @@
             alert("Formulir berhasil disimpan ke penyimpanan lokal!");
         }
 
-        function loadSavedData() {
+        function populateSavedFilters() {
+            const salesSelect = document.getElementById('filterSavedSales');
+            if(!salesSelect) return;
+            
+            const salesMap = new Map();
+            savedForms.forEach(item => {
+                if(item.npk) {
+                    salesMap.set(item.npk, `${item.npk} - ${item.salesName || 'Sales'}`);
+                }
+            });
+
+            let optionsHtml = '<option value="">Semua Sales / NPK</option>';
+            salesMap.forEach((label, npk) => {
+                optionsHtml += `<option value="${npk}">${label}</option>`;
+            });
+            salesSelect.innerHTML = optionsHtml;
+        }
+
+        function clearSavedFilters() {
+            document.getElementById('filterSavedSales').value = '';
+            document.getElementById('filterSavedPackage').value = '';
+            document.getElementById('savedSearchInput').value = '';
+            filterSavedData();
+        }
+
+        function filterSavedData() {
+            const salesVal = document.getElementById('filterSavedSales').value.toLowerCase();
+            const pkgVal = document.getElementById('filterSavedPackage').value.toLowerCase();
+            const searchVal = document.getElementById('savedSearchInput').value.toLowerCase();
+
+            const filtered = savedForms.filter(row => {
+                const matchSales = !salesVal || (row.npk && row.npk.toLowerCase() === salesVal);
+                const matchPkg = !pkgVal || (row.package && row.package.toLowerCase() === pkgVal);
+                const matchSearch = !searchVal || (row.customerName && row.customerName.toLowerCase().includes(searchVal));
+                return matchSales && matchPkg && matchSearch;
+            });
+
+            renderSavedTable(filtered);
+        }
+
+        function renderSavedTable(data) {
             const tbody = document.getElementById('savedTableBody');
             if(!tbody) return;
             tbody.innerHTML = '';
-            if(savedForms.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-slate-400">Belum ada data tersimpan.</td></tr>`;
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-slate-400">Tidak ada data tersimpan yang sesuai filter.</td></tr>`;
                 return;
             }
-            savedForms.slice().reverse().forEach((row) => {
+            data.slice().reverse().forEach((row) => {
                 const tr = document.createElement('tr');
                 tr.className = "border-b border-slate-100 hover:bg-slate-50";
                 tr.innerHTML = `
                     <td class="px-4 py-3 text-xs font-bold text-slate-700">${row.timestamp}</td>
+                    <td class="px-4 py-3 text-xs">
+                        <div class="font-bold text-blue-900">${row.salesName || '-'}</div>
+                        <div class="text-[10px] text-slate-500">NPK: ${row.npk || '-'}</div>
+                    </td>
                     <td class="px-4 py-3 text-xs font-bold text-blue-900">${row.customerName}</td>
                     <td class="px-4 py-3 text-xs">${row.hp || '-'}</td>
                     <td class="px-4 py-3 text-xs"><span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">${row.package}</span></td>
@@ -1102,7 +1223,8 @@
             savedForms = savedForms.filter(item => item.id !== id);
             localStorage.setItem('cbn_saved_forms', JSON.stringify(savedForms));
             updateBadges();
-            loadSavedData();
+            populateSavedFilters();
+            filterSavedData();
         }
 
         function exportSavedToExcel() {
@@ -1252,19 +1374,64 @@
             localStorage.setItem('cbn_visit_logs', JSON.stringify(visitLogs));
             updateBadges();
             closeVisitModal();
-            loadVisitData();
+            populateVisitFilters();
+            filterVisitData();
             alert("Log kunjungan visit berhasil diperbarui!");
         }
 
-        function loadVisitData() {
+        function populateVisitFilters() {
+            const salesSelect = document.getElementById('filterVisitSales');
+            if(!salesSelect) return;
+            
+            const salesMap = new Map();
+            visitLogs.forEach(item => {
+                if(item.npk) {
+                    salesMap.set(item.npk, `${item.npk} - ${item.salesName || 'Sales'}`);
+                }
+            });
+
+            let optionsHtml = '<option value="">Semua Sales / NPK</option>';
+            salesMap.forEach((label, npk) => {
+                optionsHtml += `<option value="${npk}">${label}</option>`;
+            });
+            salesSelect.innerHTML = optionsHtml;
+        }
+
+        function clearVisitFilters() {
+            document.getElementById('filterVisitSales').value = '';
+            document.getElementById('filterVisitStatus').value = '';
+            document.getElementById('visitSearchInput').value = '';
+            filterVisitData();
+        }
+
+        function filterVisitData() {
+            const salesVal = document.getElementById('filterVisitSales').value.toLowerCase();
+            const statusVal = document.getElementById('filterVisitStatus').value.toLowerCase();
+            const searchVal = document.getElementById('visitSearchInput').value.toLowerCase();
+
+            const filtered = visitLogs.filter(row => {
+                const matchSales = !salesVal || (row.npk && row.npk.toLowerCase() === salesVal);
+                const matchStatus = !statusVal || (row.status && row.status.toLowerCase() === statusVal);
+                const matchSearch = !searchVal || (
+                    (row.alamatUsaha && row.alamatUsaha.toLowerCase().includes(searchVal)) ||
+                    (row.pic && row.pic.toLowerCase().includes(searchVal)) ||
+                    (row.hasilVisit && row.hasilVisit.toLowerCase().includes(searchVal))
+                );
+                return matchSales && matchStatus && matchSearch;
+            });
+
+            renderVisitTable(filtered);
+        }
+
+        function renderVisitTable(data) {
             const tbody = document.getElementById('visitTableBody');
             if(!tbody) return;
             tbody.innerHTML = '';
-            if(visitLogs.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-slate-400">Belum ada log kunjungan.</td></tr>`;
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-slate-400">Tidak ada log kunjungan yang sesuai filter.</td></tr>`;
                 return;
             }
-            visitLogs.slice().reverse().forEach((row) => {
+            data.slice().reverse().forEach((row) => {
                 const tr = document.createElement('tr');
                 tr.className = "border-b border-slate-100 hover:bg-slate-50";
                 tr.innerHTML = `
@@ -1301,7 +1468,8 @@
             visitLogs = visitLogs.filter(item => item.id !== id);
             localStorage.setItem('cbn_visit_logs', JSON.stringify(visitLogs));
             updateBadges();
-            loadVisitData();
+            populateVisitFilters();
+            filterVisitData();
         }
 
         // --- 9. GOOGLE SHEETS DATABASE INTEGRATION ---
@@ -1359,11 +1527,25 @@
             const roleSelect = document.getElementById('filterRole');
             if(!npkSelect || !roleSelect) return;
 
-            const npks = [...new Set(data.map(item => item.npk || item['npk sales'] || item.nik).filter(Boolean))];
+            const salesEntries = data.map(item => {
+                const npk = item.npk || item['npk sales'] || item.nik || '';
+                const nama = item.nama || item['nama lengkap'] || item.name || '';
+                if(!npk) return null;
+                return { npk, label: `${npk} - ${nama}` };
+            }).filter(Boolean);
+
+            const uniqueSales = Array.from(new Map(salesEntries.map(s => [s.npk, s])).values());
             const roles = [...new Set(data.map(item => item.role || item['role akses'] || item.status).filter(Boolean))];
 
-            npkSelect.innerHTML = '<option value="">Semua NPK</option>' + npks.map(n => `<option value="${n}">${n}</option>`).join('');
-            roleSelect.innerHTML = '<option value="">Semua Role / Status Akses</option>' + roles.map(r => `<option value="${r}">${r}</option>`).join('');
+            npkSelect.innerHTML = '<option value="">Semua Sales / NPK</option>' + uniqueSales.map(s => `<option value="${s.npk}">${s.label}</option>`).join('');
+            roleSelect.innerHTML = '<option value="">Semua Status</option>' + roles.map(r => `<option value="${r}">${r}</option>`).join('');
+        }
+
+        function clearDatabaseFilters() {
+            document.getElementById('filterNpk').value = '';
+            document.getElementById('filterRole').value = '';
+            document.getElementById('dbSearchInput').value = '';
+            filterGoogleSheetsData();
         }
 
         function filterGoogleSheetsData() {
@@ -1376,8 +1558,8 @@
                 const npk = (row.npk || row['npk sales'] || row.nik || '').toLowerCase();
                 const role = (row.role || row['role akses'] || row.status || '').toLowerCase();
 
-                const matchNpk = !npkVal || npk.includes(npkVal);
-                const matchRole = !roleVal || role.includes(roleVal);
+                const matchNpk = !npkVal || npk === npkVal;
+                const matchRole = !roleVal || role === roleVal;
                 const matchSearch = !searchVal || rowStr.includes(searchVal);
 
                 return matchNpk && matchRole && matchSearch;
@@ -1392,7 +1574,7 @@
             tbody.innerHTML = '';
             
             if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-8 text-center text-slate-400">Tidak ada data yang ditemukan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-8 text-center text-slate-400">Tidak ada data yang ditemukan dengan filter tersebut.</td></tr>`;
                 return;
             }
 
@@ -1429,11 +1611,9 @@
             initCanvas('sigSales');
             initCanvas('sigAdmin');
             
-            // Start with empty form by default
             resetForm();
             updateBadges();
 
-            // Default buka di Menu Utama (Home)
             switchTab('home');
 
             let resizeTimer;
