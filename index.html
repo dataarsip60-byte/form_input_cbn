@@ -1160,6 +1160,9 @@
             
             document.getElementById('editVisitId').value = editId || '';
             
+            const formEl = document.getElementById('visitModalForm');
+            if(formEl) formEl.reset();
+
             if (editId) {
                 document.getElementById('modalTitleText').textContent = "EDIT STATUS / KUNJUNGAN VISIT";
                 const found = visitLogs.find(item => item.id === editId);
@@ -1184,10 +1187,15 @@
                 const day = String(d.getDate()).padStart(2, '0');
                 document.getElementById('modalTanggal').value = `${year}-${month}-${day}`;
                 document.getElementById('modalFoto').value = 'https://placehold.co/150x150';
+                document.getElementById('modalNpk').value = '16538';
+                document.getElementById('modalSalesName').value = 'Arif Aziansyah';
                 document.getElementById('modalAlamatUsaha').value = '';
                 document.getElementById('modalPic').value = '';
-                document.getElementById('modalHasilVisit').value = '';
+                document.getElementById('modalEkosistem').value = 'Rumah';
                 document.getElementById('modalStatus').value = 'Tunggu info';
+                document.getElementById('modalActionPlan').value = 'Follow Up';
+                document.getElementById('modalAktivitas').value = 'Pemasaran';
+                document.getElementById('modalHasilVisit').value = '';
             }
             modal.classList.remove('hidden');
         }
