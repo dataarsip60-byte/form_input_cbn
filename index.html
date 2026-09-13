@@ -199,7 +199,7 @@
                             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 md:gap-4">
                                 <div class="overflow-x-auto hide-scroll pb-1 md:pb-0 w-full sm:w-auto">
                                     <div class="flex space-x-0.5 min-w-max" id="idNumberGrid">
-                                        <script>for(let i=0;i<16;i++) document.write('<input type="text" maxlength="1" class="grid-box border-style">');</script>
+                                        <script>for(let i=0;i<20;i++) document.write('<input type="text" maxlength="1" class="grid-box border-style">');</script>
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-3 bg-slate-50 px-3 py-1 rounded border border-slate-200 w-full sm:w-auto">
@@ -387,7 +387,7 @@
                                 <span class="font-bold text-[10px] text-blue-900">Biaya Bulanan:</span>
                                 <div class="flex items-center space-x-2">
                                     <span class="text-[9px] font-bold text-slate-500">Rp</span>
-                                    <input type="text" id="summaryBulanan" value="0" readonly class="w-28 border border-slate-200 bg-slate-50 rounded-sm px-2 py-1 text-right font-bold text-slate-700 text-[11px] outline-none cursor-not-allowed">
+                                    <input type="text" id="summaryBulanan" value="0" placeholder="0" oninput="calculateTotal()" class="w-28 border border-slate-300 rounded-sm px-2 py-1 text-right font-bold text-slate-700 text-[11px] outline-none focus:border-blue-500">
                                 </div>
                             </div>
                             <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
@@ -449,8 +449,11 @@
                                 </p>
                                 <div class="flex items-center justify-between pt-1">
                                     <span class="font-bold text-blue-900 text-[10px]">CID / Customer ID:</span>
-                                    <div class="flex space-x-0.5" id="cidGrid">
-                                        <script>for(let i=0;i<8;i++) document.write('<input type="text" maxlength="1" class="grid-box border-style">');</script>
+                                    <div class="flex flex-col items-end">
+                                        <div class="flex space-x-0.5" id="cidGrid">
+                                            <script>for(let i=0;i<8;i++) document.write('<input type="text" maxlength="1" class="grid-box border-style">');</script>
+                                        </div>
+                                        <span class="text-[11px] font-bold text-blue-900 mt-1 mr-1">@cbn.net.id</span>
                                     </div>
                                 </div>
                             </div>
@@ -808,6 +811,20 @@
             ['pkg1', 'pkg2', 'pkg3'].forEach(id => {
                 if(id !== selectedCheckbox.id) document.getElementById(id).checked = false;
             });
+            
+            // If checked, auto-fill summaryBulanan with selected package price
+            let bulanan = 0;
+            ['pkg1', 'pkg2', 'pkg3'].forEach(id => {
+                if(document.getElementById(id).checked) {
+                    bulanan += parseCurrency(document.getElementById(`price${id.charAt(0).toUpperCase() + id.slice(1)}`).value);
+                }
+            });
+            ['add1', 'add2', 'add3'].forEach(id => {
+                if(document.getElementById(id).checked) {
+                    bulanan += parseCurrency(document.getElementById(`price${id.charAt(0).toUpperCase() + id.slice(1)}`).value);
+                }
+            });
+            document.getElementById('summaryBulanan').value = formatCurrency(bulanan);
             calculateTotal();
         }
 
@@ -819,25 +836,11 @@
         }
 
         function calculateTotal() {
-            let bulanan = 0;
-            
-            ['pkg1', 'pkg2', 'pkg3'].forEach(id => {
-                if(document.getElementById(id).checked) {
-                    bulanan += parseCurrency(document.getElementById(`price${id.charAt(0).toUpperCase() + id.slice(1)}`).value);
-                }
-            });
-
-            ['add1', 'add2', 'add3'].forEach(id => {
-                if(document.getElementById(id).checked) {
-                    bulanan += parseCurrency(document.getElementById(`price${id.charAt(0).toUpperCase() + id.slice(1)}`).value);
-                }
-            });
-
-            document.getElementById('summaryBulanan').value = formatCurrency(bulanan);
-
+            let bulanan = parseCurrency(document.getElementById('summaryBulanan').value);
             let daftar = parseCurrency(document.getElementById('summaryDaftar').value);
             let admin = parseCurrency(document.getElementById('summaryAdmin').value);
             
+            if(document.activeElement.id !== 'summaryBulanan') document.getElementById('summaryBulanan').value = formatCurrency(bulanan);
             if(document.activeElement.id !== 'summaryDaftar') document.getElementById('summaryDaftar').value = formatCurrency(daftar);
             if(document.activeElement.id !== 'summaryAdmin') document.getElementById('summaryAdmin').value = formatCurrency(admin);
 
