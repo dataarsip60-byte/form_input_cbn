@@ -92,6 +92,11 @@
                     <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
                     <span id="topCloudText">Cloud: Local Mode</span>
                 </div>
+                <div class="flex items-center space-x-1 bg-slate-800 p-0.5 rounded border border-slate-700">
+                    <button onclick="toggleMobileView()" id="mobileViewToggleBtn" class="px-2.5 py-1 rounded text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition flex items-center space-x-1">
+                        <span>📱 Tampilan HP</span>
+                    </button>
+                </div>
                 <div class="flex items-center space-x-1">
                     <span class="text-slate-400">Ukuran:</span>
                     <select id="paperSize" onchange="changePaperSize()" class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white font-medium focus:outline-none">
@@ -139,8 +144,9 @@
     <div class="w-full max-w-5xl mx-auto px-4 mt-4 flex flex-col items-center">
 
         <!-- TAB 1: FORMULIR PENDAFTARAN -->
-        <div id="viewForm" class="w-full flex flex-col items-center space-y-4">
-            <div id="formPaper" class="print-container bg-white shadow-2xl rounded-xl border border-slate-300 p-6 mx-auto transition-all duration-300 w-full" style="max-width: 860px;">
+        <div id="viewForm" class="w-full flex flex-col items-center space-y-4 transition-all duration-300">
+            <div id="mobileWrapper" class="w-full flex justify-center transition-all duration-300">
+                <div id="formPaper" class="print-container bg-white shadow-2xl rounded-xl border border-slate-300 p-6 mx-auto transition-all duration-300 w-full" style="max-width: 860px;">
                 
                 <div class="flex justify-between items-start border-b-2 border-blue-900 pb-3 mb-3">
                     <div class="flex items-center space-x-3">
@@ -479,6 +485,7 @@
                 </div>
 
             </div>
+            </div>
         </div>
 
         <!-- TAB 2: DATA TERSIMPAN -->
@@ -711,6 +718,7 @@
         let visitList = JSON.parse(localStorage.getItem('cbn_visit_list') || '[]');
         let activeMediaStream = null;
         let dbInstance = null;
+        let isMobileViewActive = false;
 
         window.addEventListener('firebase-loaded', async (e) => {
             if (!e.detail) return;
@@ -884,12 +892,36 @@
         function changePaperSize() {
             const size = document.getElementById('paperSize').value;
             const paper = document.getElementById('formPaper');
+            if (isMobileViewActive) return; // Ignore if mobile view is active
             if (size === 'A4') {
                 paper.style.maxWidth = '860px';
             } else if (size === 'F4') {
                 paper.style.maxWidth = '900px';
             } else {
                 paper.style.maxWidth = '820px';
+            }
+        }
+
+        function toggleMobileView() {
+            isMobileViewActive = !isMobileViewActive;
+            const wrapper = document.getElementById('mobileWrapper');
+            const paper = document.getElementById('formPaper');
+            const btn = document.getElementById('mobileViewToggleBtn');
+
+            if (isMobileViewActive) {
+                wrapper.className = "w-full flex justify-center py-4 bg-slate-800 rounded-2xl shadow-inner transition-all duration-300";
+                paper.style.maxWidth = '390px';
+                paper.classList.add('border-8', 'border-slate-900', 'rounded-3xl', 'shadow-2xl');
+                btn.className = "px-2.5 py-1 rounded text-xs font-bold bg-blue-600 text-white transition flex items-center space-x-1 shadow";
+                btn.innerHTML = "<span>💻 Keluar Tampilan HP</span>";
+                alertCustom("Mode Tampilan HP diaktifkan (lebar 390px).");
+            } else {
+                wrapper.className = "w-full flex justify-center transition-all duration-300";
+                changePaperSize();
+                paper.classList.remove('border-8', 'border-slate-900', 'rounded-3xl', 'shadow-2xl');
+                btn.className = "px-2.5 py-1 rounded text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition flex items-center space-x-1";
+                btn.innerHTML = "<span>📱 Tampilan HP</span>";
+                alertCustom("Kembali ke mode tampilan normal.");
             }
         }
 
