@@ -68,6 +68,9 @@
                 <button onclick="switchTab('visit')" id="tabBtnVisit" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition flex items-center space-x-1">
                     <span>📍 VISIT Sales (<span id="visitCountBadge">0</span>)</span>
                 </button>
+                <button onclick="switchTab('database')" id="tabBtnDatabase" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition flex items-center space-x-1">
+                    <span>📊 Database Sales</span>
+                </button>
             </div>
 
             <div class="flex flex-wrap items-center gap-3 text-xs">
@@ -126,19 +129,19 @@
     <div class="w-full max-w-5xl mx-auto px-2 md:px-4 mt-4 flex flex-col items-center">
 
         <!-- TAB 0: MENU UTAMA (HOME / DASHBOARD PEMBUKA) -->
-        <div id="viewHome" class="w-full max-w-3xl my-6 flex flex-col items-center transition-all duration-300">
+        <div id="viewHome" class="w-full max-w-4xl my-6 flex flex-col items-center transition-all duration-300">
             <div class="bg-white w-full rounded-2xl shadow-xl border border-slate-200 overflow-hidden text-center p-8 md:p-12 space-y-8">
                 <div class="space-y-3 flex flex-col items-center">
                     <div class="bg-blue-900 text-white font-black text-4xl px-6 py-3 rounded-lg tracking-tighter shadow-md inline-block">
                         CBN
                     </div>
                     <h1 class="text-2xl md:text-3xl font-black text-blue-900 uppercase tracking-wide">Portal Layanan CBN Fiber</h1>
-                    <p class="text-xs md:text-sm text-slate-500 font-medium max-w-md">Sistem Pendaftaran Pelanggan, Database Tersimpan, dan Log Kunjungan Sales Terpadu</p>
+                    <p class="text-xs md:text-sm text-slate-500 font-medium max-w-md">Sistem Pendaftaran Pelanggan, Database Tersimpan, Log Kunjungan Sales, dan Database Sales Terpadu</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
                     <!-- Hyperlink Card 1: Formulir -->
-                    <button onclick="switchTab('form')" class="group bg-gradient-to-br from-blue-900 to-blue-800 hover:from-blue-800 hover:to-blue-700 text-white p-6 rounded-xl shadow-md hover:shadow-xl transition flex flex-col items-center justify-center space-y-3 text-center border border-blue-700">
+                    <button onclick="switchTab('form')" class="group bg-gradient-to-br from-blue-900 to-blue-800 hover:from-blue-800 hover:to-blue-700 text-white p-5 rounded-xl shadow-md hover:shadow-xl transition flex flex-col items-center justify-center space-y-3 text-center border border-blue-700">
                         <div class="text-3xl bg-blue-800 group-hover:scale-110 transition p-3 rounded-full shadow-inner">📄</div>
                         <div>
                             <h3 class="font-black text-sm uppercase tracking-wider">Formulir</h3>
@@ -147,7 +150,7 @@
                     </button>
 
                     <!-- Hyperlink Card 2: Data Tersimpan -->
-                    <button onclick="switchTab('saved')" class="group bg-gradient-to-br from-emerald-800 to-emerald-700 hover:from-emerald-700 hover:to-emerald-600 text-white p-6 rounded-xl shadow-md hover:shadow-xl transition flex flex-col items-center justify-center space-y-3 text-center border border-emerald-600">
+                    <button onclick="switchTab('saved')" class="group bg-gradient-to-br from-emerald-800 to-emerald-700 hover:from-emerald-700 hover:to-emerald-600 text-white p-5 rounded-xl shadow-md hover:shadow-xl transition flex flex-col items-center justify-center space-y-3 text-center border border-emerald-600">
                         <div class="text-3xl bg-emerald-700 group-hover:scale-110 transition p-3 rounded-full shadow-inner">💾</div>
                         <div>
                             <h3 class="font-black text-sm uppercase tracking-wider">Data Tersimpan</h3>
@@ -156,11 +159,20 @@
                     </button>
 
                     <!-- Hyperlink Card 3: Visit Kunjungan -->
-                    <button onclick="switchTab('visit')" class="group bg-gradient-to-br from-indigo-900 to-indigo-800 hover:from-indigo-800 hover:to-indigo-700 text-white p-6 rounded-xl shadow-md hover:shadow-xl transition flex flex-col items-center justify-center space-y-3 text-center border border-indigo-700">
+                    <button onclick="switchTab('visit')" class="group bg-gradient-to-br from-indigo-900 to-indigo-800 hover:from-indigo-800 hover:to-indigo-700 text-white p-5 rounded-xl shadow-md hover:shadow-xl transition flex flex-col items-center justify-center space-y-3 text-center border border-indigo-700">
                         <div class="text-3xl bg-indigo-800 group-hover:scale-110 transition p-3 rounded-full shadow-inner">📍</div>
                         <div>
                             <h3 class="font-black text-sm uppercase tracking-wider">Visit Kunjungan</h3>
                             <p class="text-[11px] text-indigo-200 mt-1">Log aktivitas & laporan kunjungan sales lapangan</p>
+                        </div>
+                    </button>
+
+                    <!-- Hyperlink Card 4: Database Sales -->
+                    <button onclick="switchTab('database')" class="group bg-gradient-to-br from-purple-900 to-purple-800 hover:from-purple-800 hover:to-purple-700 text-white p-5 rounded-xl shadow-md hover:shadow-xl transition flex flex-col items-center justify-center space-y-3 text-center border border-purple-700">
+                        <div class="text-3xl bg-purple-800 group-hover:scale-110 transition p-3 rounded-full shadow-inner">📊</div>
+                        <div>
+                            <h3 class="font-black text-sm uppercase tracking-wider">Database Sales</h3>
+                            <p class="text-[11px] text-purple-200 mt-1">Sinkronisasi data langsung dari Google Sheets</p>
                         </div>
                     </button>
                 </div>
@@ -637,6 +649,51 @@
             </div>
         </div>
 
+        <!-- TAB 4: DATABASE SALES (GOOGLE SHEETS INTEGRATION) -->
+        <div id="viewDatabase" class="w-full hidden transition-all duration-300">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                <div class="flex flex-wrap justify-between items-center gap-2">
+                    <div class="flex items-center space-x-3">
+                        <button onclick="switchTab('home')" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow transition flex items-center space-x-1">
+                            <span>🏠 Menu Utama</span>
+                        </button>
+                        <h2 class="text-lg font-black text-slate-800">Database Sales (Google Sheets)</h2>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <input type="text" id="dbSearchInput" oninput="filterDatabaseTable()" placeholder="Cari data sales..." class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium focus:outline-none focus:border-purple-600 w-36 sm:w-44">
+                        <input type="text" id="dbFilterNpk" oninput="filterDatabaseTable()" placeholder="Filter NPK..." class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium focus:outline-none focus:border-purple-600 w-28 sm:w-36">
+                        <select id="dbFilterRole" onchange="filterDatabaseTable()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium focus:outline-none focus:border-purple-600 bg-white text-slate-700">
+                            <option value="">Semua Role / Status</option>
+                            <option value="SALES">SALES</option>
+                            <option value="HR">HR</option>
+                            <option value="SPV">SPV</option>
+                            <option value="ADMIN">ADMIN</option>
+                        </select>
+                        <button onclick="fetchGoogleSheetsData()" class="bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold px-3 py-2 rounded-lg shadow transition flex items-center space-x-1">
+                            <span>🔄 Segarkan</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="dbStatusInfo" class="text-xs text-slate-500 italic">
+                    Memuat data dari Google Sheets...
+                </div>
+
+                <div class="overflow-x-auto border border-slate-200 rounded-lg max-h-[65vh]">
+                    <table class="w-full text-left text-xs text-slate-700 border-collapse">
+                        <thead id="dbTableHead" class="text-xs text-white uppercase bg-purple-900 sticky top-0 z-10">
+                            <tr>
+                                <th class="px-4 py-3">Memuat...</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dbTableBody">
+                            <tr><td class="px-4 py-8 text-center text-slate-400">Mengambil data dari spreadsheet...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- POPUP MODAL: FORMULIR INPUT VISIT -->
@@ -744,6 +801,7 @@
             document.getElementById('viewForm').classList.add('hidden');
             document.getElementById('viewSaved').classList.add('hidden');
             document.getElementById('viewVisit').classList.add('hidden');
+            document.getElementById('viewDatabase').classList.add('hidden');
             
             const topNavbar = document.getElementById('topNavbar');
             const actionBars = document.getElementById('actionBars');
@@ -755,14 +813,16 @@
                 return;
             }
 
-            // Jika masuk ke sub-menu (Form, Saved, Visit), tampilkan topNavbar
+            // Jika masuk ke sub-menu, tampilkan topNavbar
             topNavbar.classList.remove('hidden');
 
-            const btns = ['tabBtnForm', 'tabBtnSaved', 'tabBtnVisit'];
+            const btns = ['tabBtnForm', 'tabBtnSaved', 'tabBtnVisit', 'tabBtnDatabase'];
             btns.forEach(id => {
                 const btn = document.getElementById(id);
-                btn.classList.remove('bg-blue-600', 'text-white', 'shadow');
-                btn.classList.add('bg-slate-800', 'text-slate-300');
+                if(btn) {
+                    btn.classList.remove('bg-blue-600', 'bg-purple-600', 'text-white', 'shadow');
+                    btn.classList.add('bg-slate-800', 'text-slate-300');
+                }
             });
 
             let targetBtnId = '';
@@ -785,6 +845,11 @@
                 targetBtnId = 'tabBtnVisit';
                 actionBars.classList.add('hidden');
                 loadVisitData();
+            } else if (tabId === 'database') {
+                document.getElementById('viewDatabase').classList.remove('hidden');
+                targetBtnId = 'tabBtnDatabase';
+                actionBars.classList.add('hidden');
+                fetchGoogleSheetsData();
             }
 
             const activeBtn = document.getElementById(targetBtnId);
@@ -1147,35 +1212,26 @@
 
         function handleModalVisitSubmit(e) {
             e.preventDefault();
-            const rawDate = document.getElementById('modalTanggal').value;
-            let formattedDate = rawDate;
-            if(rawDate && rawDate.includes('-')) {
-                const parts = rawDate.split('-');
-                if(parts.length === 3) {
-                    formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
-                }
-            }
-
-            const newVisit = {
+            const visitData = {
                 id: Date.now(),
-                date: formattedDate,
-                salesName: document.getElementById('modalSalesName').value,
+                foto: document.getElementById('modalFoto').value,
+                tanggal: document.getElementById('modalTanggal').value,
                 npk: document.getElementById('modalNpk').value,
-                location: document.getElementById('modalAlamatUsaha').value,
+                salesName: document.getElementById('modalSalesName').value,
+                alamatUsaha: document.getElementById('modalAlamatUsaha').value,
                 pic: document.getElementById('modalPic').value,
                 ekosistem: document.getElementById('modalEkosistem').value,
                 status: document.getElementById('modalStatus').value,
                 actionPlan: document.getElementById('modalActionPlan').value,
                 aktivitas: document.getElementById('modalAktivitas').value,
-                notes: document.getElementById('modalHasilVisit').value,
-                foto: document.getElementById('modalFoto').value
+                hasilVisit: document.getElementById('modalHasilVisit').value
             };
-            visitLogs.push(newVisit);
+            visitLogs.push(visitData);
             localStorage.setItem('cbn_visit_logs', JSON.stringify(visitLogs));
             updateBadges();
-            loadVisitData();
             closeVisitModal();
-            document.getElementById('visitModalForm').reset();
+            loadVisitData();
+            alert("Log kunjungan visit berhasil disimpan!");
         }
 
         function loadVisitData() {
@@ -1186,58 +1242,164 @@
                 tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-slate-400">Belum ada log kunjungan.</td></tr>`;
                 return;
             }
-            visitLogs.slice().reverse().forEach(row => {
-                let s = "bg-slate-100 text-slate-800";
-                if(row.status === "Close Deal") s = "bg-emerald-100 text-emerald-800";
-                else if(row.status === "Tertarik" || row.status === "Follow Up") s = "bg-blue-100 text-blue-800";
-                else if(row.status === "Tidak Tertarik") s = "bg-rose-100 text-rose-800";
-                
+            visitLogs.slice().reverse().forEach((row) => {
                 const tr = document.createElement('tr');
                 tr.className = "border-b border-slate-100 hover:bg-slate-50";
                 tr.innerHTML = `
-                    <td class="px-4 py-2 text-xs">${row.date}</td>
-                    <td class="px-4 py-2 text-xs font-bold">${row.salesName || '-'} <br><span class="text-[10px] text-slate-400">NPK: ${row.npk || '-'}</span></td>
-                    <td class="px-4 py-2 text-xs font-medium">${row.location || '-'}<br><span class="text-[10px] text-blue-900 font-bold">PIC: ${row.pic || '-'}</span></td>
-                    <td class="px-4 py-2 text-xs"><span class="${s} text-[10px] px-2 py-1 rounded font-bold">${row.status}</span></td>
-                    <td class="px-4 py-2 text-xs"><span class="font-bold">${row.aktivitas || '-'}</span>: ${row.notes || '-'}<br><span class="text-[10px] text-slate-400 italic">Action: ${row.actionPlan || '-'}</span></td>
+                    <td class="px-4 py-3 text-xs">
+                        <div class="font-bold text-slate-800">${row.tanggal}</div>
+                        <div class="text-[10px] text-slate-400">Ekosistem: ${row.ekosistem}</div>
+                    </td>
+                    <td class="px-4 py-3 text-xs">
+                        <div class="font-bold text-blue-900">${row.salesName}</div>
+                        <div class="text-[10px] text-slate-500">NPK: ${row.npk}</div>
+                    </td>
+                    <td class="px-4 py-3 text-xs">
+                        <div class="font-bold text-slate-800">${row.alamatUsaha}</div>
+                        <div class="text-[10px] text-slate-500">PIC: ${row.pic}</div>
+                    </td>
+                    <td class="px-4 py-3 text-xs">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800">${row.status}</span>
+                    </td>
+                    <td class="px-4 py-3 text-xs">
+                        <div class="font-bold text-slate-700">${row.aktivitas}</div>
+                        <div class="text-[10px] text-slate-500">${row.hasilVisit}</div>
+                        <div class="text-[10px] text-indigo-600 font-medium">Action: ${row.actionPlan}</div>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function resetForm() {
-            if(confirm("Bersihkan formulir?")) {
-                document.querySelectorAll('.grid-box').forEach(i => i.value = '');
-                document.getElementById('birthPlace').value = '';
-                ['pkg1','pkg2','pkg3','add1','add2','add3'].forEach(id => document.getElementById(id).checked = false);
-                document.getElementById('summaryDaftar').value = '0';
-                document.getElementById('summaryAdmin').value = '5.000';
-                clearCanvas('sigCustomer'); clearCanvas('sigSales'); clearCanvas('sigAdmin');
-                calculateTotal(); updateSignatureName();
+        // --- 8. GOOGLE SHEETS DATABASE INTEGRATION ---
+        let rawDbRows = [];
+        let dbHeaders = [];
+
+        async function fetchGoogleSheetsData() {
+            const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYZCOSp3WryC7N6XMlgIyYkgc7WGb_sQrDHee1W3Fwk1ryWk-ogFksR2ppdi48mSdBZ5Baw64v1QEu/pub?gid=1452587103&single=true&output=csv";
+            const statusInfo = document.getElementById('dbStatusInfo');
+            statusInfo.textContent = "Menghubungkan ke Google Sheets...";
+
+            try {
+                const response = await fetch(csvUrl);
+                if (!response.ok) throw new Error("Gagal mengambil data dari Google Sheets.");
+                const csvText = await response.text();
+                parseCSV(csvText);
+                statusInfo.textContent = `Berhasil menyinkronkan ${rawDbRows.length} baris data dari Google Sheets (${new Date().toLocaleTimeString('id-ID')}).`;
+            } catch (error) {
+                console.error(error);
+                statusInfo.textContent = "Gagal memuat data online (Cek koneksi internet atau CORS). Menampilkan data dummy cadangan.";
+                loadFallbackDatabase();
             }
         }
 
-        function fillSampleData() {
-            setGridValue('salesCodeGrid', 'ARIF');
-            setGridValue('spvCodeGrid', 'SPV');
-            setGridValue('custNameGrid', 'ARIF AZIS IANYAH');
-            setGridValue('birthDateGrid', '11082001');
-            document.getElementById('birthPlace').value = 'Ciamis';
-            setGridValue('idNumberGrid', '320710110801001');
-            setGridValue('mobileGrid', '081234567890');
-            setGridValue('addr1Grid', 'DAERAH BARAT');
-            setGridValue('addr2Grid', 'KEC PANJALU');
-            setGridValue('rtGrid', '003'); setGridValue('rwGrid', '002'); setGridValue('postalGrid', '46273');
-            setGridValue('emailGrid', 'ARIF@GMAIL.COM');
+        function parseCSV(text) {
+            const lines = text.split('\n').filter(l => l.trim() !== '');
+            if (lines.length === 0) return;
+
+            // Simple CSV parser supporting quotes
+            function parseCSVLine(line) {
+                const res = [];
+                let cur = '';
+                let inQuotes = false;
+                for (let i = 0; i < line.length; i++) {
+                    const c = line[i];
+                    if (c === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (c === ',' && !inQuotes) {
+                        res.push(cur.trim().replace(/^"|"$/g, ''));
+                        cur = '';
+                    } else {
+                        cur += c;
+                    }
+                }
+                res.push(cur.trim().replace(/^"|"$/g, ''));
+                return res;
+            }
+
+            dbHeaders = parseCSVLine(lines[0]);
+            rawDbRows = [];
+            for (let i = 1; i < lines.length; i++) {
+                const cols = parseCSVLine(lines[i]);
+                if (cols.length > 0 && cols.some(c => c !== '')) {
+                    rawDbRows.push(cols);
+                }
+            }
+
+            renderDatabaseTable(dbHeaders, rawDbRows);
+        }
+
+        function loadFallbackDatabase() {
+            dbHeaders = ["Timestamp", "NPK", "Nama Sales", "Alamat Usaha", "Status", "Keterangan"];
+            rawDbRows = [
+                ["12/09/2026 10:00", "16538", "Arif Aziansyah", "Jl. Sudirman No. 10", "Close Deal", "Pemasangan CBN Fiber 300rb"],
+                ["12/09/2026 11:30", "16538", "Arif Aziansyah", "Ruko Mega Plaza Blok A", "Follow Up", "Menunggu konfirmasi owner"]
+            ];
+            renderDatabaseTable(dbHeaders, rawDbRows);
+        }
+
+        function renderDatabaseTable(headers, rows) {
+            const thead = document.getElementById('dbTableHead');
+            const tbody = document.getElementById('dbTableBody');
             
-            document.getElementById('pkg1').checked = true; updatePackageSelection(document.getElementById('pkg1'));
-            document.getElementById('add1').checked = true;
-            document.getElementById('add2').checked = true;
+            thead.innerHTML = `<tr>` + headers.map(h => `<th class="px-4 py-3 font-bold">${h}</th>`).join('') + `</tr>`;
             
-            setGridValue('installDateGrid', '15082026');
-            setGridValue('cidGrid', '99887766');
-            
-            calculateTotal(); updateSignatureName();
+            if (rows.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${headers.length}" class="px-4 py-8 text-center text-slate-400">Tidak ada data ditemukan.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = rows.map(row => {
+                return `<tr class="border-b border-slate-100 hover:bg-purple-50/50 transition">` + 
+                    headers.map((_, idx) => `<td class="px-4 py-2.5">${row[idx] || '-'}</td>`).join('') + 
+                `</tr>`;
+            }).join('');
+        }
+
+        function filterDatabaseTable() {
+            const query = document.getElementById('dbSearchInput').value.toLowerCase();
+            const npkQuery = document.getElementById('dbFilterNpk').value.toLowerCase();
+            const roleQuery = document.getElementById('dbFilterRole').value.toLowerCase();
+
+            // Find index columns for NPK and Role/Status Akses dynamically if available
+            let npkColIdx = -1;
+            let roleColIdx = -1;
+            dbHeaders.forEach((h, idx) => {
+                const lowerH = h.toLowerCase();
+                if (lowerH.includes('npk')) npkColIdx = idx;
+                if (lowerH.includes('role') || lowerH.includes('status') || lowerH.includes('akses')) {
+                    if (roleColIdx === -1) roleColIdx = idx;
+                }
+            });
+
+            const filtered = rawDbRows.filter(row => {
+                // General search match across any column
+                const matchGeneral = row.some(cell => cell.toLowerCase().includes(query));
+                
+                // NPK filter match
+                let matchNpk = true;
+                if (npkQuery) {
+                    if (npkColIdx !== -1) {
+                        matchNpk = (row[npkColIdx] || '').toLowerCase().includes(npkQuery);
+                    } else {
+                        matchNpk = row.some(cell => cell.toLowerCase().includes(npkQuery));
+                    }
+                }
+
+                // Role/Status filter match
+                let matchRole = true;
+                if (roleQuery) {
+                    if (roleColIdx !== -1) {
+                        matchRole = (row[roleColIdx] || '').toLowerCase().includes(roleQuery);
+                    } else {
+                        matchRole = row.some(cell => cell.toLowerCase().includes(roleQuery));
+                    }
+                }
+
+                return matchGeneral && matchNpk && matchRole;
+            });
+
+            renderDatabaseTable(dbHeaders, filtered);
         }
 
         // --- INIT ---
