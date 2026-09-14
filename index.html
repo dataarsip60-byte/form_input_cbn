@@ -20,7 +20,6 @@
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #64748b; }
         
-        /* Sticky Table Header styling */
         .table-container {
             max-height: 60vh;
             overflow-y: auto;
@@ -75,7 +74,6 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased">
 
-    <!-- Top Navigation -->
     <nav class="sticky top-0 z-40 glass-panel border-b border-slate-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
@@ -89,7 +87,7 @@
                     <div id="cloud-status-indicator" class="flex items-center space-x-2 bg-emerald-950/80 border border-emerald-500/50 px-3 py-1.5 rounded-full shadow-inner text-emerald-400 text-xs font-semibold">
                         <span class="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_8px_#34d399]"></span>
                         <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <span class="hidden sm:inline">Cloud Sinkron Aktif (Auto-Save)</span>
+                        <span class="hidden sm:inline">Firebase Realtime Cloud Aktif</span>
                     </div>
                      <button onclick="switchTab('menu-utama')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-md text-sm font-medium transition-colors border border-slate-700 flex items-center space-x-2">
                         <i class="fa-solid fa-house text-orange-400"></i>
@@ -100,26 +98,23 @@
         </div>
     </nav>
 
-    <!-- Main Content Area -->
     <main class="flex-grow w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
 
         <!-- TAB: MENU UTAMA -->
         <div id="tab-menu-utama" class="space-y-8 animate-fade-in">
             <div class="text-center space-y-2 mb-10">
                 <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Dashboard Internal</h1>
-                <p class="text-slate-400 max-w-2xl mx-auto">Sistem manajemen terpadu tim lapangan.</p>
+                <p class="text-slate-400 max-w-2xl mx-auto">Sistem manajemen terpadu tim lapangan dengan sinkronisasi Cloud lintas perangkat.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
                 
-                <!-- CARD 0: DASHBOARD GRAFIK (Blue/Cyan) -->
+                <!-- CARD 0: DASHBOARD GRAFIK -->
                 <div onclick="switchTab('dashboard-grafik')" class="menu-card cursor-pointer bg-[#0284c7] rounded-2xl p-6 shadow-lg border border-sky-500/50 flex flex-col items-center justify-center text-center space-y-4 h-56 relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-sky-400/20 to-transparent"></div>
-                    
                     <div class="absolute top-4 right-4 bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm border border-white/30">
                         Analytics
                     </div>
-
                     <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center shadow-inner backdrop-blur-sm relative z-10">
                         <i class="fa-solid fa-chart-pie text-3xl text-sky-100"></i>
                     </div>
@@ -129,15 +124,12 @@
                     </div>
                 </div>
 
-                <!-- CARD 1: BERKAS INPUT (Emerald/Green) -->
+                <!-- CARD 1: BERKAS INPUT -->
                 <div onclick="switchTab('berkas-input')" class="menu-card cursor-pointer bg-[#0f766e] rounded-2xl p-6 shadow-lg border border-teal-600/50 flex flex-col items-center justify-center text-center space-y-4 h-56 relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-teal-500/20 to-transparent"></div>
-                    
-                    <!-- Kotak Jumlah (Total Counter) -->
                     <div class="absolute top-4 right-4 bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm border border-white/30">
-                        Total: <span id="count-berkas">1</span>
+                        Total: <span id="count-berkas">0</span>
                     </div>
-
                     <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center shadow-inner backdrop-blur-sm relative z-10">
                         <i class="fa-solid fa-file-invoice text-3xl text-teal-100"></i>
                     </div>
@@ -147,15 +139,12 @@
                     </div>
                 </div>
 
-                <!-- CARD 2: DATA KUNJUNGAN (Indigo) -->
+                <!-- CARD 2: DATA KUNJUNGAN -->
                 <div onclick="switchTab('data-kunjungan')" class="menu-card cursor-pointer bg-[#4338ca] rounded-2xl p-6 shadow-lg border border-indigo-500/50 flex flex-col items-center justify-center text-center space-y-4 h-56 relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-transparent"></div>
-                    
-                    <!-- Kotak Jumlah (Total Counter) -->
                     <div class="absolute top-4 right-4 bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm border border-white/30">
                         Visit: <span id="count-visit">0</span>
                     </div>
-
                     <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center shadow-inner backdrop-blur-sm relative z-10">
                         <i class="fa-solid fa-map-pin text-3xl text-pink-300"></i>
                     </div>
@@ -165,15 +154,12 @@
                     </div>
                 </div>
 
-                <!-- CARD 3: DATABASE SALES (Purple) -->
+                <!-- CARD 3: DATABASE SALES -->
                 <div onclick="switchTab('database-sales')" class="menu-card cursor-pointer bg-[#6b21a8] rounded-2xl p-6 shadow-lg border border-purple-500/50 flex flex-col items-center justify-center text-center space-y-4 h-56 relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-transparent"></div>
-                    
-                    <!-- Kotak Jumlah (Total Counter) -->
                     <div class="absolute top-4 right-4 bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm border border-white/30">
                         Sales: <span id="count-sales">1</span>
                     </div>
-
                     <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center shadow-inner backdrop-blur-sm relative z-10">
                         <i class="fa-solid fa-users text-3xl text-purple-100"></i>
                     </div>
@@ -240,7 +226,6 @@
 
                 <!-- Grid Grafik -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Grafik 1: Jumlah Input Berkas -->
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col">
                         <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center space-x-2">
                             <i class="fa-solid fa-chart-column text-teal-600"></i>
@@ -251,7 +236,6 @@
                         </div>
                     </div>
 
-                    <!-- Grafik 2: Jumlah Kunjungan -->
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col">
                         <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center space-x-2">
                             <i class="fa-solid fa-chart-pie text-indigo-600"></i>
@@ -262,7 +246,6 @@
                         </div>
                     </div>
 
-                    <!-- Grafik 3: Sales Aktif -->
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col lg:col-span-2">
                         <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center space-x-2">
                             <i class="fa-solid fa-chart-line text-purple-600"></i>
@@ -288,7 +271,6 @@
                         <h2 class="text-2xl font-bold text-slate-800">Database Berkas Input</h2>
                     </div>
                     
-                    <!-- Action Buttons -->
                     <div class="flex space-x-2 w-full md:w-auto">
                         <button class="flex-1 md:flex-none bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2 shadow-sm text-sm">
                             <i class="fa-solid fa-file-excel"></i>
@@ -301,15 +283,15 @@
                     </div>
                 </div>
 
-                <!-- Fitur Filter -->
                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 flex flex-col md:flex-row gap-4 items-end">
                     <div class="w-full md:w-1/3">
                         <label class="form-label text-xs">Filter Nama Sales</label>
                         <select id="filter-sales" class="form-input text-sm" onchange="renderBerkasTable()">
                             <option value="">Semua Sales</option>
-                            <option value="Budi">Budi (Sales A)</option>
-                            <option value="Andi">Andi (Sales B)</option>
-                            <option value="Siti">Siti (Sales C)</option>
+                            <option value="Budi">Budi</option>
+                            <option value="Andi">Andi</option>
+                            <option value="Siti">Siti</option>
+                            <option value="Mansur">Mansur</option>
                         </select>
                     </div>
                     <div class="w-full md:w-1/3">
@@ -329,7 +311,6 @@
                     </div>
                 </div>
 
-                <!-- Table View -->
                 <div class="table-container rounded-lg border border-slate-200">
                     <table class="min-w-full divide-y divide-slate-200 text-sm">
                         <thead class="bg-slate-50">
@@ -344,7 +325,7 @@
                             </tr>
                         </thead>
                         <tbody id="berkas-table-body" class="divide-y divide-slate-200 bg-white">
-                            <!-- Data will be dynamically rendered here -->
+                            <tr><td colspan="7" class="px-4 py-8 text-center text-slate-500">Memuat data dari Cloud...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -362,7 +343,6 @@
                         <h2 class="text-2xl font-bold text-slate-800">Log Kunjungan Sales (VISIT)</h2>
                     </div>
                     
-                    <!-- Action Buttons -->
                     <div class="flex space-x-2 w-full md:w-auto">
                         <button onclick="openVisitModal()" class="flex-1 md:flex-none bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2 shadow-sm text-sm">
                             <i class="fa-solid fa-plus"></i>
@@ -371,15 +351,10 @@
                     </div>
                 </div>
 
-                <!-- Fitur Filter Visit -->
                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 flex flex-col md:flex-row gap-4 items-end">
                     <div class="w-full md:w-1/3">
                         <label class="form-label text-xs">Filter Nama / NPK Sales</label>
-                        <select id="filter-visit-sales" class="form-input text-sm" onchange="renderVisitTable()">
-                            <option value="">Semua Sales</option>
-                            <option value="Budi">Budi (SLS-001)</option>
-                            <option value="Mansur">Mansur Aldiansyah (265187)</option>
-                        </select>
+                        <input type="text" id="filter-visit-sales" class="form-input text-sm" placeholder="Ketik sales / NPK..." oninput="renderVisitTable()">
                     </div>
                     <div class="w-full md:w-1/3">
                         <label class="form-label text-xs">Filter Status Visit</label>
@@ -397,7 +372,6 @@
                     </div>
                 </div>
 
-                <!-- Table View Visit -->
                 <div class="table-container rounded-lg border border-slate-200">
                     <table class="min-w-full divide-y divide-slate-200 text-sm">
                         <thead class="bg-slate-50">
@@ -412,7 +386,7 @@
                             </tr>
                         </thead>
                         <tbody id="visit-table-body" class="divide-y divide-slate-200 bg-white">
-                            <!-- Rendered dynamically -->
+                            <tr><td colspan="7" class="px-4 py-8 text-center text-slate-500">Memuat data dari Cloud...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -441,7 +415,6 @@
                     </div>
                 </div>
 
-                <!-- Fitur Pencarian / Filter Sales -->
                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 flex flex-col md:flex-row gap-4 items-end">
                     <div class="w-full md:w-1/2">
                         <label class="form-label text-xs">Cari Nama / NPK / Keterangan</label>
@@ -453,12 +426,9 @@
                     </div>
                 </div>
 
-                <!-- Table View Database Sales -->
                 <div class="table-container rounded-lg border border-slate-200">
                     <table class="min-w-full divide-y divide-slate-200 text-sm">
-                        <thead id="sales-table-head" class="bg-slate-50">
-                            <!-- Dynamically generated headers -->
-                        </thead>
+                        <thead id="sales-table-head" class="bg-slate-50"></thead>
                         <tbody id="sales-table-body" class="divide-y divide-slate-200 bg-white">
                             <tr><td colspan="5" class="px-4 py-8 text-center text-slate-500">Memuat data dari Google Sheets...</td></tr>
                         </tbody>
@@ -471,15 +441,10 @@
 
     <!-- MODAL POPUP: FORM INPUT BERKAS -->
     <div id="modal-berkas" class="fixed inset-0 z-50 hidden">
-        <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm transition-opacity" onclick="closeBerkasModal()"></div>
-        
-        <!-- Modal Content Container -->
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                 <div class="relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 w-full max-w-4xl border border-slate-200">
-                    
-                    <!-- Modal Header -->
                     <div class="bg-slate-800 px-6 py-4 flex justify-between items-center">
                         <h3 class="text-lg font-bold text-white flex items-center space-x-2">
                             <i class="fa-solid fa-file-signature text-teal-400"></i>
@@ -490,12 +455,10 @@
                         </button>
                     </div>
 
-                    <!-- Modal Body (Form Fields) -->
                     <div class="px-6 py-6 bg-slate-50 max-h-[70vh] overflow-y-auto">
                         <form id="berkas-form" class="space-y-6" onsubmit="handleBerkasSubmit(event)">
                             <input type="hidden" id="edit-id" value="">
                             
-                            <!-- Section: Data Sales -->
                             <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
                                 <h4 class="text-sm font-bold text-indigo-600 mb-3 border-b pb-2">Informasi Sales</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -510,7 +473,6 @@
                                 </div>
                             </div>
 
-                            <!-- Section: Data Pelanggan -->
                             <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
                                 <h4 class="text-sm font-bold text-indigo-600 mb-3 border-b pb-2">Data Pelanggan</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -551,7 +513,6 @@
                                 </div>
                             </div>
 
-                            <!-- Section: Data Pemasangan -->
                             <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
                                 <h4 class="text-sm font-bold text-indigo-600 mb-3 border-b pb-2">Detail Pemasangan</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -578,7 +539,6 @@
                                 </div>
                             </div>
 
-                            <!-- Section: Paket Layanan -->
                             <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
                                 <h4 class="text-sm font-bold text-indigo-600 mb-3 border-b pb-2">Pemilihan Paket</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -608,7 +568,6 @@
                                 </div>
                             </div>
 
-                            <!-- Section: Status & Internal -->
                             <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-orange-500">
                                 <h4 class="text-sm font-bold text-orange-600 mb-3 border-b pb-2">Status & Catatan (Internal)</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -641,7 +600,6 @@
                         </form>
                     </div>
 
-                    <!-- Modal Footer -->
                     <div class="bg-slate-100 px-6 py-4 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 border-t border-slate-200">
                         <button type="button" onclick="closeBerkasModal()" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 sm:mt-0 sm:w-auto transition-colors">
                             Batal
@@ -650,7 +608,6 @@
                             <i class="fa-solid fa-save mr-2 mt-0.5"></i> Simpan Data Berkas
                         </button>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -662,7 +619,6 @@
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                 <div class="relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 w-full max-w-xl border border-slate-200">
-                    
                     <div class="bg-[#1e1b4b] px-6 py-4 flex justify-between items-center">
                         <h3 class="text-lg font-bold text-white flex items-center space-x-2">
                             <i class="fa-solid fa-map-location-dot text-indigo-400"></i>
@@ -733,7 +689,7 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="form-label text-xs">ACTION PLAN (ACTION PLAN)</label>
+                                    <label class="form-label text-xs">ACTION PLAN</label>
                                     <input type="text" id="v-actionPlan" class="form-input text-sm" value="Follow Up" required>
                                 </div>
                             </div>
@@ -758,7 +714,6 @@
                             <i class="fa-solid fa-save mr-2 mt-0.5"></i> Simpan Visit
                         </button>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -790,13 +745,13 @@
         <div class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm transition-opacity" onclick="closeConfirmDelete()"></div>
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md border border-slate-200 p-6 animate-fade-in">
+                <div class="relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md border border-slate-200 p-6">
                     <div class="text-center">
                         <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 mb-4">
                             <i class="fa-solid fa-triangle-exclamation text-red-600 text-xl"></i>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">Hapus Data Berkas</h3>
-                        <p class="text-sm text-slate-500 mb-6">Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.</p>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">Hapus Data</h3>
+                        <p class="text-sm text-slate-500 mb-6">Apakah Anda yakin ingin menghapus data ini dari Cloud?</p>
                         <div class="flex justify-center space-x-3">
                             <button onclick="closeConfirmDelete()" class="bg-white text-slate-700 hover:bg-slate-50 border border-slate-300 font-semibold py-2 px-4 rounded-lg text-sm transition-colors">Batal</button>
                             <button onclick="executeDelete()" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors shadow-sm">Ya, Hapus Data</button>
@@ -823,109 +778,121 @@
         </div>
     </div>
 
-    <script>
-        // Function to switch tabs
-        function switchTab(tabId) {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'cbn-internal-portal-default';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyDummyKeyForPreviewModeOnly12345",
+            authDomain: "dummy-project.firebaseapp.com",
+            projectId: "dummy-project"
+        };
+
+        let app, db, auth;
+        let currentUser = null;
+
+        let berkasData = [];
+        let visitData = [];
+        let rawSalesData = [];
+        let salesHeaders = [];
+
+        let itemToDelete = null;
+        let deleteType = null;
+        let chartInstanceBerkas = null;
+        let chartInstanceKunjungan = null;
+        let chartInstanceSales = null;
+
+        window.switchTab = function(tabId) {
             const allTabs = document.querySelectorAll('[id^="tab-"]');
-            allTabs.forEach(tab => {
-                tab.classList.add('hidden-tab');
-            });
+            allTabs.forEach(tab => tab.classList.add('hidden-tab'));
 
             const selectedTab = document.getElementById(`tab-${tabId}`);
             if (selectedTab) {
                 selectedTab.classList.remove('hidden-tab');
                 if (tabId === 'database-sales' && rawSalesData.length === 0) {
-                    fetchSalesDataFromSheet();
+                    window.fetchSalesDataFromSheet();
                 }
                 if (tabId === 'dashboard-grafik') {
-                    renderCharts();
+                    window.renderCharts();
                 }
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Persistent State Management using localStorage
-        let berkasData = JSON.parse(localStorage.getItem('cbn_berkas_data')) || [
-            {
-                id: 'INV-001',
-                date: '2026-09-14',
-                salesName: 'Budi',
-                salesCode: 'SLS-001',
-                customerName: 'Joko Widodo',
-                idNumber: '3201123456789',
-                birthPlace: 'Solo',
-                birthDate: '1961-06-21',
-                gender: 'L',
-                phone: '081234567890',
-                email: 'joko@example.com',
-                address: 'Jl. Merdeka No. 1',
-                city: 'Jakarta',
-                zipCode: '10110',
-                propertyStatus: 'Pemilik',
-                package: 'CBN Fiber',
-                speed: '50 Mbps',
-                addon: 'Tidak Ada',
-                hid: '',
-                berkasStatus: 'Complete',
-                keterangan: 'Tunggu jadwal penarikan kabel.',
-                finalStatus: 'Proses'
-            }
-        ];
-
-        let visitData = JSON.parse(localStorage.getItem('cbn_visit_data')) || [
-            {
-                id: 'VST-001',
-                foto: 'https://placehold.co/150x150',
-                tanggal: '2026-09-05',
-                npk: '265187',
-                salesName: 'Mansur Aldiansyah',
-                alamatUsaha: 'GG Gotong Royong Cilendek',
-                pic: '-',
-                ekosistem: 'Rumah',
-                status: 'Follow Up',
-                actionPlan: 'Follow Up Kembali',
-                aktivitas: 'penawaran produk CBN fiber',
-                hasilVisit: 'bertemu pemilik ruko'
-            }
-        ];
-
-        let rawSalesData = [];
-        let salesHeaders = [];
-
-        // Save data helper function
-        function saveToCloudStorage() {
+        async function initFirebaseAndData() {
             try {
-                localStorage.setItem('cbn_berkas_data', JSON.stringify(berkasData));
-                localStorage.setItem('cbn_visit_data', JSON.stringify(visitData));
-                
-                // Flash cloud indicator to show sync activity
-                const indicator = document.getElementById('cloud-status-indicator');
-                if (indicator) {
-                    indicator.classList.add('bg-blue-950', 'border-blue-400', 'text-blue-300');
-                    setTimeout(() => {
-                        indicator.classList.remove('bg-blue-950', 'border-blue-400', 'text-blue-300');
-                    }, 800);
-                }
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        currentUser = user;
+                        setupFirestoreListeners();
+                    } else {
+                        try {
+                            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                                await signInWithCustomToken(auth, __initial_auth_token);
+                            } else {
+                                await signInAnonymously(auth);
+                            }
+                        } catch (err) {
+                            console.error("Auth error:", err);
+                        }
+                    }
+                });
             } catch (e) {
-                console.error("Gagal menyimpan ke penyimpanan lokal", e);
+                console.log("Running fallback memory/local mode due to offline config");
             }
         }
 
-        // Fetch Google Sheets CSV
-        async function fetchSalesDataFromSheet() {
+        function setupFirestoreListeners() {
+            if (!db) return;
+
+            // Berkas Listener
+            const berkasCol = collection(db, 'artifacts', appId, 'public', 'data', 'berkasData');
+            onSnapshot(berkasCol, (snapshot) => {
+                berkasData = [];
+                snapshot.forEach(docSnap => {
+                    berkasData.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                // Sort descending by date if possible
+                berkasData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+                window.renderBerkasTable();
+                window.renderCharts();
+            }, (error) => {
+                console.error("Berkas snapshot error:", error);
+            });
+
+            // Visit Listener
+            const visitCol = collection(db, 'artifacts', appId, 'public', 'data', 'visitData');
+            onSnapshot(visitCol, (snapshot) => {
+                visitData = [];
+                snapshot.forEach(docSnap => {
+                    visitData.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                visitData.sort((a, b) => new Date(b.tanggal || 0) - new Date(a.tanggal || 0));
+                window.renderVisitTable();
+                window.renderCharts();
+            }, (error) => {
+                console.error("Visit snapshot error:", error);
+            });
+        }
+
+        window.fetchSalesDataFromSheet = async function() {
             const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYZCOSp3WryC7N6XMlgIyYkgc7WGb_sQrDHee1W3Fwk1ryWk-ogFksR2ppdi48mSdBZ5Baw64v1QEu/pub?gid=1452587103&single=true&output=csv";
             const icon = document.getElementById('refresh-icon');
             if(icon) icon.classList.add('fa-spin');
 
             try {
                 const response = await fetch(csvUrl);
-                if (!response.ok) throw new Error('Gagal mengambil data dari Google Sheets');
+                if (!response.ok) throw new Error('Gagal mengambil data');
                 const csvText = await response.text();
                 parseCSV(csvText);
                 showToast('Database Sales berhasil disinkronkan!');
             } catch (error) {
-                console.error(error);
-                // Fallback mock if CORS blocks direct fetch in some environments
                 rawSalesData = [
                     ["No", "Nama Sales", "NPK", "Target", "Pencapaian", "Status"],
                     ["1", "Budi Santoso", "1001", "50", "42", "Aktif"],
@@ -934,25 +901,179 @@
                 ];
                 salesHeaders = rawSalesData[0];
                 rawSalesData = rawSalesData.slice(1);
-                renderSalesTable();
-                showToast('Memuat data cadangan (Offline Mode)');
+                window.renderSalesTable();
             } finally {
                 if(icon) icon.classList.remove('fa-spin');
             }
         }
 
-        // Chart instances
-        let chartInstanceBerkas = null;
-        let chartInstanceKunjungan = null;
-        let chartInstanceSales = null;
+        function parseCSV(text) {
+            let lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            if (lines.length === 0) return;
+            let parseRow = (row) => {
+                let result = [];
+                let inQuotes = false;
+                let entry = '';
+                for (let i = 0; i < row.length; i++) {
+                    let char = row[i];
+                    if (char === '"') { inQuotes = !inQuotes; }
+                    else if (char === ',' && !inQuotes) { result.push(entry.trim()); entry = ''; }
+                    else { entry += char; }
+                }
+                result.push(entry.trim());
+                return result;
+            };
+            salesHeaders = parseRow(lines[0]);
+            rawSalesData = lines.slice(1).map(line => parseRow(line));
+            document.getElementById('count-sales').innerText = rawSalesData.length;
+            window.renderSalesTable();
+        }
 
-        function renderCharts() {
-            // Update stats cards
+        window.renderSalesTable = function() {
+            const thead = document.getElementById('sales-table-head');
+            const tbody = document.getElementById('sales-table-body');
+            const keyword = document.getElementById('filter-sales-search').value.toLowerCase();
+
+            if (salesHeaders.length === 0) {
+                thead.innerHTML = `<tr><th class="px-4 py-3 text-left font-semibold text-slate-600">Informasi</th></tr>`;
+                tbody.innerHTML = `<tr><td class="px-4 py-8 text-center text-slate-500">Belum ada data tersedia.</td></tr>`;
+                return;
+            }
+
+            let headHtml = '<tr>';
+            salesHeaders.forEach(h => {
+                headHtml += `<th class="px-4 py-3 text-left font-semibold text-slate-600 uppercase text-xs tracking-wider">${h}</th>`;
+            });
+            headHtml += '</tr>';
+            thead.innerHTML = headHtml;
+
+            let filtered = rawSalesData.filter(row => {
+                if (!keyword) return true;
+                return row.some(cell => cell.toLowerCase().includes(keyword));
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${salesHeaders.length}" class="px-4 py-8 text-center text-slate-500">Tidak ada hasil yang cocok.</td></tr>`;
+                return;
+            }
+
+            let bodyHtml = '';
+            filtered.forEach(row => {
+                bodyHtml += '<tr class="hover:bg-slate-50 transition-colors">';
+                row.forEach(cell => {
+                    bodyHtml += `<td class="px-4 py-3 text-slate-700 text-sm">${cell}</td>`;
+                });
+                bodyHtml += '</tr>';
+            });
+            tbody.innerHTML = bodyHtml;
+        }
+
+        window.renderBerkasTable = function() {
+            const tbody = document.getElementById('berkas-table-body');
+            const filterSales = document.getElementById('filter-sales').value.toLowerCase();
+            const filterStatus = document.getElementById('filter-status').value.toLowerCase();
+            
+            tbody.innerHTML = '';
+            
+            let filteredData = berkasData.filter(item => {
+                const matchSales = filterSales === '' || (item.salesName && item.salesName.toLowerCase().includes(filterSales));
+                const matchStatus = filterStatus === '' || 
+                                    (item.berkasStatus && item.berkasStatus.toLowerCase() === filterStatus) || 
+                                    (item.finalStatus && item.finalStatus.toLowerCase() === filterStatus);
+                return matchSales && matchStatus;
+            });
+
+            document.getElementById('count-berkas').innerText = berkasData.length;
+            document.getElementById('count-visit').innerText = visitData.length;
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-slate-500">Tidak ada data berkas ditemukan di Cloud.</td></tr>`;
+                return;
+            }
+
+            filteredData.forEach(item => {
+                let statusBerkasBadge = item.berkasStatus === 'Complete' ? 
+                    '<span class="px-2 py-1 bg-green-100 text-green-700 rounded-md text-xs font-bold">Complete</span>' : 
+                    '<span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-md text-xs font-bold">Blm Complete</span>';
+
+                let finalStatusBadge = '';
+                if(item.finalStatus === 'Proses') finalStatusBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-bold">Proses</span>';
+                else if(item.finalStatus === 'Done') finalStatusBadge = '<span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-md text-xs font-bold">Done</span>';
+                else finalStatusBadge = '<span class="px-2 py-1 bg-red-100 text-red-700 rounded-md text-xs font-bold">Cancel</span>';
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition-colors';
+                tr.innerHTML = `
+                    <td class="px-4 py-3">${item.date || '-'}</td>
+                    <td class="px-4 py-3 font-medium text-slate-800">${item.salesName || '-'}<br><span class="text-xs text-slate-500 font-normal">${item.salesCode || ''}</span></td>
+                    <td class="px-4 py-3 text-slate-800">${item.customerName || '-'}</td>
+                    <td class="px-4 py-3 text-blue-700 font-semibold">${item.package || '-'} <span class="text-xs text-slate-500 font-normal">(${item.speed || ''})</span></td>
+                    <td class="px-4 py-3">${statusBerkasBadge}</td>
+                    <td class="px-4 py-3">${finalStatusBadge}</td>
+                    <td class="px-4 py-3 text-center min-w-[140px]">
+                        <button onclick="openBerkasModal('${item.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-semibold mr-3 transition-colors"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                        <button onclick="confirmDelete('${item.id}', 'berkas')" class="text-red-600 hover:text-red-800 text-xs font-semibold transition-colors"><i class="fa-solid fa-trash"></i> Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.renderVisitTable = function() {
+            const tbody = document.getElementById('visit-table-body');
+            const filterSales = document.getElementById('filter-visit-sales').value.toLowerCase();
+            const filterStatus = document.getElementById('filter-visit-status').value.toLowerCase();
+            
+            tbody.innerHTML = '';
+            
+            let filteredData = visitData.filter(item => {
+                const matchSales = filterSales === '' || 
+                    (item.salesName && item.salesName.toLowerCase().includes(filterSales)) || 
+                    (item.npk && item.npk.toLowerCase().includes(filterSales));
+                const matchStatus = filterStatus === '' || (item.status && item.status.toLowerCase() === filterStatus);
+                return matchSales && matchStatus;
+            });
+
+            document.getElementById('count-visit').innerText = visitData.length;
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-slate-500">Tidak ada data kunjungan ditemukan di Cloud.</td></tr>`;
+                return;
+            }
+
+            filteredData.forEach(item => {
+                let badgeColor = 'bg-indigo-100 text-indigo-700';
+                if(item.status === 'Blm Aktif') badgeColor = 'bg-orange-100 text-orange-700';
+                else if(item.status === 'Deal') badgeColor = 'bg-emerald-100 text-emerald-700';
+                
+                let statusBadge = `<span class="px-2 py-1 ${badgeColor} rounded-md text-xs font-bold">${item.status || '-'}</span>`;
+                let fotoUrl = item.foto || 'https://placehold.co/150x150';
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition-colors';
+                tr.innerHTML = `
+                    <td class="px-4 py-3">
+                        <img src="${fotoUrl}" alt="Selfie" class="w-12 h-12 rounded-lg object-cover border border-slate-300 cursor-pointer shadow-sm hover:scale-105 transition-transform" onclick="openPreviewFoto('${fotoUrl}')" onerror="this.src='https://placehold.co/150x150?text=No+Foto'">
+                    </td>
+                    <td class="px-4 py-3">${item.tanggal || '-'}<br><span class="text-xs text-slate-500 font-normal">Ekosistem: ${item.ekosistem || '-'}</span></td>
+                    <td class="px-4 py-3 font-medium text-slate-800 uppercase">${item.salesName || '-'}<br><span class="text-xs text-slate-500 font-normal">NPK: ${item.npk || '-'}</span></td>
+                    <td class="px-4 py-3 text-slate-800">${item.alamatUsaha || '-'}<br><span class="text-xs text-slate-500 font-normal">PIC: ${item.pic || '-'}</span></td>
+                    <td class="px-4 py-3">${statusBadge}</td>
+                    <td class="px-4 py-3 text-slate-700"><span class="font-bold lowercase">${item.aktivitas || '-'}</span><br><span class="text-xs text-slate-500">${item.hasilVisit || '-'}<br>Action: ${item.actionPlan || '-'}</span></td>
+                    <td class="px-4 py-3 text-center min-w-[140px]">
+                        <button onclick="openVisitModal('${item.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-semibold mr-3 transition-colors"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                        <button onclick="confirmDelete('${item.id}', 'visit')" class="text-red-600 hover:text-red-800 text-xs font-semibold transition-colors"><i class="fa-solid fa-trash"></i> Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.renderCharts = function() {
             document.getElementById('stat-total-berkas').innerText = berkasData.length;
             document.getElementById('stat-total-visit').innerText = visitData.length;
             document.getElementById('stat-total-sales').innerText = rawSalesData.length > 0 ? rawSalesData.length : 3;
 
-            // 1. Chart Input Berkas (Bar Chart by Status)
             const berkasComplete = berkasData.filter(b => b.berkasStatus === 'Complete').length;
             const berkasBlmComplete = berkasData.filter(b => b.berkasStatus === 'Blm Complete').length;
             const finalProses = berkasData.filter(b => b.finalStatus === 'Proses').length;
@@ -972,15 +1093,9 @@
                         borderRadius: 6
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
             });
 
-            // 2. Chart Kunjungan (Doughnut Chart by Visit Status)
             const visitTunggu = visitData.filter(v => v.status === 'Tunggu info').length;
             const visitFollowUp = visitData.filter(v => v.status === 'Follow Up').length;
             const visitDeal = visitData.filter(v => v.status === 'Deal').length;
@@ -997,14 +1112,9 @@
                         backgroundColor: ['#6366f1', '#06b6d4', '#10b981', '#f97316']
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
             });
 
-            // 3. Chart Sales Aktif (Bar Chart Target vs Pencapaian)
             let salesLabels = [];
             let targetData = [];
             let pencapaianData = [];
@@ -1028,212 +1138,16 @@
                 data: {
                     labels: salesLabels,
                     datasets: [
-                        {
-                            label: 'Target',
-                            data: targetData,
-                            backgroundColor: '#9333ea',
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Pencapaian',
-                            data: pencapaianData,
-                            backgroundColor: '#38bdf8',
-                            borderRadius: 4
-                        }
+                        { label: 'Target', data: targetData, backgroundColor: '#9333ea', borderRadius: 4 },
+                        { label: 'Pencapaian', data: pencapaianData, backgroundColor: '#38bdf8', borderRadius: 4 }
                     ]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true } }
-                }
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
             });
         }
 
-        // CSV Parser utility
-        function parseCSV(text) {
-            let lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-            if (lines.length === 0) return;
-
-            // Simple CSV line parser taking quotes into account
-            let parseRow = (row) => {
-                let result = [];
-                let inQuotes = false;
-                let entry = '';
-                for (let i = 0; i < row.length; i++) {
-                    let char = row[i];
-                    if (char === '"') {
-                        inQuotes = !inQuotes;
-                    } else if (char === ',' && !inQuotes) {
-                        result.push(entry.trim());
-                        entry = '';
-                    } else {
-                        entry += char;
-                    }
-                }
-                result.push(entry.trim());
-                return result;
-            };
-
-            salesHeaders = parseRow(lines[0]);
-            rawSalesData = lines.slice(1).map(line => parseRow(line));
-            
-            // Update counter badge
-            document.getElementById('count-sales').innerText = rawSalesData.length;
-            renderSalesTable();
-        }
-
-        // Render Sales Table
-        function renderSalesTable() {
-            const thead = document.getElementById('sales-table-head');
-            const tbody = document.getElementById('sales-table-body');
-            const keyword = document.getElementById('filter-sales-search').value.toLowerCase();
-
-            if (salesHeaders.length === 0) {
-                thead.innerHTML = `<tr><th class="px-4 py-3 text-left font-semibold text-slate-600">Informasi</th></tr>`;
-                tbody.innerHTML = `<tr><td class="px-4 py-8 text-center text-slate-500">Belum ada data tersedia.</td></tr>`;
-                return;
-            }
-
-            // Build Header
-            let headHtml = '<tr>';
-            salesHeaders.forEach(h => {
-                headHtml += `<th class="px-4 py-3 text-left font-semibold text-slate-600 uppercase text-xs tracking-wider">${h}</th>`;
-            });
-            headHtml += '</tr>';
-            thead.innerHTML = headHtml;
-
-            // Filter Rows
-            let filtered = rawSalesData.filter(row => {
-                if (!keyword) return true;
-                return row.some(cell => cell.toLowerCase().includes(keyword));
-            });
-
-            document.getElementById('count-sales').innerText = rawSalesData.length;
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="${salesHeaders.length}" class="px-4 py-8 text-center text-slate-500">Tidak ada hasil yang cocok dengan pencarian.</td></tr>`;
-                return;
-            }
-
-            let bodyHtml = '';
-            filtered.forEach(row => {
-                bodyHtml += '<tr class="hover:bg-slate-50 transition-colors">';
-                row.forEach(cell => {
-                    bodyHtml += `<td class="px-4 py-3 text-slate-700 text-sm">${cell}</td>`;
-                });
-                bodyHtml += '</tr>';
-            });
-            tbody.innerHTML = bodyHtml;
-        }
-
-        // Render Berkas Table
-        function renderBerkasTable() {
-            const tbody = document.getElementById('berkas-table-body');
-            const filterSales = document.getElementById('filter-sales').value.toLowerCase();
-            const filterStatus = document.getElementById('filter-status').value.toLowerCase();
-            
-            tbody.innerHTML = '';
-            
-            let filteredData = berkasData.filter(item => {
-                const matchSales = filterSales === '' || item.salesName.toLowerCase().includes(filterSales);
-                const matchStatus = filterStatus === '' || 
-                                    item.berkasStatus.toLowerCase() === filterStatus || 
-                                    item.finalStatus.toLowerCase() === filterStatus;
-                                    
-                return matchSales && matchStatus;
-            });
-
-            // Update counters on menu cards & badges
-            document.getElementById('count-berkas').innerText = berkasData.length;
-            document.getElementById('count-visit').innerText = visitData.length;
-            document.getElementById('count-sales').innerText = '1';
-
-            if (filteredData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-slate-500">Tidak ada data ditemukan.</td></tr>`;
-                return;
-            }
-
-            filteredData.forEach(item => {
-                let statusBerkasBadge = '';
-                if(item.berkasStatus === 'Complete') statusBerkasBadge = '<span class="px-2 py-1 bg-green-100 text-green-700 rounded-md text-xs font-bold">Complete</span>';
-                else statusBerkasBadge = '<span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-md text-xs font-bold">Blm Complete</span>';
-
-                let finalStatusBadge = '';
-                if(item.finalStatus === 'Proses') finalStatusBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-bold">Proses</span>';
-                else if(item.finalStatus === 'Done') finalStatusBadge = '<span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-md text-xs font-bold">Done</span>';
-                else finalStatusBadge = '<span class="px-2 py-1 bg-red-100 text-red-700 rounded-md text-xs font-bold">Cancel</span>';
-
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 transition-colors';
-                tr.innerHTML = `
-                    <td class="px-4 py-3">${item.date}</td>
-                    <td class="px-4 py-3 font-medium text-slate-800">${item.salesName}<br><span class="text-xs text-slate-500 font-normal">${item.salesCode}</span></td>
-                    <td class="px-4 py-3 text-slate-800">${item.customerName}</td>
-                    <td class="px-4 py-3 text-blue-700 font-semibold">${item.package} <span class="text-xs text-slate-500 font-normal">(${item.speed})</span></td>
-                    <td class="px-4 py-3">${statusBerkasBadge}</td>
-                    <td class="px-4 py-3">${finalStatusBadge}</td>
-                    <td class="px-4 py-3 text-center min-w-[140px]">
-                        <button onclick="openBerkasModal('${item.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-semibold mr-3 transition-colors"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
-                        <button onclick="confirmDelete('${item.id}', 'berkas')" class="text-red-600 hover:text-red-800 text-xs font-semibold transition-colors"><i class="fa-solid fa-trash"></i> Hapus</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // Render Visit Table
-        function renderVisitTable() {
-            const tbody = document.getElementById('visit-table-body');
-            const filterSales = document.getElementById('filter-visit-sales').value.toLowerCase();
-            const filterStatus = document.getElementById('filter-visit-status').value.toLowerCase();
-            
-            tbody.innerHTML = '';
-            
-            let filteredData = visitData.filter(item => {
-                const matchSales = filterSales === '' || item.salesName.toLowerCase().includes(filterSales) || item.npk.toLowerCase().includes(filterSales);
-                const matchStatus = filterStatus === '' || item.status.toLowerCase() === filterStatus;
-                return matchSales && matchStatus;
-            });
-
-            document.getElementById('count-visit').innerText = visitData.length;
-            document.getElementById('count-berkas').innerText = berkasData.length;
-
-            if (filteredData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-slate-500">Tidak ada data kunjungan ditemukan.</td></tr>`;
-                return;
-            }
-
-            filteredData.forEach(item => {
-                let badgeColor = 'bg-indigo-100 text-indigo-700';
-                if(item.status === 'Blm Aktif') badgeColor = 'bg-orange-100 text-orange-700';
-                else if(item.status === 'Deal') badgeColor = 'bg-emerald-100 text-emerald-700';
-                
-                let statusBadge = `<span class="px-2 py-1 ${badgeColor} rounded-md text-xs font-bold">${item.status}</span>`;
-                let fotoUrl = item.foto || 'https://placehold.co/150x150';
-
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 transition-colors';
-                tr.innerHTML = `
-                    <td class="px-4 py-3">
-                        <img src="${fotoUrl}" alt="Selfie" class="w-12 h-12 rounded-lg object-cover border border-slate-300 cursor-pointer shadow-sm hover:scale-105 transition-transform" onclick="openPreviewFoto('${fotoUrl}')" onerror="this.src='https://placehold.co/150x150?text=No+Foto'">
-                    </td>
-                    <td class="px-4 py-3">${item.tanggal}<br><span class="text-xs text-slate-500 font-normal">Ekosistem: ${item.ekosistem}</span></td>
-                    <td class="px-4 py-3 font-medium text-slate-800 uppercase">${item.salesName}<br><span class="text-xs text-slate-500 font-normal">NPK: ${item.npk}</span></td>
-                    <td class="px-4 py-3 text-slate-800">${item.alamatUsaha}<br><span class="text-xs text-slate-500 font-normal">PIC: ${item.pic}</span></td>
-                    <td class="px-4 py-3">${statusBadge}</td>
-                    <td class="px-4 py-3 text-slate-700"><span class="font-bold lowercase">${item.aktivitas}</span><br><span class="text-xs text-slate-500">${item.hasilVisit}<br>Action: ${item.actionPlan}</span></td>
-                    <td class="px-4 py-3 text-center min-w-[140px]">
-                        <button onclick="openVisitModal('${item.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-semibold mr-3 transition-colors"><i class="fa-solid fa-pen-to-square"></i> Edit Status</button>
-                        <button onclick="confirmDelete('${item.id}', 'visit')" class="text-red-600 hover:text-red-800 text-xs font-semibold transition-colors"><i class="fa-solid fa-trash"></i> Hapus</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // File Upload Handler
-        function handleFileUpload(event) {
+        // File upload & Camera helpers
+        window.handleFileUpload = function(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -1245,22 +1159,19 @@
             }
         }
 
-        // Camera Live Stream Handlers
         let mediaStream = null;
-
-        async function openCameraModal() {
+        window.openCameraModal = async function() {
             document.getElementById('modal-camera').classList.remove('hidden');
             try {
                 mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
-                const videoEl = document.getElementById('camera-stream');
-                videoEl.srcObject = mediaStream;
+                document.getElementById('camera-stream').srcObject = mediaStream;
             } catch (err) {
                 showToast('Tidak dapat mengakses kamera perangkat.');
-                closeCameraModal();
+                window.closeCameraModal();
             }
         }
 
-        function closeCameraModal() {
+        window.closeCameraModal = function() {
             if (mediaStream) {
                 mediaStream.getTracks().forEach(track => track.stop());
                 mediaStream = null;
@@ -1268,7 +1179,7 @@
             document.getElementById('modal-camera').classList.add('hidden');
         }
 
-        function captureCameraPhoto() {
+        window.captureCameraPhoto = function() {
             const videoEl = document.getElementById('camera-stream');
             const canvasEl = document.getElementById('camera-canvas');
             canvasEl.width = videoEl.videoWidth || 400;
@@ -1279,35 +1190,35 @@
             
             document.getElementById('v-foto').value = dataUrl;
             document.getElementById('v-foto-preview').src = dataUrl;
-            closeCameraModal();
-            showToast('Foto berhasil diambil dari kamera!');
+            window.closeCameraModal();
+            showToast('Foto berhasil diambil!');
         }
 
-        function openPreviewFoto(url) {
+        window.openPreviewFoto = function(url) {
             document.getElementById('preview-img-src').src = url;
             document.getElementById('modal-preview-foto').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
 
-        function closePreviewFoto() {
+        window.closePreviewFoto = function() {
             document.getElementById('modal-preview-foto').classList.add('hidden');
             document.body.style.overflow = 'auto';
         }
 
-        function resetFilters() {
+        window.resetFilters = function() {
             document.getElementById('filter-sales').value = '';
             document.getElementById('filter-status').value = '';
-            renderBerkasTable();
+            window.renderBerkasTable();
         }
 
-        function resetVisitFilters() {
+        window.resetVisitFilters = function() {
             document.getElementById('filter-visit-sales').value = '';
             document.getElementById('filter-visit-status').value = '';
-            renderVisitTable();
+            window.renderVisitTable();
         }
 
-        // Berkas Modal Functions
-        function openBerkasModal(id = null) {
+        // Modals & Form Submissions with Firestore
+        window.openBerkasModal = function(id = null) {
             const modal = document.getElementById('modal-berkas');
             const title = document.getElementById('modal-berkas-title');
             const form = document.getElementById('berkas-form');
@@ -1343,21 +1254,28 @@
                 form.reset();
                 document.getElementById('edit-id').value = '';
             }
-
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
 
-        function closeBerkasModal() {
+        window.closeBerkasModal = function() {
             document.getElementById('modal-berkas').classList.add('hidden');
             document.body.style.overflow = 'auto';
         }
 
-        function handleBerkasSubmit(e) {
+        window.handleBerkasSubmit = async function(e) {
             e.preventDefault();
+            if (!db) {
+                showToast('Database Cloud belum terhubung.');
+                return;
+            }
+
             const editId = document.getElementById('edit-id').value;
-            
+            const docId = editId ? editId : 'INV-' + Math.floor(100000 + Math.random() * 900000);
+            const dateStr = editId ? (berkasData.find(b => b.id === editId)?.date || new Date().toISOString().split('T')[0]) : new Date().toISOString().split('T')[0];
+
             const formData = {
+                date: dateStr,
                 salesName: document.getElementById('f-salesName').value,
                 salesCode: document.getElementById('f-salesCode').value,
                 customerName: document.getElementById('f-customerName').value,
@@ -1380,26 +1298,18 @@
                 finalStatus: document.getElementById('f-finalStatus').value,
             };
 
-            if (editId) {
-                const index = berkasData.findIndex(b => b.id === editId);
-                if(index !== -1) {
-                    berkasData[index] = { ...berkasData[index], ...formData };
-                }
-            } else {
-                const dateObj = new Date();
-                const todayStr = dateObj.toISOString().split('T')[0];
-                const newId = 'INV-' + Math.floor(Math.random() * 10000);
-                berkasData.unshift({ id: newId, date: todayStr, ...formData });
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'berkasData', docId);
+                await setDoc(docRef, formData, { merge: true });
+                window.closeBerkasModal();
+                showToast(editId ? 'Data berkas berhasil diperbarui di Cloud!' : 'Data berkas baru berhasil disimpan ke Cloud!');
+            } catch (err) {
+                console.error("Error saving berkas:", err);
+                showToast('Gagal menyimpan ke Cloud.');
             }
-
-            saveToCloudStorage();
-            closeBerkasModal();
-            renderBerkasTable();
-            showToast(editId ? 'Data berkas berhasil diperbarui & disinkronkan ke Cloud!' : 'Data berkas baru berhasil disimpan ke Cloud!');
         }
 
-        // Visit Modal Functions
-        function openVisitModal(id = null) {
+        window.openVisitModal = function(id = null) {
             const modal = document.getElementById('modal-visit');
             const title = document.getElementById('modal-visit-title');
             const form = document.getElementById('visit-form');
@@ -1426,29 +1336,32 @@
                 title.innerText = 'FORMULIR INPUT VISIT';
                 form.reset();
                 document.getElementById('edit-visit-id').value = '';
-                // Set default today date
-                const todayStr = new Date().toISOString().split('T')[0];
-                document.getElementById('v-tanggal').value = todayStr;
+                document.getElementById('v-tanggal').value = new Date().toISOString().split('T')[0];
                 document.getElementById('v-ekosistem').value = 'Rumah';
                 document.getElementById('v-actionPlan').value = 'Follow Up';
                 document.getElementById('v-aktivitas').value = 'Pemasaran';
                 document.getElementById('v-foto').value = 'https://placehold.co/150x150';
                 document.getElementById('v-foto-preview').src = 'https://placehold.co/150x150';
             }
-
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
 
-        function closeVisitModal() {
+        window.closeVisitModal = function() {
             document.getElementById('modal-visit').classList.add('hidden');
             document.body.style.overflow = 'auto';
         }
 
-        function handleVisitSubmit(e) {
+        window.handleVisitSubmit = async function(e) {
             e.preventDefault();
+            if (!db) {
+                showToast('Database Cloud belum terhubung.');
+                return;
+            }
+
             const editId = document.getElementById('edit-visit-id').value;
-            
+            const docId = editId ? editId : 'VST-' + Math.floor(100000 + Math.random() * 900000);
+
             const visitFormData = {
                 foto: document.getElementById('v-foto').value,
                 tanggal: document.getElementById('v-tanggal').value,
@@ -1463,51 +1376,43 @@
                 hasilVisit: document.getElementById('v-hasilVisit').value,
             };
 
-            if (editId) {
-                const index = visitData.findIndex(v => v.id === editId);
-                if(index !== -1) {
-                    visitData[index] = { ...visitData[index], ...visitFormData };
-                }
-            } else {
-                const newId = 'VST-' + Math.floor(Math.random() * 10000);
-                visitData.unshift({ id: newId, ...visitFormData });
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'visitData', docId);
+                await setDoc(docRef, visitFormData, { merge: true });
+                window.closeVisitModal();
+                showToast(editId ? 'Data visit berhasil diperbarui di Cloud!' : 'Data visit baru berhasil disimpan ke Cloud!');
+            } catch (err) {
+                console.error("Error saving visit:", err);
+                showToast('Gagal menyimpan ke Cloud.');
             }
-
-            saveToCloudStorage();
-            closeVisitModal();
-            renderVisitTable();
-            renderBerkasTable(); // to update counters
-            showToast(editId ? 'Data visit berhasil diperbarui & disinkronkan!' : 'Data visit baru berhasil disimpan ke Cloud!');
         }
 
-        // Delete Logic
-        function confirmDelete(id, type) {
+        window.confirmDelete = function(id, type) {
             itemToDelete = id;
             deleteType = type;
             document.getElementById('modal-confirm-delete').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
 
-        function closeConfirmDelete() {
+        window.closeConfirmDelete = function() {
             itemToDelete = null;
             document.getElementById('modal-confirm-delete').classList.add('hidden');
             document.body.style.overflow = 'auto';
         }
 
-        function executeDelete() {
-            if (itemToDelete) {
-                if (deleteType === 'berkas') {
-                    berkasData = berkasData.filter(b => b.id !== itemToDelete);
-                    renderBerkasTable();
-                } else {
-                    visitData = visitData.filter(v => v.id !== itemToDelete);
-                    renderVisitTable();
+        window.executeDelete = async function() {
+            if (itemToDelete && db) {
+                try {
+                    const collectionName = deleteType === 'berkas' ? 'berkasData' : 'visitData';
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', collectionName, itemToDelete);
+                    await deleteDoc(docRef);
+                    showToast('Data berhasil dihapus dari Cloud!');
+                } catch (err) {
+                    console.error("Error deleting:", err);
+                    showToast('Gagal menghapus data.');
                 }
-                saveToCloudStorage();
-                renderBerkasTable();
-                showToast('Data berhasil dihapus dari sistem Cloud!');
             }
-            closeConfirmDelete();
+            window.closeConfirmDelete();
         }
 
         function showToast(message) {
@@ -1522,13 +1427,10 @@
             }, 3000);
         }
 
-        // Initialize view
         document.addEventListener('DOMContentLoaded', () => {
-            renderBerkasTable();
-            renderVisitTable();
-            switchTab('menu-utama');
-            // Background preload sheet data
-            fetchSalesDataFromSheet();
+            initFirebaseAndData();
+            window.switchTab('menu-utama');
+            window.fetchSalesDataFromSheet();
         });
     </script>
 </body>
