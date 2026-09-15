@@ -259,46 +259,62 @@
                         <button onclick="setRouteMode('motorcycle')" id="mode-motorcycle" class="route-mode-btn flex flex-col items-center justify-center py-1 rounded-lg text-[10px] border border-transparent transition">
                             <i class="fa-solid fa-motorcycle text-xs mb-0.5"></i>
                             <span>Motor</span>
-                            <span id="time-motorcycle" class="text-[9px] font-mono text-slate-500 font-bold">--</span>
+                            <span id="time-motorcycle" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
                         </button>
                         <button onclick="setRouteMode('bike')" id="mode-bike" class="route-mode-btn flex flex-col items-center justify-center py-1 rounded-lg text-[10px] border border-transparent transition">
                             <i class="fa-solid fa-bicycle text-xs mb-0.5"></i>
                             <span>Sepeda</span>
-                            <span id="time-bike" class="text-[9px] font-mono text-slate-500 font-bold">--</span>
+                            <span id="time-bike" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
                         </button>
                         <button onclick="setRouteMode('foot')" id="mode-foot" class="route-mode-btn flex flex-col items-center justify-center py-1 rounded-lg text-[10px] border border-transparent transition">
                             <i class="fa-solid fa-person-walking text-xs mb-0.5"></i>
                             <span>Jalan</span>
-                            <span id="time-foot" class="text-[9px] font-mono text-slate-500 font-bold">--</span>
+                            <span id="time-foot" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
                         </button>
                     </div>
 
-                    <!-- Form Input Rute (Asal & Tujuan) -->
+                    <!-- Form Input Rute (Asal & Tujuan Manual + Autocomplete) -->
                     <div class="flex items-center gap-2 relative">
                         <!-- Indikator Ikon Titik -->
-                        <div class="flex flex-col items-center justify-between h-14 py-1.5 shrink-0">
+                        <div class="flex flex-col items-center justify-between h-16 py-2 shrink-0">
                             <div class="w-2.5 h-2.5 rounded-full border-2 border-indigo-600 bg-white"></div>
                             <div class="w-0.5 flex-1 bg-slate-300 my-0.5"></div>
                             <div class="w-2.5 h-2.5 rounded-full bg-rose-600"></div>
                         </div>
 
-                        <!-- Inputs -->
-                        <div class="flex-1 space-y-1.5">
-                            <!-- Titik Asal -->
-                            <div class="relative flex items-center">
-                                <select id="route-origin-select" onchange="calculateRoute()" class="w-full text-xs p-1.5 pr-7 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none truncate font-medium">
-                                    <option value="my_location">📍 Lokasi Anda Saat Ini (GPS)</option>
-                                </select>
-                                <button onclick="useCurrentLocationAsOrigin()" class="absolute right-1 text-xs text-indigo-600 hover:text-indigo-800 p-1" title="Gunakan GPS Lokasi Anda">
-                                    <i class="fa-solid fa-crosshairs"></i>
-                                </button>
+                        <!-- Inputs Container -->
+                        <div class="flex-1 space-y-2 relative">
+                            <!-- Titik Asal Input -->
+                            <div class="relative">
+                                <input type="text" id="route-origin-input" autocomplete="off"
+                                    onfocus="handleRouteInputFocus('origin')" 
+                                    oninput="handleRouteInput('origin', this.value)" 
+                                    placeholder="Ketik lokasi asal, koordinat, atau GPS..." 
+                                    class="w-full text-xs p-1.5 pr-14 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none truncate font-medium">
+                                <div class="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                                    <button onclick="clearRouteInput('origin')" class="text-slate-400 hover:text-slate-600 p-1 text-[10px]" title="Bersihkan">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                    <button onclick="useCurrentLocationAsOrigin()" class="text-indigo-600 hover:text-indigo-800 p-1 text-xs" title="Gunakan GPS Lokasi Anda">
+                                        <i class="fa-solid fa-crosshairs"></i>
+                                    </button>
+                                </div>
+                                <!-- Dropdown Suggestion Asal -->
+                                <div id="origin-suggestions" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl z-[1050] max-h-48 overflow-y-auto divide-y divide-slate-100 text-xs"></div>
                             </div>
 
-                            <!-- Titik Tujuan -->
-                            <div class="relative flex items-center">
-                                <select id="route-destination-select" onchange="calculateRoute()" class="w-full text-xs p-1.5 pr-7 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none truncate font-medium">
-                                    <option value="">🎯 Pilih Street/Block/Tower / Jalan/Blok/Menara Tujuan...</option>
-                                </select>
+                            <!-- Titik Tujuan Input -->
+                            <div class="relative">
+                                <input type="text" id="route-destination-input" autocomplete="off"
+                                    onfocus="handleRouteInputFocus('destination')" 
+                                    oninput="handleRouteInput('destination', this.value)" 
+                                    placeholder="Ketik nama jalan/blok, koordinat, atau alamat..." 
+                                    class="w-full text-xs p-1.5 pr-7 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none truncate font-medium">
+                                <button onclick="clearRouteInput('destination')" class="absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 text-[10px]" title="Bersihkan">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                                <!-- Dropdown Suggestion Tujuan -->
+                                <div id="destination-suggestions" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl z-[1050] max-h-48 overflow-y-auto divide-y divide-slate-100 text-xs"></div>
                             </div>
                         </div>
 
@@ -405,7 +421,12 @@
         let filteredData = [];
         let dataHeaders = [];
         let selectedRowId = null;
-        
+
+        // Variable State Rute Navigasi Baru
+        let selectedOriginData = { type: 'gps', title: '📍 Lokasi Anda Saat Ini (GPS)', lat: null, lng: null };
+        let selectedDestinationData = null;
+        let routeSearchTimeout = null;
+
         let map = null;
         let markerClusterGroup = null;
         let rawMarkerGroup = null;
@@ -421,7 +442,7 @@
         let currentRouteMode = 'driving'; // driving, motorcycle, bike, foot
         let isRoutePanelOpen = false;
         let lastCalculatedRouteData = null;
-        
+
         let detectedColumns = {
             lat: null, lng: null, coord: null, title: null, category: null, city: null, subdistrict: null, splitterId: null, splitterCoord: null, streetBlockTower: null
         };
@@ -435,6 +456,14 @@
             reloadData();
             checkScreenSize();
             window.addEventListener('resize', checkScreenSize);
+
+            // Tutup dropdown suggestion saat mengklik di luar box
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#route-floating-panel')) {
+                    hideSuggestions('origin');
+                    hideSuggestions('destination');
+                }
+            });
         });
 
         function checkScreenSize() {
@@ -555,8 +584,10 @@
                         
                         detectColumnMapping();
                         processData();
-                        populateRouteSelects();
                         
+                        // Default set input asal
+                        document.getElementById('route-origin-input').value = selectedOriginData.title;
+
                         showToast('Berhasil memuat ' + rawData.length + ' baris', 'success');
                         updateStatus('Connected', 'Connected');
                     } else {
@@ -889,7 +920,7 @@
         }
 
         // =========================================================================
-        // FITUR NAVIGASI & RUTE LOKASI (OSRM API ENGINE)
+        // FITUR NAVIGASI & RUTE LOKASI (SUPPORT INPUT MANUAL, KOORDINAT & GEOCLE)
         // =========================================================================
 
         function toggleRoutePanel() {
@@ -905,30 +936,169 @@
             }
         }
 
-        function populateRouteSelects() {
-            const originSel = document.getElementById('route-origin-select');
-            const destSel = document.getElementById('route-destination-select');
+        function handleRouteInputFocus(field) {
+            const inputVal = document.getElementById(`route-${field}-input`).value;
+            renderRouteSuggestions(field, inputVal);
+        }
 
-            let optionsHtml = '<option value="my_location">📍 Lokasi Anda Saat Ini (GPS)</option>';
-            let destHtml = '<option value="">🎯 Pilih Street/Block/Tower / Jalan/Blok/Menara Tujuan...</option>';
+        function handleRouteInput(field, query) {
+            if (routeSearchTimeout) clearTimeout(routeSearchTimeout);
+            routeSearchTimeout = setTimeout(() => {
+                renderRouteSuggestions(field, query);
+            }, 150);
+        }
 
-            const sortedGeoRows = rawData.filter(r => r._hasGeo).sort((a,b) => {
-                const nameA = a[detectedColumns.streetBlockTower] || a[detectedColumns.splitterId] || '';
-                const nameB = b[detectedColumns.streetBlockTower] || b[detectedColumns.splitterId] || '';
-                return nameA.localeCompare(nameB);
+        function renderRouteSuggestions(field, query) {
+            const box = document.getElementById(`${field}-suggestions`);
+            box.classList.remove('hidden');
+
+            const trimmed = (query || '').trim();
+            const lower = trimmed.toLowerCase();
+
+            let items = [];
+
+            // 1. Opsi GPS untuk titik asal
+            if (field === 'origin') {
+                items.push({
+                    type: 'gps',
+                    title: '📍 Lokasi Anda Saat Ini (GPS)',
+                    sub: 'Gunakan koordinat dari GPS HP / perangkat',
+                    badge: 'GPS'
+                });
+            }
+
+            // 2. Deteksi jika user mengetik Format Koordinat Manual (misal: -6.4025, 106.7942)
+            const coordMatch = trimmed.match(/^\s*(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)\s*$/);
+            if (coordMatch) {
+                const lat = parseFloat(coordMatch[1]);
+                const lng = parseFloat(coordMatch[3]);
+                items.push({
+                    type: 'manual_coord',
+                    title: `📌 Koordinat Manual: ${lat}, ${lng}`,
+                    sub: 'Gunakan pasangan koordinat Lintang & Bujur ini',
+                    lat: lat,
+                    lng: lng,
+                    badge: 'KOORDINAT'
+                });
+            }
+
+            // 3. Filter berdasarkan data CSV
+            const geoRows = rawData.filter(r => r._hasGeo);
+            const matches = geoRows.filter(r => {
+                if (!lower) return true;
+                const name = String(r[detectedColumns.streetBlockTower] || '').toLowerCase();
+                const code = String(r[detectedColumns.splitterId] || '').toLowerCase();
+                const sub = String(r[detectedColumns.subdistrict] || '').toLowerCase();
+                return name.includes(lower) || code.includes(lower) || sub.includes(lower);
+            }).slice(0, 20); // Ambil 20 teratas
+
+            matches.forEach(row => {
+                const title = row[detectedColumns.streetBlockTower] || row[detectedColumns.splitterId] || `Lokasi #${row._id}`;
+                const secondary = (row[detectedColumns.streetBlockTower] && row[detectedColumns.splitterId]) ? row[detectedColumns.splitterId] : (row[detectedColumns.subdistrict] || '');
+                
+                items.push({
+                    type: 'csv',
+                    rowId: row._id,
+                    title: title,
+                    sub: secondary,
+                    lat: row._lat,
+                    lng: row._lng,
+                    badge: 'DATA'
+                });
             });
 
-            sortedGeoRows.forEach(row => {
-                const locationLabel = row[detectedColumns.streetBlockTower] || row[detectedColumns.splitterId] || `Lokasi #${row._id}`;
-                const secondaryLabel = (row[detectedColumns.streetBlockTower] && row[detectedColumns.splitterId]) ? ` (${row[detectedColumns.splitterId]})` : '';
-                const displayTitle = `${locationLabel}${secondaryLabel}`;
+            // 4. Jika mengetik teks yang tidak persis sama, beri pilihan pencarian online Nominatim (OSM)
+            if (trimmed.length >= 3 && !coordMatch) {
+                items.push({
+                    type: 'online_search',
+                    query: trimmed,
+                    title: `🔍 Cari Alamat Online: "${trimmed}"`,
+                    sub: 'Cari nama jalan/tempat publik via OpenStreetMap',
+                    badge: 'ONLINE'
+                });
+            }
 
-                optionsHtml += `<option value="${row._id}">📍 ${escapeHtml(displayTitle)}</option>`;
-                destHtml += `<option value="${row._id}">🎯 ${escapeHtml(displayTitle)}</option>`;
+            if (items.length === 0) {
+                box.innerHTML = `<div class="p-3 text-center text-slate-400">Tidak ada lokasi ditemukan</div>`;
+                return;
+            }
+
+            let html = '';
+            items.forEach((item, index) => {
+                const itemJson = escapeHtml(JSON.stringify(item));
+                html += `
+                    <div onclick="selectRouteItem('${field}', ${index})" id="${field}-item-${index}" data-info='${itemJson}' 
+                        class="p-2 hover:bg-indigo-50 cursor-pointer transition flex items-center justify-between gap-2">
+                        <div class="truncate">
+                            <div class="font-bold text-slate-800 text-xs truncate">${escapeHtml(item.title)}</div>
+                            ${item.sub ? `<div class="text-[10px] text-slate-500 truncate">${escapeHtml(item.sub)}</div>` : ''}
+                        </div>
+                        <span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-slate-100 text-slate-600 uppercase shrink-0">${item.badge}</span>
+                    </div>
+                `;
             });
 
-            originSel.innerHTML = optionsHtml;
-            destSel.innerHTML = destHtml;
+            box.innerHTML = html;
+        }
+
+        function hideSuggestions(field) {
+            const box = document.getElementById(`${field}-suggestions`);
+            if (box) box.classList.add('hidden');
+        }
+
+        function selectRouteItem(field, itemIndex) {
+            const elem = document.getElementById(`${field}-item-${itemIndex}`);
+            if (!elem) return;
+            
+            const item = JSON.parse(elem.getAttribute('data-info'));
+
+            if (item.type === 'online_search') {
+                // Lakukan Geocoding via OpenStreetMap Nominatim
+                showToast('Mencari lokasi online...', 'info');
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(item.query)}`)
+                    .then(res => res.json())
+                    .then(results => {
+                        if (results && results.length > 0) {
+                            const top = results[0];
+                            const selected = {
+                                type: 'online',
+                                title: top.display_name.split(',')[0],
+                                lat: parseFloat(top.lat),
+                                lng: parseFloat(top.lon)
+                            };
+                            applySelectedRoutePoint(field, selected);
+                        } else {
+                            showToast('Alamat tidak ditemukan online.', 'error');
+                        }
+                    })
+                    .catch(() => showToast('Gagal mencari alamat online.', 'error'));
+                hideSuggestions(field);
+                return;
+            }
+
+            applySelectedRoutePoint(field, item);
+            hideSuggestions(field);
+        }
+
+        function applySelectedRoutePoint(field, data) {
+            if (field === 'origin') {
+                selectedOriginData = data;
+                document.getElementById('route-origin-input').value = data.title;
+            } else {
+                selectedDestinationData = data;
+                document.getElementById('route-destination-input').value = data.title;
+            }
+
+            calculateRoute();
+        }
+
+        function clearRouteInput(field) {
+            document.getElementById(`route-${field}-input`).value = '';
+            if (field === 'origin') selectedOriginData = null;
+            else selectedDestinationData = null;
+            
+            clearCurrentRoute();
+            document.getElementById(`route-${field}-input`).focus();
         }
 
         function getUserGpsLocation() {
@@ -950,7 +1120,14 @@
         }
 
         function useCurrentLocationAsOrigin() {
-            document.getElementById('route-origin-select').value = 'my_location';
+            selectedOriginData = {
+                type: 'gps',
+                title: '📍 Lokasi Anda Saat Ini (GPS)',
+                lat: userGpsLocation ? userGpsLocation.lat : null,
+                lng: userGpsLocation ? userGpsLocation.lng : null
+            };
+            document.getElementById('route-origin-input').value = selectedOriginData.title;
+
             if (!userGpsLocation) {
                 getUserGpsLocation();
             }
@@ -966,49 +1143,63 @@
 
         function setDestinationAndOpenRoute(rowId) {
             if (!isRoutePanelOpen) toggleRoutePanel();
-            document.getElementById('route-destination-select').value = rowId;
-            calculateRoute();
+            
+            const row = rawData.find(r => String(r._id) === String(rowId));
+            if (row && row._hasGeo) {
+                const title = row[detectedColumns.streetBlockTower] || row[detectedColumns.splitterId] || `Lokasi #${row._id}`;
+                selectedDestinationData = {
+                    type: 'csv',
+                    rowId: row._id,
+                    title: title,
+                    lat: row._lat,
+                    lng: row._lng
+                };
+                document.getElementById('route-destination-input').value = title;
+                calculateRoute();
+            }
         }
 
         function swapRoutePoints() {
-            const originSel = document.getElementById('route-origin-select');
-            const destSel = document.getElementById('route-destination-select');
+            const originInput = document.getElementById('route-origin-input');
+            const destInput = document.getElementById('route-destination-input');
 
-            const temp = originSel.value;
-            originSel.value = destSel.value || 'my_location';
-            destSel.value = temp !== 'my_location' ? temp : '';
+            const tempVal = originInput.value;
+            originInput.value = destInput.value;
+            destInput.value = tempVal;
+
+            const tempData = selectedOriginData;
+            selectedOriginData = selectedDestinationData;
+            selectedDestinationData = tempData;
 
             calculateRoute();
         }
 
-        function getCoordinatesFromSelectVal(val) {
-            if (val === 'my_location') {
-                if (userGpsLocation) return userGpsLocation;
-                // Fallback default pusat Bogor jika GPS dimatikan
-                return { lat: -6.5971, lng: 106.7995 };
+        function resolvePointCoords(pointData) {
+            if (!pointData) return null;
+
+            if (pointData.type === 'gps') {
+                if (userGpsLocation) return { lat: userGpsLocation.lat, lng: userGpsLocation.lng, title: pointData.title };
+                return { lat: -6.5971, lng: 106.7995, title: 'Lokasi Anda (Default)' };
             }
-            const row = rawData.find(r => String(r._id) === String(val));
-            if (row && row._hasGeo) {
-                const displayTitle = row[detectedColumns.streetBlockTower] || row[detectedColumns.splitterId] || `Lokasi #${row._id}`;
-                return { lat: row._lat, lng: row._lng, title: displayTitle };
+
+            if (pointData.lat && pointData.lng) {
+                return { lat: pointData.lat, lng: pointData.lng, title: pointData.title };
             }
+
             return null;
         }
 
         function calculateRoute() {
-            const originVal = document.getElementById('route-origin-select').value;
-            const destVal = document.getElementById('route-destination-select').value;
-
-            if (!destVal) {
-                clearCurrentRoute();
+            if (!selectedDestinationData) {
+                clearCurrentRouteLines();
+                document.getElementById('route-summary-box').classList.add('hidden');
                 return;
             }
 
-            const originCoord = getCoordinatesFromSelectVal(originVal);
-            const destCoord = getCoordinatesFromSelectVal(destVal);
+            const originCoord = resolvePointCoords(selectedOriginData);
+            const destCoord = resolvePointCoords(selectedDestinationData);
 
             if (!originCoord || !destCoord) {
-                showToast('Koordinat awal / tujuan tidak valid', 'error');
                 return;
             }
 
@@ -1030,7 +1221,7 @@
                         let durationMin = Math.round(route.duration / 60);
 
                         if (currentRouteMode === 'motorcycle') {
-                            durationMin = Math.round(durationMin * 0.82); // Estimasi motor lebih cepat di kemacetan
+                            durationMin = Math.round(durationMin * 0.82);
                         }
 
                         let durationText = durationMin > 60 
@@ -1104,7 +1295,6 @@
         function clearCurrentRoute() {
             clearCurrentRouteLines();
             document.getElementById('route-summary-box').classList.add('hidden');
-            document.getElementById('route-destination-select').value = '';
             lastCalculatedRouteData = null;
         }
 
