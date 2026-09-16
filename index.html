@@ -159,7 +159,7 @@
                             <i class="fa-solid fa-map-location-dot text-2xl"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white group-hover:text-indigo-300 transition">Tampilan Peta</h3>
-                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Peta interaktif layar penuh dengan filter kecamatan, pencarian lokasi Street/Block/Tower, serta navigasi rute perjalanan presisi.</p>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Peta interaktif layar penuh dengan filter kecamatan, pencarian SplitterID instan, serta navigasi rute perjalanan presisi.</p>
                     </div>
                     <div class="mt-6 pt-4 border-t border-slate-700/80 flex items-center justify-between text-xs sm:text-sm text-indigo-400 font-extrabold">
                         <span>Buka Tampilan Peta</span>
@@ -197,7 +197,7 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-slate-900 text-xs sm:text-sm">Peta Geolokasi & Rute Navigasi</h3>
-                        <p class="text-[10px] text-slate-500">Pilih Subdistrict atau cari koordinat titik di bawah.</p>
+                        <p class="text-[10px] text-slate-500">Ketik SplitterID atau koordinat pada kolom pencarian peta.</p>
                     </div>
                 </div>
 
@@ -229,64 +229,64 @@
             <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden flex flex-col relative flex-grow">
                 
                 <!-- Google Maps Style Floating Search Bar at Top Center -->
-                <div class="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] w-[92%] max-w-[440px]">
+                <div class="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] w-[92%] max-w-[460px]">
                     <div class="bg-white/95 backdrop-blur-md rounded-full shadow-2xl border border-slate-200/80 px-4 py-2.5 flex items-center gap-3 transition-all">
-                        <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm"></i>
+                        <i class="fa-solid fa-magnifying-glass text-indigo-600 text-sm"></i>
                         <input type="text" id="map-search-bar-input" autocomplete="off"
-                            placeholder="Telusuri Street/Block/Tower atau Kordinat (Lat, Lng)..."
+                            placeholder="Cari SplitterID (mis: BGR-03-D0057) atau Koordinat..."
                             oninput="onMapSearchBarInput(this.value)"
                             onkeydown="if(event.key === 'Enter') { executeMapSearch(); }"
-                            class="w-full text-xs bg-transparent focus:outline-none font-medium text-slate-800 placeholder-slate-400">
+                            class="w-full text-xs bg-transparent focus:outline-none font-semibold text-slate-800 placeholder-slate-400">
                         
-                        <button onclick="executeMapSearch()" class="w-8 h-8 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center shrink-0 shadow transition" title="Cari / Fokus Kordinat">
+                        <button onclick="executeMapSearch()" class="w-8 h-8 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center shrink-0 shadow transition" title="Cari SplitterID / Kordinat">
                             <i class="fa-solid fa-arrow-right text-xs"></i>
                         </button>
                     </div>
 
                     <!-- Map Search Suggestion Box -->
-                    <div id="map-search-suggestions" class="absolute left-0 right-0 top-full mt-2 bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl shadow-2xl max-h-56 overflow-y-auto z-[1001] hidden p-1 divide-y divide-slate-100">
-                    <!-- Populated via JS -->
-                </div>
-            </div>
-
-            <!-- Google Maps Style Floating Routing Container -->
-            <div id="route-floating-panel" class="absolute top-20 left-4 z-[1000] w-[92%] max-w-[380px] bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 p-4 transition-all duration-300">
-                <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                    <div class="flex items-center gap-2">
-                        <div class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow">
-                            <i class="fa-solid fa-route"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-900 text-xs">Navigasi Rute Perjalanan</h4>
+                    <div id="map-search-suggestions" class="absolute left-0 right-0 top-full mt-2 bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl shadow-2xl max-h-64 overflow-y-auto z-[1001] hidden p-1 divide-y divide-slate-100">
+                        <!-- Populated via JS -->
                     </div>
-                    <button onclick="toggleRoutePanel()" class="text-slate-400 hover:text-slate-600 p-1 text-sm"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
-                <!-- Mode Selector -->
-                <div class="grid grid-cols-4 gap-1 mb-3 bg-slate-100 p-1 rounded-xl">
-                    <button onclick="setRouteMode('motorcycle')" id="mode-motorcycle" class="route-mode-btn active flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition font-semibold">
-                        <i class="fa-solid fa-motorcycle text-xs mb-0.5"></i>
-                        <span>Motor</span>
-                        <span id="time-motorcycle" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
-                    </button>
-                    <button onclick="setRouteMode('car')" id="mode-car" class="route-mode-btn flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
-                        <i class="fa-solid fa-car text-xs mb-0.5"></i>
-                        <span>Mobil</span>
-                        <span id="time-car" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
-                    </button>
-                    <button onclick="setRouteMode('bike')" id="mode-bike" class="route-mode-btn flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
-                        <i class="fa-solid fa-bicycle text-xs mb-0.5"></i>
-                        <span>Sepeda</span>
-                        <span id="time-bike" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
-                    </button>
-                    <button onclick="setRouteMode('foot')" id="mode-foot" class="route-mode-btn flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
-                        <i class="fa-solid fa-person-walking text-xs mb-0.5"></i>
-                        <span>Jalan</span>
-                        <span id="time-foot" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
-                    </button>
-                </div>
+                <!-- Google Maps Style Floating Routing Container -->
+                <div id="route-floating-panel" class="absolute top-20 left-4 z-[1000] w-[92%] max-w-[380px] bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 p-4 transition-all duration-300 hidden">
+                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow">
+                                <i class="fa-solid fa-route"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-xs">Navigasi Rute Perjalanan</h4>
+                        </div>
+                        <button onclick="toggleRoutePanel()" class="text-slate-400 hover:text-slate-600 p-1 text-sm"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
 
-                <!-- Route Input Form with Manual Text Typing for Street/Block/Tower -->
-                <div class="flex items-center gap-2 relative">
+                    <!-- Mode Selector -->
+                    <div class="grid grid-cols-4 gap-1 mb-3 bg-slate-100 p-1 rounded-xl">
+                        <button onclick="setRouteMode('motorcycle')" id="mode-motorcycle" class="route-mode-btn active flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition font-semibold">
+                            <i class="fa-solid fa-motorcycle text-xs mb-0.5"></i>
+                            <span>Motor</span>
+                            <span id="time-motorcycle" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
+                        </button>
+                        <button onclick="setRouteMode('car')" id="mode-car" class="route-mode-btn flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
+                            <i class="fa-solid fa-car text-xs mb-0.5"></i>
+                            <span>Mobil</span>
+                            <span id="time-car" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
+                        </button>
+                        <button onclick="setRouteMode('bike')" id="mode-bike" class="route-mode-btn flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
+                            <i class="fa-solid fa-bicycle text-xs mb-0.5"></i>
+                            <span>Sepeda</span>
+                            <span id="time-bike" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
+                        </button>
+                        <button onclick="setRouteMode('foot')" id="mode-foot" class="route-mode-btn flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
+                            <i class="fa-solid fa-person-walking text-xs mb-0.5"></i>
+                            <span>Jalan</span>
+                            <span id="time-foot" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
+                        </button>
+                    </div>
+
+                    <!-- Route Input Form with Manual Text Typing for Street/Block/Tower -->
+                    <div class="flex items-center gap-2 relative">
                         <div class="flex flex-col items-center justify-between h-16 py-2 shrink-0">
                             <div class="w-2.5 h-2.5 rounded-full border-2 border-indigo-600 bg-white"></div>
                             <div class="w-0.5 flex-1 bg-slate-300 my-0.5"></div>
@@ -306,7 +306,7 @@
                             <!-- Manual Text Input for Street/Block/Tower -->
                             <div class="relative">
                                 <input type="text" id="route-destination-input" autocomplete="off"
-                                    placeholder="Ketik Street/Block/Tower..." 
+                                    placeholder="Ketik SplitterID atau Lokasi..." 
                                     oninput="onDestinationInputType(this.value)"
                                     onkeydown="if(event.key === 'Enter') { calculateAndDisplayRoute(); }"
                                     class="w-full text-xs p-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none font-medium truncate">
@@ -437,6 +437,7 @@
         let currentOriginCoord = { lat: -6.5950, lng: 106.8166 };
         let currentDestinationCoord = { lat: -6.58, lng: 106.81 };
         let selectedTargetItemId = null;
+        let activeSearchMarker = null;
 
         const subdistrictColors = {
             'CIBINONG': '#3b82f6',
@@ -701,13 +702,13 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251,-6.3938,106.8255`;
 
             const q = query.toLowerCase();
             const matches = rawData.filter(item => 
-                item.streetBlockTower.toLowerCase().includes(q) || 
                 item.splitterid.toLowerCase().includes(q) ||
+                item.streetBlockTower.toLowerCase().includes(q) || 
                 item.subdistrict.toLowerCase().includes(q)
             ).slice(0, 15);
 
             if(matches.length === 0) {
-                box.innerHTML = `<div class="p-2.5 text-xs text-slate-400">Tidak ditemukan lokasi yang cocok.</div>`;
+                box.innerHTML = `<div class="p-2.5 text-xs text-slate-400">SplitterID tidak ditemukan.</div>`;
                 box.classList.remove('hidden');
                 return;
             }
@@ -715,9 +716,9 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251,-6.3938,106.8255`;
             let html = '';
             matches.forEach(item => {
                 html += `
-                    <div onclick="selectDestinationSuggestion('${item.id}', '${item.streetBlockTower.replace(/'/g, "\\'")}')" class="p-2.5 hover:bg-indigo-50 cursor-pointer border-b border-slate-100 text-xs transition">
-                        <div class="font-bold text-slate-800">${item.streetBlockTower}</div>
-                        <div class="text-[10px] text-indigo-600 font-semibold">${item.splitterid} • <span class="text-slate-500">${item.subdistrict}</span></div>
+                    <div onclick="selectDestinationSuggestion('${item.id}', '${item.splitterid.replace(/'/g, "\\'")}')" class="p-2.5 hover:bg-indigo-50 cursor-pointer border-b border-slate-100 text-xs transition">
+                        <div class="font-bold text-indigo-600">${item.splitterid}</div>
+                        <div class="text-[10px] text-slate-600">${item.streetBlockTower} • <span class="text-slate-500">${item.subdistrict}</span></div>
                     </div>
                 `;
             });
@@ -750,14 +751,15 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251,-6.3938,106.8255`;
                 return;
             }
 
+            // Prioritize SplitterID and street matches
             const matches = rawData.filter(item => 
-                item.streetBlockTower.toLowerCase().includes(q) || 
                 item.splitterid.toLowerCase().includes(q) ||
+                item.streetBlockTower.toLowerCase().includes(q) || 
                 item.subdistrict.toLowerCase().includes(q)
-            ).slice(0, 10);
+            ).slice(0, 12);
 
             if(matches.length === 0) {
-                box.innerHTML = `<div class="p-3 text-xs text-slate-400">Tidak ditemukan Street/Block/Tower atau koordinat. Tekan Enter untuk mencari.</div>`;
+                box.innerHTML = `<div class="p-3 text-xs text-slate-400">SplitterID tidak ditemukan. Tekan Enter untuk mencari.</div>`;
                 box.classList.remove('hidden');
                 return;
             }
@@ -766,8 +768,8 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251,-6.3938,106.8255`;
             matches.forEach(item => {
                 html += `
                     <div onclick="selectMapSearchItem('${item.id}')" class="p-2.5 hover:bg-indigo-50 cursor-pointer text-xs rounded-xl transition">
-                        <div class="font-bold text-slate-800"><i class="fa-solid fa-map-pin text-indigo-600 mr-1.5"></i> ${item.streetBlockTower}</div>
-                        <div class="text-[10px] text-slate-500 pl-5">${item.splitterid} • <span class="font-semibold text-indigo-600">${item.subdistrict}</span></div>
+                        <div class="font-bold text-indigo-600"><i class="fa-solid fa-network-wired text-indigo-500 mr-1.5"></i> ${item.splitterid}</div>
+                        <div class="text-[10px] text-slate-600 pl-5">${item.streetBlockTower} • <span class="font-semibold text-slate-500">${item.subdistrict}</span></div>
                     </div>
                 `;
             });
@@ -778,7 +780,7 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251,-6.3938,106.8255`;
         function selectMapSearchItem(id) {
             const item = rawData.find(d => d.id === id);
             if(!item) return;
-            document.getElementById('map-search-bar-input').value = item.streetBlockTower;
+            document.getElementById('map-search-bar-input').value = item.splitterid;
             document.getElementById('map-search-suggestions').classList.add('hidden');
             selectItemOnMap(id);
         }
@@ -814,16 +816,17 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251,-6.3938,106.8255`;
                 }
             }
 
-            // Otherwise search matching text in rawData
+            // Exact or partial match for SplitterID first, then streetBlockTower
             const found = rawData.find(d => 
-                d.streetBlockTower.toLowerCase().includes(val.toLowerCase()) || 
-                d.splitterid.toLowerCase().includes(val.toLowerCase())
+                d.splitterid.toLowerCase() === val.toLowerCase() ||
+                d.splitterid.toLowerCase().includes(val.toLowerCase()) ||
+                d.streetBlockTower.toLowerCase().includes(val.toLowerCase())
             );
 
             if(found) {
                 selectItemOnMap(found.id);
             } else {
-                showToast("Lokasi atau koordinat tidak ditemukan.");
+                showToast("SplitterID tidak ditemukan di database.");
             }
         }
 
@@ -838,24 +841,31 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251,-6.3938,106.8255`;
             if(!item) return;
 
             selectedTargetItemId = item.id;
+            document.getElementById('map-search-bar-input').value = item.splitterid;
             document.getElementById('route-destination-input').value = `${item.streetBlockTower} (${item.splitterid})`;
             currentDestinationCoord = { lat: item.lat, lng: item.lng };
 
             if(item.lat && item.lng) {
-                map.setView([item.lat, item.lng], 16, { animate: true });
+                map.setView([item.lat, item.lng], 18, { animate: true });
                 
                 if(destMarker) map.removeLayer(destMarker);
                 destMarker = L.marker([item.lat, item.lng], {
                     icon: L.divIcon({
                         className: 'custom-dest-marker',
-                        html: `<div style="background-color: #e11d48; width: 24px; height: 24px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; color:white; font-size:10px;"><i class="fa-solid fa-bullseye"></i></div>`,
-                        iconSize: [24, 24],
-                        iconAnchor: [12, 12]
+                        html: `<div style="background-color: #e11d48; width: 28px; height: 28px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 4px 15px rgba(225,29,72,0.6); display:flex; align-items:center; justify-content:center; color:white; font-size:12px; animation: pulse 1.5s infinite;"><i class="fa-solid fa-crosshairs"></i></div>`,
+                        iconSize: [28, 28],
+                        iconAnchor: [14, 14]
                     })
-                }).addTo(map).bindPopup(`<b>${item.streetBlockTower}</b><br>SplitterID: ${item.splitterid}<br>Subdistrict: ${item.subdistrict}`);
+                }).addTo(map).bindPopup(`
+                    <div class="p-1 space-y-1">
+                        <div class="font-extrabold text-indigo-600 text-sm">${item.splitterid}</div>
+                        <div class="text-xs font-bold text-slate-800">${item.streetBlockTower}</div>
+                        <div class="text-[11px] text-slate-500">Subdistrict: <span class="font-semibold text-slate-700">${item.subdistrict}</span></div>
+                        <div class="text-[10px] font-mono text-slate-400">Lat/Lng: ${item.lat}, ${item.lng}</div>
+                    </div>
+                `).openPopup();
             }
-            showToast(`Dipilih: ${item.streetBlockTower} (${item.splitterid})`);
-            calculateAndDisplayRoute();
+            showToast(`SplitterID ditemukan: ${item.splitterid}`);
         }
 
         function renderFullDataTable() {
@@ -937,7 +947,7 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251,-6.3938,106.8255`;
             const destLng = currentDestinationCoord.lng;
 
             if(!destLat || !destLng) {
-                showToast("Pilih atau ketik Street/Block/Tower terlebih dahulu!");
+                showToast("Pilih atau ketik SplitterID terlebih dahulu!");
                 return;
             }
 
