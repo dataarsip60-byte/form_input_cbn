@@ -374,6 +374,7 @@
                             <th class="p-3 bg-slate-100">Street/Block/Tower / Jalan/Blok/Menara</th>
                             <th class="p-3 bg-slate-100">SplitterID</th>
                             <th class="p-3 bg-slate-100">SplitterDistributionCoordinate</th>
+                            <th class="p-3 bg-slate-100">HomepassCoordinate</th>
                             <th class="p-3 bg-slate-100 text-center">Aksi di Peta</th>
                         </tr>
                     </thead>
@@ -581,12 +582,12 @@
 
         function loadFallbackData() {
             document.getElementById('refresh-icon').classList.remove('fa-spin');
-            const sampleCSV = `subdistrict,streetBlockTower,splitterid,koordinat
-BOGOR UTARA,Jl. Kemang Raya,BGR01 D008 M14 S1,-6.5612,106.8021
-CIBINONG,Perum Cikaret,CBI-04-D016,-6.4712,106.8323
-SUKMAJAYA,Jl. Juanda,SKJ-01-D002,-6.4050,106.8366
-CILODONG,Jl. Grand Depok,CLD-01-D001,-6.4180,106.8485
-PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
+            const sampleCSV = `subdistrict,streetBlockTower,splitterid,koordinat,homepassCoordinate
+BOGOR UTARA,Jl. Kemang Raya,BGR01 D008 M14 S1,-6.5612,106.8021,-6.5615,106.8025
+CIBINONG,Perum Cikaret,CBI-04-D016,-6.4712,106.8323,-6.4715,106.8327
+SUKMAJAYA,Jl. Juanda,SKJ-01-D002,-6.4050,106.8366,-6.4053,106.8370
+CILODONG,Jl. Grand Depok,CLD-01-D001,-6.4180,106.8485,-6.4184,106.8489
+PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251,-6.3938,106.8255`;
             
             Papa.parse(sampleCSV, {
                 header: true,
@@ -614,13 +615,16 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
                     lngVal = parseFloat(parts[1].trim());
                 }
 
+                const homepassStr = row.homepassCoordinate || row.HOMEPASSCOORDINATE || row['HomepassCoordinate'] || row['Homepass Coordinate'] || '';
+
                 rawData.push({
                     id: 'fat_' + index,
                     subdistrict: sub || 'BOGOR UTARA',
                     streetBlockTower: street || '-',
                     splitterid: split || 'SPLITTER-' + index,
                     lat: isNaN(latVal) ? -6.56 + (Math.random() * 0.04) : latVal,
-                    lng: isNaN(lngVal) ? 106.80 + (Math.random() * 0.04) : lngVal
+                    lng: isNaN(lngVal) ? 106.80 + (Math.random() * 0.04) : lngVal,
+                    homepassCoordinate: homepassStr
                 });
             });
 
@@ -863,12 +867,14 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
                 !searchVal || 
                 item.splitterid.toLowerCase().includes(searchVal) ||
                 item.subdistrict.toLowerCase().includes(searchVal) ||
-                item.streetBlockTower.toLowerCase().includes(searchVal)
+                item.streetBlockTower.toLowerCase().includes(searchVal) ||
+                (item.homepassCoordinate && item.homepassCoordinate.toLowerCase().includes(searchVal))
             );
 
             let html = '';
             list.forEach((item, index) => {
                 const coordStr = `${item.lat.toFixed(5)}, ${item.lng.toFixed(5)}`;
+                const homepassStr = item.homepassCoordinate ? item.homepassCoordinate : '-';
                 html += `
                     <tr class="hover:bg-slate-50 transition">
                         <td class="p-3 font-medium text-slate-500">${index + 1}</td>
@@ -876,6 +882,7 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
                         <td class="p-3 text-slate-700 font-medium">${item.streetBlockTower}</td>
                         <td class="p-3 font-bold text-indigo-600">${item.splitterid}</td>
                         <td class="p-3 font-mono text-slate-500">${coordStr}</td>
+                        <td class="p-3 font-mono text-slate-500">${homepassStr}</td>
                         <td class="p-3 text-center">
                             <button onclick="jumpToMapItem('${item.id}')" class="px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl text-xs font-bold transition shadow-sm">
                                 <i class="fa-solid fa-map-pin"></i> Lihat di Peta
@@ -1037,9 +1044,9 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
         }
 
         function exportToCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,Subdistrict,Street/Block/Tower / Jalan/Blok/Menara,SplitterID,SplitterDistributionCoordinate\n";
+            let csvContent = "data:text/csv;charset=utf-8,Subdistrict,Street/Block/Tower / Jalan/Blok/Menara,SplitterID,SplitterDistributionCoordinate,HomepassCoordinate\n";
             rawData.forEach(item => {
-                csvContent += `"${item.subdistrict}","${item.streetBlockTower}","${item.splitterid}","${item.lat},${item.lng}"\n`;
+                csvContent += `"${item.subdistrict}","${item.streetBlockTower}","${item.splitterid}","${item.lat},${item.lng}","${item.homepassCoordinate || ''}"\n`;
             });
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
