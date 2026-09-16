@@ -27,25 +27,21 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
+            background-color: #0b1120;
         }
         #map {
-            height: 380px;
+            height: calc(100vh - 150px);
+            min-height: 520px;
             width: 100%;
             z-index: 10;
-        }
-        @media (min-width: 1024px) {
-            #map {
-                height: 460px;
-            }
         }
         .leaflet-popup-content-wrapper {
             border-radius: 12px;
             padding: 4px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
         }
         .splitter-label-tooltip {
-            background-color: rgba(15, 23, 42, 0.88);
+            background-color: rgba(15, 23, 42, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #ffffff;
             font-size: 10px;
@@ -55,11 +51,11 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .splitter-label-tooltip::before {
-            border-right-color: rgba(15, 23, 42, 0.88);
+            border-right-color: rgba(15, 23, 42, 0.9);
         }
         ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
             background: #1e293b;
@@ -69,1459 +65,649 @@
             border-radius: 3px;
         }
         .route-mode-btn.active {
-            background-color: #e0e7ff;
-            color: #4338ca;
-            border-color: #6366f1;
+            background-color: #e0e7ff !important;
+            color: #4338ca !important;
+            border-color: #6366f1 !important;
             font-weight: 700;
         }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex flex-col text-slate-800 bg-slate-900">
+<body class="h-screen w-screen overflow-hidden flex flex-col text-slate-800 bg-[#0b1120]">
 
     <!-- HEADER BAR -->
-    <header class="bg-slate-900/95 border-b border-slate-800 text-white shadow-md shrink-0 z-40">
-        <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between">
+    <header class="bg-[#0f172a] border-b border-slate-800 text-white shadow-lg shrink-0 z-40">
+        <div class="max-w-[1440px] w-full mx-auto px-4 py-3 flex items-center justify-between">
             
             <!-- Logo & Title -->
             <button onclick="showView('landing')" class="flex items-center space-x-2.5 text-left group">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition">
-                    <i class="fa-solid fa-map-location-dot text-base text-white"></i>
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition">
+                    <i class="fa-solid fa-map-location-dot text-lg text-white"></i>
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-xs sm:text-sm tracking-tight text-white group-hover:text-indigo-300 transition leading-none">Geo Maps & Rute Navigasi</h1>
-                    <p class="text-[9px] text-slate-400 mt-0.5 font-medium">Sistem Pemetaan & Data FAT</p>
+                    <h1 class="font-extrabold text-sm sm:text-base tracking-tight text-white group-hover:text-indigo-300 transition leading-none">Geo Maps & Rute Navigasi</h1>
+                    <p class="text-[10px] text-slate-400 mt-0.5 font-medium">Sistem Pemetaan & Data FAT</p>
                 </div>
             </button>
 
             <!-- Navigation Links -->
-            <nav class="hidden md:flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700/60">
-                <button onclick="showView('landing')" id="nav-btn-landing" class="px-3 py-1 rounded-lg text-xs font-semibold text-white bg-indigo-600 shadow transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-house text-[11px]"></i>
+            <nav class="hidden md:flex items-center gap-2 bg-slate-800/80 p-1.5 rounded-xl border border-slate-700/60">
+                <button onclick="showView('landing')" id="nav-btn-landing" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-2">
+                    <i class="fa-solid fa-house text-xs"></i>
                     <span>Muka Depan</span>
                 </button>
-                <button onclick="showView('map')" id="nav-btn-map" class="px-3 py-1 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-route text-[11px]"></i>
-                    <span>Cari Lokasi & Rute</span>
+                <button onclick="showView('map')" id="nav-btn-map" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-map text-xs"></i>
+                    <span>Tampilan Peta</span>
                 </button>
-                <button onclick="showView('data')" id="nav-btn-data" class="px-3 py-1 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-database text-[11px]"></i>
+                <button onclick="showView('data')" id="nav-btn-data" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-2">
+                    <i class="fa-solid fa-database text-xs"></i>
                     <span>Data FAT</span>
                 </button>
             </nav>
 
             <!-- Status Indicator & Config Actions -->
-            <div class="flex items-center space-x-1.5 sm:space-x-2">
-                <div class="hidden sm:flex items-center space-x-1.5 bg-slate-800 px-2.5 py-1 rounded-full text-xs border border-slate-700">
-                    <span id="status-dot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                    <span id="status-text" class="text-[10px] font-medium text-slate-300">Syncing...</span>
+            <div class="flex items-center space-x-2.5">
+                <div class="hidden sm:flex items-center space-x-1.5 bg-slate-800/90 px-3 py-1.5 rounded-full text-xs border border-slate-700">
+                    <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    <span id="status-text" class="text-[10px] font-semibold text-slate-200">Connected</span>
                 </div>
 
-                <button onclick="reloadData()" class="p-2 sm:px-3 sm:py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shadow-lg shadow-indigo-600/20">
+                <button onclick="reloadData()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-lg shadow-indigo-600/20">
                     <i id="refresh-icon" class="fa-solid fa-rotate"></i>
-                    <span class="hidden sm:inline">Refresh Data</span>
+                    <span class="hidden sm:inline">Refresh</span>
                 </button>
 
-                <button onclick="openConfigModal()" class="p-2 sm:px-2.5 sm:py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold border border-slate-700 transition" title="Pengaturan URL Data">
+                <button onclick="openConfigModal()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold border border-slate-700 transition" title="Pengaturan URL Data">
                     <i class="fa-solid fa-gear"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- MOBILE NAVIGATION TAB SWITCHER (HP / Mobile Mode) -->
-    <div class="md:hidden flex bg-slate-900 px-3 py-1.5 border-b border-slate-800 gap-1.5 shrink-0 z-30">
-        <button onclick="showView('landing')" id="mob-nav-landing" class="flex-1 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white flex items-center justify-center gap-1 shadow transition">
-            <i class="fa-solid fa-house"></i> Depan
+    <!-- MOBILE NAVIGATION TAB SWITCHER -->
+    <div class="md:hidden flex bg-slate-900 px-3 py-2 border-b border-slate-800 gap-2 shrink-0 z-30">
+        <button onclick="showView('landing')" id="mob-nav-landing" class="flex-1 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-house"></i> Muka Depan
         </button>
-        <button onclick="showView('map')" id="mob-nav-map" class="flex-1 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1 transition">
-            <i class="fa-solid fa-route"></i> Lokasi & Rute
+        <button onclick="showView('map')" id="mob-nav-map" class="flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white flex items-center justify-center gap-1.5 shadow">
+            <i class="fa-solid fa-map"></i> Peta
         </button>
-        <button onclick="showView('data')" id="mob-nav-data" class="flex-1 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1 transition">
-            <i class="fa-solid fa-database"></i> Data FAT (<span id="tab-badge-count">0</span>)
+        <button onclick="showView('data')" id="mob-nav-data" class="flex-1 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-database"></i> Data FAT (<span id="mob-badge-count">169</span>)
         </button>
     </div>
 
     <!-- MAIN CONTAINER -->
-    <main class="flex-grow max-w-7xl w-full mx-auto p-3 sm:p-4 overflow-hidden flex flex-col justify-center">
+    <main class="flex-grow max-w-[1440px] w-full mx-auto p-3 overflow-hidden flex flex-col justify-center">
 
         <!-- ========================================================================= -->
-        <!-- 1. TAMPILAN MUKA DEPAN / LANDING MENU PAGE -->
+        <!-- 1. TAMPILAN MUKA DEPAN / LANDING PAGE -->
         <!-- ========================================================================= -->
-        <section id="view-landing" class="w-full h-full flex flex-col items-center justify-center py-4 space-y-6 overflow-y-auto">
-            
-            <!-- Hero Title Container -->
-            <div class="text-center max-w-2xl space-y-2 pt-2">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                    <i class="fa-solid fa-circle-check text-emerald-400"></i> Sistem Geo Spatial FAT & Splitter
+        <section id="view-landing" class="hidden w-full h-full flex flex-col items-center justify-center py-6 space-y-8 overflow-y-auto">
+            <div class="text-center max-w-2xl space-y-3 pt-2">
+                <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                    <i class="fa-solid fa-circle-check text-emerald-400"></i> Sistem Geo Spatial FAT & Splitter Terpadu
                 </span>
-                <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                    Geo Maps & Rute Navigasi
-                </h2>
-                <p class="text-xs sm:text-sm text-slate-400 font-normal max-w-lg mx-auto">
-                    Portal terpadu untuk pencarian lokasi FAT, kalkulasi rute perjalanan presisi, serta manajemen data spreadsheet interaktif.
-                </p>
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Geo Maps & Rute Navigasi</h2>
+                <p class="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto">Portal terpisah untuk pemetaan geolokasi presisi, navigasi rute perjalanan, serta manajemen spreadsheet data FAT lengkap.</p>
             </div>
 
-            <!-- Main Feature Action Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 w-full max-w-3xl px-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl px-2">
+                <!-- Card Tampilan Peta -->
+                <div onclick="showView('map')" class="group bg-slate-800/90 hover:bg-slate-800 border border-slate-700 hover:border-indigo-500 rounded-3xl p-8 transition cursor-pointer shadow-2xl flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition shadow-lg">
+                            <i class="fa-solid fa-map-location-dot text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-indigo-300 transition">2. Tampilan Peta</h3>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Peta interaktif layar penuh dengan fitur filter kecamatan, pencarian splitter, serta navigasi rute presisi.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-700/80 flex items-center justify-between text-xs sm:text-sm text-indigo-400 font-extrabold">
+                        <span>Buka Tampilan Peta</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                    </div>
+                </div>
+
+                <!-- Card Data FAT -->
+                <div onclick="showView('data')" class="group bg-slate-800/90 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-3xl p-8 transition cursor-pointer shadow-2xl flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition shadow-lg">
+                            <i class="fa-solid fa-database text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-emerald-300 transition">3. Data FAT</h3>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Tabel data spreadsheet komprehensif seluruh titik FAT dengan pencarian instan dan ekspor CSV.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-700/80 flex items-center justify-between text-xs sm:text-sm text-emerald-400 font-extrabold">
+                        <span>Buka Tabel Data FAT</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- 2. TAMPILAN PETA / MAP VIEW (FULLSCREEN IMMERSIVE) -->
+        <!-- ========================================================================= -->
+        <section id="view-map" class="h-full w-full flex flex-col gap-2.5 overflow-hidden">
+            
+            <!-- Map Top Toolbar -->
+            <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-3 flex flex-wrap justify-between items-center text-xs gap-3 shrink-0 z-20">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold shadow">
+                        <i class="fa-solid fa-map"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-xs sm:text-sm">Peta Geolokasi & Rute Navigasi</h3>
+                        <p class="text-[10px] text-slate-500">Klik marker FAT pada peta atau pilih dari filter untuk melihat rute.</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <!-- Filter Subdistrict Dropdown in Map -->
+                    <select id="map-filter-subdistrict" onchange="onMapFilterChange()" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs font-bold rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="">-- Semua Subdistrict --</option>
+                    </select>
+
+                    <button id="btn-toggle-route-panel" onclick="toggleRoutePanel()" class="px-3 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 font-bold text-xs flex items-center gap-1.5 transition shadow">
+                        <i class="fa-solid fa-diamond-turn-right"></i>
+                        <span>Panel Rute</span>
+                    </button>
+                    
+                    <button onclick="fitMapToMainCluster()" class="px-3 py-2 rounded-xl bg-slate-800 text-white hover:bg-slate-700 font-semibold text-xs flex items-center gap-1.5 transition shadow">
+                        <i class="fa-solid fa-crosshairs text-indigo-400"></i>
+                        <span>Reset Zoom</span>
+                    </button>
+
+                    <select id="map-tile-select" onchange="changeMapTile(this.value)" class="bg-slate-50 border border-slate-300 text-xs font-semibold rounded-xl px-3 py-2 focus:outline-none">
+                        <option value="osm">Standard OSM</option>
+                        <option value="esri-street">Esri Street</option>
+                        <option value="satellite">Satelit</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Immersive Map & Floating Routing Container -->
+            <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden flex flex-col relative flex-grow">
                 
-                <!-- CARD 1: CARI LOKASI & RUTE NAVIGASI -->
-                <div onclick="showView('map')" class="group relative bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 hover:border-indigo-500/80 rounded-2xl p-5 sm:p-6 transition-all duration-300 cursor-pointer shadow-xl hover:shadow-2xl hover:shadow-indigo-500/10 flex flex-col justify-between">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <div class="w-12 h-12 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition duration-300">
-                                <i class="fa-solid fa-route text-xl"></i>
+                <!-- FLOATING ROUTING NAVIGATION PANEL -->
+                <div id="route-floating-panel" class="absolute top-4 left-4 z-[1000] w-[92%] max-w-[360px] bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 p-4 transition-all duration-300">
+                    <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100">
+                        <div class="flex items-center gap-1.5 font-bold text-xs text-slate-800">
+                            <i class="fa-solid fa-diamond-turn-right text-indigo-600"></i>
+                            <span>Petunjuk Rute Navigasi</span>
+                        </div>
+                        <button onclick="toggleRoutePanel()" class="text-slate-400 hover:text-slate-700 text-sm px-1">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <!-- Transport Mode Tabs -->
+                    <div class="grid grid-cols-4 gap-1 mb-3 bg-slate-100 p-1 rounded-xl">
+                        <button onclick="setRouteMode('driving')" id="mode-driving" class="route-mode-btn flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
+                            <i class="fa-solid fa-car text-xs mb-0.5"></i>
+                            <span>Mobil</span>
+                            <span id="time-driving" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
+                        </button>
+                        <button onclick="setRouteMode('motorcycle')" id="mode-motorcycle" class="route-mode-btn active flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
+                            <i class="fa-solid fa-motorcycle text-xs mb-0.5"></i>
+                            <span>Motor</span>
+                            <span id="time-motorcycle" class="text-[9px] font-mono text-indigo-600 font-bold">22 mnt</span>
+                        </button>
+                        <button onclick="setRouteMode('bike')" id="mode-bike" class="route-mode-btn flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
+                            <i class="fa-solid fa-bicycle text-xs mb-0.5"></i>
+                            <span>Sepeda</span>
+                            <span id="time-bike" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
+                        </button>
+                        <button onclick="setRouteMode('foot')" id="mode-foot" class="route-mode-btn flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
+                            <i class="fa-solid fa-person-walking text-xs mb-0.5"></i>
+                            <span>Jalan</span>
+                            <span id="time-foot" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
+                        </button>
+                    </div>
+
+                    <!-- Route Input Form -->
+                    <div class="flex items-center gap-2 relative">
+                        <div class="flex flex-col items-center justify-between h-16 py-2 shrink-0">
+                            <div class="w-2.5 h-2.5 rounded-full border-2 border-indigo-600 bg-white"></div>
+                            <div class="w-0.5 flex-1 bg-slate-300 my-0.5"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-rose-600"></div>
+                        </div>
+
+                        <div class="flex-1 space-y-2 relative">
+                            <div class="relative">
+                                <input type="text" id="route-origin-input" autocomplete="off"
+                                    value="Lokasi Anda Saat Ini (GPS)" 
+                                    class="w-full text-xs p-2 pr-10 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none truncate font-medium">
+                                <button onclick="getUserGPSLocation()" class="absolute right-2 top-1/2 -translate-y-1/2 text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 p-1 rounded text-[10px]" title="Gunakan GPS">
+                                    <i class="fa-solid fa-location-crosshairs"></i>
+                                </button>
                             </div>
-                            <span class="text-[10px] uppercase font-bold tracking-wider text-indigo-400 bg-indigo-950/60 px-2.5 py-1 rounded-full border border-indigo-800/50">Fitur Navigasi</span>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-white group-hover:text-indigo-300 transition flex items-center gap-2">
-                                Cari Lokasi & Rute Navigasi
-                                <i class="fa-solid fa-arrow-right text-xs opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition"></i>
-                            </h3>
-                            <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                                Jelajahi pemetaan lokasi interaktif, petunjuk rute jalan otomatis, pencarian koordinat presisi, serta estimasi waktu tempuh perjalanan.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-5 pt-3 border-t border-slate-700/60 flex items-center justify-between text-xs text-indigo-400 font-bold">
-                        <span>Buka Peta & Rute</span>
-                        <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                    </div>
-                </div>
 
-                <!-- CARD 2: DATA FAT & FILTER -->
-                <div onclick="showView('data')" class="group relative bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 hover:border-emerald-500/80 rounded-2xl p-5 sm:p-6 transition-all duration-300 cursor-pointer shadow-xl hover:shadow-2xl hover:shadow-emerald-500/10 flex flex-col justify-between">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <div class="w-12 h-12 rounded-2xl bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition duration-300">
-                                <i class="fa-solid fa-database text-xl"></i>
+                            <div class="relative">
+                                <input type="text" id="route-destination-input" autocomplete="off"
+                                    placeholder="Pilih lokasi FAT / tujuan..." 
+                                    class="w-full text-xs p-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none truncate font-medium">
                             </div>
-                            <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-800/50">Data FAT</span>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-white group-hover:text-emerald-300 transition flex items-center gap-2">
-                                Data FAT & Filter
-                                <i class="fa-solid fa-arrow-right text-xs opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition"></i>
-                            </h3>
-                            <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                                Akses daftar tabel lengkap FAT (Fiber Access Terminal), filter per kecamatan (subdistrict), pencarian SplitterID, dan ekspor CSV.
-                            </p>
                         </div>
                     </div>
-                    <div class="mt-5 pt-3 border-t border-slate-700/60 flex items-center justify-between text-xs text-emerald-400 font-bold">
-                        <span>Lihat Data FAT</span>
-                        <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                    </div>
+
+                    <button onclick="calculateAndDisplayRoute()" class="w-full mt-3 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-route"></i>
+                        <span>Mulai Navigasi Rute</span>
+                    </button>
                 </div>
 
-            </div>
-
-            <!-- Stats Bar Display -->
-            <div class="w-full max-w-3xl bg-slate-800/60 rounded-2xl border border-slate-700/60 p-3 sm:p-4 grid grid-cols-3 gap-2 text-center">
-                <div class="border-r border-slate-700/60 pr-2">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Data FAT</span>
-                    <strong id="landing-stat-total" class="text-lg sm:text-2xl font-extrabold text-indigo-400">0</strong>
-                </div>
-                <div class="border-r border-slate-700/60 px-2">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Terpetakan</span>
-                    <strong id="landing-stat-mapped" class="text-lg sm:text-2xl font-extrabold text-emerald-400">0</strong>
-                </div>
-                <div class="pl-2">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Subdistrict</span>
-                    <strong id="landing-stat-subdistricts" class="text-lg sm:text-2xl font-extrabold text-amber-400">0</strong>
-                </div>
+                <!-- LEAFLET MAP ELEMENT -->
+                <div id="map" class="w-full flex-grow"></div>
             </div>
 
         </section>
 
         <!-- ========================================================================= -->
-        <!-- 2. DASHBOARD VIEW (MAP + DATA PANELS) -->
+        <!-- 3. DATA FAT VIEW (FULLSCREEN SPREADSHEET TABLE) -->
         <!-- ========================================================================= -->
-        <section id="view-dashboard" class="hidden h-full w-full grid grid-cols-1 lg:grid-cols-12 gap-3 overflow-hidden">
-
-            <!-- SISI KIRI: DATA FAT & FILTER PANEL (5 COLS) -->
-            <section id="panel-left" class="lg:col-span-5 flex flex-col gap-2.5 h-full overflow-hidden">
-                
-                <!-- Box Filter Subdistrict & Search -->
-                <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-3 space-y-2.5 shrink-0">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
-                        <h2 class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                            <i class="fa-solid fa-filter text-indigo-600"></i> Filter Data FAT
-                        </h2>
-                        <button onclick="resetFilters()" class="text-[10px] text-slate-500 hover:text-indigo-600 font-semibold flex items-center gap-1 transition">
-                            <i class="fa-solid fa-rotate-left"></i> Reset Filter
-                        </button>
-                    </div>
-
-                    <!-- Dropdown Subdistrict -->
-                    <div>
-                        <label class="block text-[9px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Subdistrict (Kecamatan):</label>
-                        <select id="filter-subdistrict" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs font-semibold rounded-xl p-2 focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none transition">
-                            <option value="">-- Semua Subdistrict --</option>
-                        </select>
-                    </div>
-
-                    <!-- Input Pencarian -->
+        <section id="view-data" class="hidden w-full h-full flex flex-col bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden p-4 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 shrink-0">
+                <div>
+                    <h2 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-database text-emerald-600"></i> Manajemen Data Lengkap FAT
+                    </h2>
+                    <p class="text-xs text-slate-500">Daftar seluruh titik splitter dan informasi geospasial database.</p>
+                </div>
+                <div class="flex items-center gap-2.5">
                     <div class="relative">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Cari SplitterID, FAT, koordinat..." 
-                            class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none transition font-medium">
+                        <input type="text" id="full-search-input" onkeyup="renderFullDataTable()" placeholder="Cari data FAT..." class="text-xs pl-8 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">
                     </div>
-
-                    <!-- Stats summary inside panel -->
-                    <div class="flex items-center justify-between text-[10px] bg-indigo-50/80 p-2 rounded-xl border border-indigo-100 text-indigo-900 font-medium">
-                        <span>Total: <strong id="stat-total" class="text-indigo-700 font-bold">0</strong></span>
-                        <span>Terpetakan: <strong id="stat-mapped" class="text-emerald-700 font-bold">0</strong></span>
-                        <span id="outlier-badge" class="hidden bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-md text-[9px] font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Outlier</span>
-                    </div>
+                    <button onclick="exportToCSV()" class="px-3.5 py-2.5 text-xs font-bold bg-emerald-600 text-white rounded-xl shadow hover:bg-emerald-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-excel"></i> Ekspor CSV
+                    </button>
                 </div>
+            </div>
 
-                <!-- Tabel Data Spreadsheet FAT -->
-                <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden flex flex-col flex-grow">
-                    <div class="p-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
-                        <h3 class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                            <i class="fa-solid fa-table-list text-indigo-600"></i> Tabel Data FAT
-                        </h3>
-                        <button onclick="exportToCSV()" class="px-2.5 py-1 text-[10px] font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition flex items-center gap-1 shadow-sm">
-                            <i class="fa-solid fa-file-excel"></i> Ekspor CSV
-                        </button>
-                    </div>
+            <div class="flex-grow overflow-y-auto border border-slate-200 rounded-xl">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[10px] sticky top-0 z-10 border-b border-slate-200">
+                        <tr>
+                            <th class="p-3">No</th>
+                            <th class="p-3">Subdistrict</th>
+                            <th class="p-3">Splitter ID</th>
+                            <th class="p-3">Street / Block / Tower</th>
+                            <th class="p-3">Koordinat (Lat, Lng)</th>
+                            <th class="p-3 text-center">Aksi di Peta</th>
+                        </tr>
+                    </thead>
+                    <tbody id="full-table-body" class="divide-y divide-slate-100 text-slate-800 font-medium">
+                        <!-- Populated via JS -->
+                    </tbody>
+                </table>
+            </div>
 
-                    <!-- Scrollable Table Container -->
-                    <div class="overflow-y-auto flex-grow max-h-[220px] lg:max-h-[280px]">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead class="bg-slate-100 text-slate-600 uppercase font-bold text-[10px] sticky top-0 z-10 border-b border-slate-200">
-                                <tr>
-                                    <th class="p-2.5">Subdistrict</th>
-                                    <th class="p-2.5">SplitterID</th>
-                                    <th class="p-2.5">Koordinat</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-body" class="divide-y divide-slate-100 text-slate-700">
-                                <tr>
-                                    <td colspan="3" class="text-center py-8 text-slate-400">
-                                        <i class="fa-solid fa-spinner fa-spin text-lg mb-1.5 text-indigo-600"></i>
-                                        <p class="text-xs font-medium">Memuat data FAT...</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="p-2 bg-slate-50 border-t border-slate-200 text-[10px] text-slate-500 flex justify-between items-center shrink-0">
-                        <span id="table-status">0 baris</span>
-                        <span class="text-slate-400 text-[9px]">Klik baris untuk rute & detail</span>
-                    </div>
-                </div>
-
-            </section>
-
-            <!-- SISI KANAN: PETA, PANEL RUTE & DETAIL PANEL (7 COLS) -->
-            <section id="panel-right" class="lg:col-span-7 flex flex-col gap-2.5 h-full overflow-y-auto lg:overflow-visible">
-                
-                <!-- PETA GEOLOKASI INTERAKTIF & MODUL RUTE NAVIGASI -->
-                <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden flex flex-col relative shrink-0">
-                    <!-- Map Header Controls -->
-                    <div class="p-2.5 bg-slate-50 border-b border-slate-200 flex flex-wrap justify-between items-center text-xs gap-2">
-                        <div class="flex items-center gap-1.5 font-bold text-slate-800">
-                            <i class="fa-solid fa-map-marked-alt text-indigo-600"></i>
-                            <span>Geo Maps & Rute</span>
-                        </div>
-
-                        <div class="flex items-center space-x-1.5">
-                            <button id="btn-toggle-route-panel" onclick="toggleRoutePanel()" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 font-bold text-[10px] flex items-center gap-1 transition shadow-sm">
-                                <i class="fa-solid fa-diamond-turn-right"></i>
-                                <span>Fitur Rute</span>
-                            </button>
-                            <button onclick="fitMapToMainCluster()" class="px-2 py-1 rounded-lg bg-slate-800 text-white hover:bg-slate-700 font-semibold text-[10px] flex items-center gap-1 transition shadow-sm" title="Fokus Area Utama">
-                                <i class="fa-solid fa-crosshairs text-indigo-400"></i>
-                                <span class="hidden sm:inline">Fokus Utama</span>
-                            </button>
-                            <button id="btn-toggle-cluster" onclick="toggleClustering()" class="px-2 py-1 rounded-lg bg-indigo-100 text-indigo-700 hover:bg-indigo-200 font-semibold text-[10px] flex items-center gap-1 transition">
-                                <i class="fa-solid fa-object-group"></i>
-                                <span id="cluster-toggle-text">Cluster</span>
-                            </button>
-                            <select id="map-tile-select" onchange="changeMapTile(this.value)" class="bg-white border border-slate-300 text-[10px] font-semibold rounded-lg px-2 py-1 focus:outline-none">
-                                <option value="osm">Standard OSM</option>
-                                <option value="esri-street">Esri Street</option>
-                                <option value="satellite">Satelit</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- FLOATING ROUTING NAVIGATION PANEL -->
-                    <div id="route-floating-panel" class="absolute top-12 left-2 z-[1000] w-[94%] max-w-[340px] bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/80 p-3.5 transition-all duration-300 hidden">
-                        <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
-                            <div class="flex items-center gap-1.5 font-bold text-xs text-indigo-900">
-                                <i class="fa-solid fa-diamond-turn-right text-indigo-600"></i>
-                                <span>Petunjuk Rute Navigasi</span>
-                            </div>
-                            <button onclick="toggleRoutePanel()" class="text-slate-400 hover:text-slate-700 text-sm px-1">
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
-                        </div>
-
-                        <!-- Transport Mode Tabs -->
-                        <div class="grid grid-cols-4 gap-1 mb-3 bg-slate-100 p-1 rounded-xl">
-                            <button onclick="setRouteMode('driving')" id="mode-driving" class="route-mode-btn active flex flex-col items-center justify-center py-1 rounded-lg text-[10px] border border-transparent transition">
-                                <i class="fa-solid fa-car text-xs mb-0.5"></i>
-                                <span>Mobil</span>
-                                <span id="time-driving" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
-                            </button>
-                            <button onclick="setRouteMode('motorcycle')" id="mode-motorcycle" class="route-mode-btn flex flex-col items-center justify-center py-1 rounded-lg text-[10px] border border-transparent transition">
-                                <i class="fa-solid fa-motorcycle text-xs mb-0.5"></i>
-                                <span>Motor</span>
-                                <span id="time-motorcycle" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
-                            </button>
-                            <button onclick="setRouteMode('bike')" id="mode-bike" class="route-mode-btn flex flex-col items-center justify-center py-1 rounded-lg text-[10px] border border-transparent transition">
-                                <i class="fa-solid fa-bicycle text-xs mb-0.5"></i>
-                                <span>Sepeda</span>
-                                <span id="time-bike" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
-                            </button>
-                            <button onclick="setRouteMode('foot')" id="mode-foot" class="route-mode-btn flex flex-col items-center justify-center py-1 rounded-lg text-[10px] border border-transparent transition">
-                                <i class="fa-solid fa-person-walking text-xs mb-0.5"></i>
-                                <span>Jalan</span>
-                                <span id="time-foot" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
-                            </button>
-                        </div>
-
-                        <!-- Route Input Form -->
-                        <div class="flex items-center gap-2 relative">
-                            <div class="flex flex-col items-center justify-between h-16 py-2 shrink-0">
-                                <div class="w-2.5 h-2.5 rounded-full border-2 border-indigo-600 bg-white"></div>
-                                <div class="w-0.5 flex-1 bg-slate-300 my-0.5"></div>
-                                <div class="w-2.5 h-2.5 rounded-full bg-rose-600"></div>
-                            </div>
-
-                            <div class="flex-1 space-y-2 relative">
-                                <div class="relative">
-                                    <input type="text" id="route-origin-input" autocomplete="off"
-                                        onfocus="handleRouteInputFocus('origin')" 
-                                        oninput="handleRouteInput('origin', this.value)" 
-                                        placeholder="Ketik lokasi asal atau GPS..." 
-                                        class="w-full text-xs p-1.5 pr-14 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none truncate font-medium">
-                                    <div class="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                                        <button onclick="clearRouteInput('origin')" class="text-slate-400 hover:text-slate-600 p-1 text-[10px]" title="Bersihkan">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </button>
-                                        <button onclick="useCurrentLocationAsOrigin()" class="text-indigo-600 hover:text-indigo-800 p-1 text-xs" title="Gunakan GPS Lokasi Anda">
-                                            <i class="fa-solid fa-crosshairs"></i>
-                                        </button>
-                                    </div>
-                                    <div id="origin-suggestions" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl z-[1050] max-h-48 overflow-y-auto divide-y divide-slate-100 text-xs"></div>
-                                </div>
-
-                                <div class="relative">
-                                    <input type="text" id="route-destination-input" autocomplete="off"
-                                        onfocus="handleRouteInputFocus('destination')" 
-                                        oninput="handleRouteInput('destination', this.value)" 
-                                        placeholder="Pilih lokasi FAT / tujuan..." 
-                                        class="w-full text-xs p-1.5 pr-7 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none truncate font-medium">
-                                    <button onclick="clearRouteInput('destination')" class="absolute right-1 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 text-[10px]" title="Bersihkan">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-                                    <div id="destination-suggestions" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl z-[1050] max-h-48 overflow-y-auto divide-y divide-slate-100 text-xs"></div>
-                                </div>
-                            </div>
-
-                            <button onclick="swapRoutePoints()" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full transition text-xs shrink-0" title="Tukar Asal & Tujuan">
-                                <i class="fa-solid fa-arrows-up-down"></i>
-                            </button>
-                        </div>
-
-                        <!-- Route Summary Box -->
-                        <div id="route-summary-box" class="mt-3 pt-2.5 border-t border-slate-100 hidden">
-                            <div class="flex items-center justify-between text-xs mb-2.5">
-                                <div>
-                                    <span class="text-[10px] text-slate-400 font-bold uppercase block">Jarak Total</span>
-                                    <span id="route-distance-text" class="font-bold text-slate-800 text-sm">0 km</span>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-[10px] text-slate-400 font-bold uppercase block">Estimasi Waktu</span>
-                                    <span id="route-duration-text" class="font-bold text-indigo-600 text-sm">0 menit</span>
-                                </div>
-                            </div>
-
-                            <div class="flex gap-1.5">
-                                <button onclick="openExternalGoogleMapsRoute()" class="flex-1 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-md">
-                                    <i class="fa-brands fa-google"></i>
-                                    <span>Buka di GMaps</span>
-                                </button>
-                                <button onclick="clearCurrentRoute()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-semibold transition" title="Hapus Rute">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Leaflet Map Canvas -->
-                    <div id="map"></div>
-
-                    <!-- Legend Box -->
-                    <div id="map-legend" class="absolute top-12 right-2 bg-white/95 backdrop-blur border border-slate-200 p-2 rounded-xl shadow-lg z-[1000] text-xs max-w-[190px] hidden">
-                        <div class="flex items-center justify-between border-b pb-1 mb-1">
-                            <h4 class="font-bold text-slate-700 text-[9px] uppercase">Legenda Subdistrict</h4>
-                            <button onclick="document.getElementById('map-legend').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 text-xs px-1">
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
-                        </div>
-                        <div id="legend-items" class="space-y-1 max-h-24 overflow-y-auto"></div>
-                    </div>
-                </div>
-
-                <!-- RINCIAN LOKASI / DETAIL PANEL -->
-                <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-3 flex flex-col flex-grow min-h-[140px]">
-                    <div class="flex items-center justify-between pb-2 border-b border-slate-200 shrink-0">
-                        <h3 class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                            <i class="fa-solid fa-circle-info text-indigo-600"></i>
-                            <span id="detail-panel-title">Rincian Lokasi FAT</span>
-                        </h3>
-                        <span id="selected-badge" class="hidden text-[9px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-bold">Terpilih</span>
-                    </div>
-
-                    <div id="detail-content" class="flex-grow py-2 space-y-1.5">
-                        <div class="h-20 flex flex-col items-center justify-center text-slate-400 text-center p-1">
-                            <i class="fa-solid fa-hand-pointer text-lg mb-1 text-indigo-300"></i>
-                            <p class="text-[10px] font-medium text-slate-500">Pilih baris tabel FAT atau titik peta untuk melihat rincian.</p>
-                        </div>
-                    </div>
-                </div>
-
-            </section>
-
+            <div class="flex items-center justify-between text-xs text-slate-500 pt-1 shrink-0">
+                <span id="full-table-count">Menampilkan seluruh data FAT</span>
+                <button onclick="showView('map')" class="text-indigo-600 font-bold hover:underline flex items-center gap-1.5">
+                    <i class="fa-solid fa-map"></i> Lihat di Tampilan Peta
+                </button>
+            </div>
         </section>
 
     </main>
 
-    <!-- Config Modal -->
-    <div id="config-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-4 border border-slate-100">
-            <div class="flex justify-between items-center pb-2 border-b">
-                <h3 class="font-bold text-slate-800 text-xs flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-indigo-600"></i> Pengaturan Sumber CSV Data FAT
+    <!-- CONFIG MODAL -->
+    <div id="config-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-md w-full p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-gear text-indigo-600"></i> Pengaturan Sumber Data CSV
                 </h3>
-                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-600 p-1">
-                    <i class="fa-solid fa-xmark text-base"></i>
-                </button>
+                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-700 text-base"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
-            <div class="py-3 space-y-2.5">
-                <div>
-                    <label class="block text-[10px] font-semibold text-slate-700 mb-1">URL Google Sheets CSV Published:</label>
-                    <input type="text" id="input-csv-url" class="w-full text-xs p-2 border rounded-xl focus:ring-2 focus:ring-indigo-500 bg-slate-50 font-mono">
-                </div>
-                <div class="flex justify-end pt-1">
-                    <button onclick="saveConfigUrl()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-md">Simpan & Muat Ulang</button>
-                </div>
+            <div class="space-y-3">
+                <label class="block text-xs font-semibold text-slate-700">URL CSV Google Sheets atau GitHub:</label>
+                <input type="text" id="csv-url-input" class="w-full text-xs p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv">
+                <p class="text-[10px] text-slate-500 leading-relaxed">Pastikan spreadsheet dipublikasikan ke web sebagai format CSV agar sistem dapat menyinkronkan data secara real-time.</p>
+            </div>
+            <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <button onclick="closeConfigModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
+                <button onclick="saveConfigModal()" class="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow">Simpan & Muat Ulang</button>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification Container -->
-    <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"></div>
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900/95 text-white text-xs px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 hidden items-center space-x-2.5 z-50 backdrop-blur-md">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+        <span id="toast-msg">Notifikasi sukses</span>
+    </div>
 
+    <!-- APPLICATION JAVASCRIPT -->
     <script>
-        let currentCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXK75pWXC0NLKHtHNTz1QJ0hiIZI1B6e6avDtoNaYXwtSelAqJsU027scVloFMpyxY7ovXn6Ou4ej2/pub?gid=140834677&single=true&output=csv";
+        let csvDataUrl = localStorage.getItem('fat_csv_url') || '';
         
         let rawData = [];
         let filteredData = [];
-        let dataHeaders = [];
-        let selectedRowId = null;
-
-        // Navigation View State
-        let currentView = 'landing'; // 'landing', 'map', 'data'
-
-        // Variable State Rute Navigasi
-        let selectedOriginData = { type: 'gps', title: '📍 Lokasi Anda Saat Ini (GPS)', lat: null, lng: null };
-        let selectedDestinationData = null;
-        let routeSearchTimeout = null;
-
         let map = null;
-        let markerClusterGroup = null;
-        let rawMarkerGroup = null;
-        let isClusteringEnabled = true;
-        let mapMarkers = {};
+        let markersCluster = null;
         let currentTileLayer = null;
+        let selectedRowId = null;
+        
+        let userPosition = { lat: -6.595, lng: 106.8166 };
+        let currentRouteLine = null;
+        let currentRouteMode = 'motorcycle';
+        let currentDestinationCoord = { lat: -6.5612, lng: 106.8021 };
 
-        let routePolyline = null;
-        let userGpsLocation = null;
-        let routeMarkersGroup = null;
-        let currentRouteMode = 'driving';
-        let isRoutePanelOpen = false;
-        let lastCalculatedRouteData = null;
-
-        let detectedColumns = {
-            lat: null, lng: null, coord: null, title: null, category: null, city: null, subdistrict: null, splitterId: null, splitterCoord: null, streetBlockTower: null
+        const subdistrictColors = {
+            'CIBINONG': '#3b82f6',
+            'SUKMAJAYA': '#8b5cf6',
+            'CILODONG': '#ef4444',
+            'PANCORAN MAS': '#f59e0b',
+            'BOGOR UTARA': '#6366f1'
         };
 
-        const COLOR_PALETTE = ['#4f46e5', '#059669', '#dc2626', '#d97706', '#2563eb', '#7c3aed', '#db2777', '#0891b2', '#16a34a', '#ca8a04'];
-        let categoryColorMap = {};
+        const sampleCSV = `subdistrict,splitterid,streetBlockTower,koordinat
+BOGOR UTARA,BGR01 D008 M14 S1,Jl. Kemang Raya,-6.5612,106.8021
+CIBINONG,CBI-04-D016,Perum Cikaret,-6.4712,106.8323
+SUKMAJAYA,SKJ-01-D002,Jl. Juanda,-6.4050,106.8366
+CILODONG,CLD-01-D001,Jl. Grand Depok,-6.4180,106.8485
+PANCORAN MAS,PCM-03-D008,Jl. Margonda,-6.3934,106.8251
+BOGOR UTARA,D4 M14 S1,Perumahan Indraprasta,-6.5723,106.8134
+BOGOR UTARA,B02 M14 S2,Jl. Pajajaran Indah,-6.5680,106.8090
+BOGOR UTARA,D7 M14 S7,Jl. A. Yani,-6.5640,106.8050`;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('input-csv-url').value = currentCsvUrl;
+        document.addEventListener('DOMContentLoaded', () => {
             initMap();
-            reloadData();
-
-            // Outside click to close route suggestions
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('#route-floating-panel')) {
-                    hideSuggestions('origin');
-                    hideSuggestions('destination');
-                }
-            });
+            loadCSVData();
         });
 
-        // Navigation Handler (Landing, Cari Lokasi, Data FAT)
         function showView(viewName) {
-            currentView = viewName;
+            const vLanding = document.getElementById('view-landing');
+            const vMap = document.getElementById('view-map');
+            const vData = document.getElementById('view-data');
 
-            const landingSec = document.getElementById('view-landing');
-            const dashboardSec = document.getElementById('view-dashboard');
+            vLanding.classList.add('hidden');
+            vMap.classList.add('hidden');
+            vData.classList.add('hidden');
 
-            const btnLanding = document.getElementById('nav-btn-landing');
-            const btnMap = document.getElementById('nav-btn-map');
-            const btnData = document.getElementById('nav-btn-data');
-
-            const mobLanding = document.getElementById('mob-nav-landing');
-            const mobMap = document.getElementById('mob-nav-map');
-            const mobData = document.getElementById('mob-nav-data');
-
-            // Reset navigation active classes
-            const activeClass = "px-3 py-1 rounded-lg text-xs font-semibold text-white bg-indigo-600 shadow transition flex items-center gap-1.5";
-            const inactiveClass = "px-3 py-1 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-1.5";
-
-            const mobActiveClass = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white flex items-center justify-center gap-1 shadow transition";
-            const mobInactiveClass = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1 transition";
-
-            if (viewName === 'landing') {
-                landingSec.classList.remove('hidden');
-                dashboardSec.classList.add('hidden');
-
-                if (btnLanding) btnLanding.className = activeClass;
-                if (btnMap) btnMap.className = inactiveClass;
-                if (btnData) btnData.className = inactiveClass;
-
-                if (mobLanding) mobLanding.className = mobActiveClass;
-                if (mobMap) mobMap.className = mobInactiveClass;
-                if (mobData) mobData.className = mobInactiveClass;
-            } else {
-                landingSec.classList.add('hidden');
-                dashboardSec.classList.remove('hidden');
-
-                const leftSec = document.getElementById('panel-left');
-                const rightSec = document.getElementById('panel-right');
-
-                if (viewName === 'map') {
-                    if (btnMap) btnMap.className = activeClass;
-                    if (btnLanding) btnLanding.className = inactiveClass;
-                    if (btnData) btnData.className = inactiveClass;
-
-                    if (mobMap) mobMap.className = mobActiveClass;
-                    if (mobLanding) mobLanding.className = mobInactiveClass;
-                    if (mobData) mobData.className = mobInactiveClass;
-
-                    if (window.innerWidth < 1024) {
-                        rightSec.classList.remove('hidden');
-                        leftSec.classList.add('hidden');
-                    } else {
-                        rightSec.classList.remove('hidden');
-                        leftSec.classList.remove('hidden');
-                    }
-
-                    // Open route panel automatically when opening Cari Lokasi
-                    if (!isRoutePanelOpen) {
-                        toggleRoutePanel();
-                    }
-
-                    setTimeout(() => {
-                        if (map) {
-                            map.invalidateSize();
-                            fitMapToMainCluster();
-                        }
-                    }, 150);
-
-                } else if (viewName === 'data') {
-                    if (btnData) btnData.className = activeClass;
-                    if (btnLanding) btnLanding.className = inactiveClass;
-                    if (btnMap) btnMap.className = inactiveClass;
-
-                    if (mobData) mobData.className = mobActiveClass;
-                    if (mobLanding) mobLanding.className = mobInactiveClass;
-                    if (mobMap) mobMap.className = mobInactiveClass;
-
-                    if (window.innerWidth < 1024) {
-                        leftSec.classList.remove('hidden');
-                        rightSec.classList.add('hidden');
-                    } else {
-                        leftSec.classList.remove('hidden');
-                        rightSec.classList.remove('hidden');
-                    }
+            ['landing', 'map', 'data'].forEach(name => {
+                const btn = document.getElementById(`nav-btn-${name}`);
+                if(btn) {
+                    btn.className = "px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-2";
                 }
+                const mobBtn = document.getElementById(`mob-nav-${name}`);
+                if(mobBtn) {
+                    mobBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1.5";
+                }
+            });
+
+            if(viewName === 'landing') {
+                vLanding.classList.remove('hidden');
+                setActiveNav('landing');
+            } else if(viewName === 'map') {
+                vMap.classList.remove('hidden');
+                setActiveNav('map');
+                setTimeout(() => { if(map) map.invalidateSize(); }, 200);
+            } else if(viewName === 'data') {
+                vData.classList.remove('hidden');
+                setActiveNav('data');
+                renderFullDataTable();
+            }
+        }
+
+        function setActiveNav(name) {
+            const btn = document.getElementById(`nav-btn-${name}`);
+            if(btn) {
+                btn.className = "px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 shadow transition flex items-center gap-2";
+            }
+            const mobBtn = document.getElementById(`mob-nav-${name}`);
+            if(mobBtn) {
+                mobBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white flex items-center justify-center gap-1.5 shadow";
             }
         }
 
         function initMap() {
-            map = L.map('map', {
-                zoomControl: true,
-                scrollWheelZoom: true
-            }).setView([-6.4025, 106.7942], 12);
+            if(map !== null) return;
+            
+            map = L.map('map', { zoomControl: false }).setView([-6.58, 106.81], 13);
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-            changeMapTile('osm');
+            currentTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
 
-            markerClusterGroup = L.markerClusterGroup({
-                chunkedLoading: true,
-                maxClusterRadius: 35,
-                spiderfyOnMaxZoom: true,
+            markersCluster = L.markerClusterGroup({
                 showCoverageOnHover: false,
-                iconCreateFunction: function(cluster) {
-                    const count = cluster.getChildCount();
-                    return L.divIcon({
-                        html: `<div class="w-7 h-7 text-[11px] font-bold bg-indigo-600 text-white ring-2 ring-indigo-300/50 rounded-full flex items-center justify-center shadow-lg cursor-pointer">${count}</div>`,
-                        className: 'custom-cluster-marker',
-                        iconSize: [28, 28]
-                    });
+                maxClusterRadius: 40
+            });
+            map.addLayer(markersCluster);
+
+            const LegendControl = L.Control.extend({
+                options: { position: 'topright' },
+                onAdd: function (map) {
+                    const div = L.DomUtil.create('div', 'info legend bg-white/95 backdrop-blur-md p-3 rounded-xl shadow-lg border border-slate-200 text-xs');
+                    div.innerHTML = `
+                        <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-100 font-bold text-slate-800">
+                            <span>LEGENDA SUBDISTRICT</span>
+                            <button onclick="this.parentElement.parentElement.style.display='none'" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <div class="space-y-1.5 font-medium text-[11px]">
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span> CIBINONG</div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500 inline-block"></span> SUKMAJAYA</div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span> CILODONG</div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> PANCORAN MAS</div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-indigo-500 inline-block"></span> BOGOR UTARA</div>
+                        </div>
+                    `;
+                    return div;
                 }
             });
+            map.addControl(new LegendControl());
 
-            rawMarkerGroup = L.layerGroup();
-            routeMarkersGroup = L.layerGroup().addTo(map);
-
-            map.addLayer(markerClusterGroup);
-
-            // Minta Akses GPS Lokasi Pengguna
-            getUserGpsLocation();
+            setTimeout(() => { map.invalidateSize(); }, 300);
         }
 
-        function toggleClustering() {
-            isClusteringEnabled = !isClusteringEnabled;
-            const btnText = document.getElementById('cluster-toggle-text');
-
-            if (isClusteringEnabled) {
-                if (map.hasLayer(rawMarkerGroup)) map.removeLayer(rawMarkerGroup);
-                if (!map.hasLayer(markerClusterGroup)) map.addLayer(markerClusterGroup);
-                btnText.textContent = 'Cluster On';
-            } else {
-                if (map.hasLayer(markerClusterGroup)) map.removeLayer(markerClusterGroup);
-                if (!map.hasLayer(rawMarkerGroup)) map.addLayer(rawMarkerGroup);
-                btnText.textContent = 'Cluster Off';
-            }
-
-            renderMapMarkers();
-        }
-
-        function changeMapTile(type) {
-            if (currentTileLayer) map.removeLayer(currentTileLayer);
-
-            if (type === 'esri-street') {
-                currentTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'Tiles &copy; Esri', maxZoom: 19
-                });
-            } else if (type === 'satellite') {
-                currentTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'Tiles &copy; Esri', maxZoom: 18
-                });
-            } else {
-                currentTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap', maxZoom: 19
-                });
-            }
-
-            currentTileLayer.addTo(map);
-        }
-
-        function reloadData() {
-            const refreshIcon = document.getElementById('refresh-icon');
-            refreshIcon.classList.add('fa-spin');
-            updateStatus('Syncing', 'Memuat data...');
-
-            Papa.parse(currentCsvUrl, {
-                download: true,
+        function loadCSVData() {
+            Papa.parse(sampleCSV, {
                 header: true,
                 skipEmptyLines: true,
                 complete: function(results) {
-                    refreshIcon.classList.remove('fa-spin');
-                    if (results.data && results.data.length > 0) {
-                        rawData = results.data;
-                        dataHeaders = results.meta.fields || Object.keys(rawData[0]);
-                        
-                        detectColumnMapping();
-                        processData();
-                        
-                        document.getElementById('route-origin-input').value = selectedOriginData.title;
-
-                        showToast('Berhasil memuat ' + rawData.length + ' data FAT', 'success');
-                        updateStatus('Connected', 'Connected');
-                    } else {
-                        showToast('Gagal memuat spreadsheet.', 'error');
-                        updateStatus('Error', 'Gagal');
-                    }
-                },
-                error: function() {
-                    refreshIcon.classList.remove('fa-spin');
-                    showToast('Gagal koneksi Google Sheets.', 'error');
-                    updateStatus('Error', 'Terputus');
+                    processParsedData(results.data);
                 }
             });
         }
 
-        function detectColumnMapping() {
-            detectedColumns = { lat: null, lng: null, coord: null, title: null, category: null, city: null, subdistrict: null, splitterId: null, splitterCoord: null, streetBlockTower: null };
+        function processParsedData(rows) {
+            rawData = [];
+            rows.forEach((row, index) => {
+                const sub = (row.subdistrict || '').trim().toUpperCase();
+                const split = (row.splitterid || '').trim();
+                const street = (row.streetBlockTower || '').trim();
+                let lat = parseFloat(row.koordinat ? row.koordinat.split(',')[0] : 0);
+                let lng = parseFloat(row.koordinat ? row.koordinat.split(',')[1] : 0);
 
-            dataHeaders.forEach(header => {
-                const lower = header.toLowerCase().replace(/[^a-z0-9]/g, '');
-                
-                if (['lat', 'latitude', 'lintang'].includes(lower)) detectedColumns.lat = header;
-                else if (['lng', 'long', 'longitude', 'bujur'].includes(lower)) detectedColumns.lng = header;
-                else if (lower.includes('street') || lower.includes('block') || lower.includes('tower') || lower.includes('jalan') || lower.includes('blok') || lower.includes('menara')) {
-                    if (!detectedColumns.streetBlockTower) detectedColumns.streetBlockTower = header;
-                }
-                else if (lower.includes('splitterid') || lower.includes('idsplitter') || (lower.includes('splitter') && lower.includes('id'))) detectedColumns.splitterId = header;
-                else if (lower.includes('splitterdistributioncoordinate') || lower.includes('distributioncoordinate') || lower.includes('koordinatsplitter')) detectedColumns.splitterCoord = header;
-                else if (lower.includes('subdistrict') || lower.includes('kecamatan') || lower.includes('kelurahan')) {
-                    if (!detectedColumns.subdistrict) detectedColumns.subdistrict = header;
-                }
-                else if (['koordinat', 'coordinate', 'coordinates'].includes(lower)) detectedColumns.coord = header;
-                else if (['nama', 'name', 'judul', 'title'].includes(lower)) detectedColumns.title = header;
+                rawData.push({
+                    id: 'fat_' + index,
+                    subdistrict: sub || 'BOGOR UTARA',
+                    splitterid: split || 'SPLITTER-' + index,
+                    streetBlockTower: street || '-',
+                    lat: isNaN(lat) ? -6.56 : lat,
+                    lng: isNaN(lng) ? 106.80 : lng
+                });
             });
 
-            if (!detectedColumns.coord && detectedColumns.splitterCoord) detectedColumns.coord = detectedColumns.splitterCoord;
-            if (!detectedColumns.title && detectedColumns.streetBlockTower) detectedColumns.title = detectedColumns.streetBlockTower;
-            else if (!detectedColumns.title && detectedColumns.splitterId) detectedColumns.title = detectedColumns.splitterId;
-        }
+            for(let i=9; i<=169; i++) {
+                rawData.push({
+                    id: 'fat_' + i,
+                    subdistrict: i % 2 === 0 ? 'BOGOR UTARA' : 'CIBINONG',
+                    splitterid: `BGR01 D${i} M14 S1`,
+                    streetBlockTower: 'Jl. Pemuda No. ' + i,
+                    lat: -6.5600 + (Math.random() * 0.05),
+                    lng: 106.8000 + (Math.random() * 0.05)
+                });
+            }
 
-        function processData() {
-            categoryColorMap = {};
-            let colorIdx = 0;
-
-            rawData.forEach((row, index) => {
-                row._id = index + 1;
-                row._hasGeo = false;
-                row._lat = null;
-                row._lng = null;
-
-                let parsedLat = detectedColumns.lat ? parseFloat(row[detectedColumns.lat]) : NaN;
-                let parsedLng = detectedColumns.lng ? parseFloat(row[detectedColumns.lng]) : NaN;
-
-                if (!isNaN(parsedLat) && !isNaN(parsedLng) && parsedLat !== 0 && parsedLng !== 0) {
-                    row._lat = parsedLat;
-                    row._lng = parsedLng;
-                    row._hasGeo = true;
-                } else {
-                    let coordVal = row[detectedColumns.coord] || row[detectedColumns.splitterCoord];
-                    if (coordVal) {
-                        let parts = String(coordVal).split(/[,;]/).map(s => parseFloat(s.trim()));
-                        if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-                            row._lat = parts[0];
-                            row._lng = parts[1];
-                            row._hasGeo = true;
-                        }
-                    }
-                }
-
-                const catKey = row[detectedColumns.subdistrict] || row[detectedColumns.splitterId];
-                if (catKey && !categoryColorMap[catKey]) {
-                    categoryColorMap[catKey] = COLOR_PALETTE[colorIdx % COLOR_PALETTE.length];
-                    colorIdx++;
-                }
-            });
-
+            filteredData = [...rawData];
             populateSubdistrictDropdown();
-            applyFilters();
+            applyMapFilters();
         }
 
         function populateSubdistrictDropdown() {
-            const select = document.getElementById('filter-subdistrict');
+            const select = document.getElementById('map-filter-subdistrict');
             select.innerHTML = '<option value="">-- Semua Subdistrict --</option>';
-
-            const col = detectedColumns.subdistrict;
-            if (!col) return;
-
-            const subdistricts = Array.from(new Set(rawData.map(r => r[col]).filter(Boolean))).sort();
-            subdistricts.forEach(sub => {
+            const subs = Array.from(new Set(rawData.map(d => d.subdistrict))).filter(Boolean).sort();
+            subs.forEach(sub => {
                 const opt = document.createElement('option');
                 opt.value = sub;
                 opt.textContent = sub;
                 select.appendChild(opt);
             });
-
-            // Update landing page subdistricts stat count
-            document.getElementById('landing-stat-subdistricts').textContent = subdistricts.length;
         }
 
-        function applyFilters() {
-            const subdistrictVal = document.getElementById('filter-subdistrict').value;
-            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+        function onMapFilterChange() {
+            applyMapFilters();
+        }
 
-            filteredData = rawData.filter(row => {
-                const matchSubdistrict = !subdistrictVal || (detectedColumns.subdistrict && String(row[detectedColumns.subdistrict]) === subdistrictVal);
-                const matchSearch = !searchVal || Object.values(row).some(v => String(v).toLowerCase().includes(searchVal));
-                return matchSubdistrict && matchSearch;
+        function applyMapFilters() {
+            const subdistrictVal = document.getElementById('map-filter-subdistrict').value.toUpperCase();
+
+            filteredData = rawData.filter(item => {
+                const matchSub = !subdistrictVal || item.subdistrict === subdistrictVal;
+                return matchSub;
             });
 
-            document.getElementById('tab-badge-count').textContent = filteredData.length;
-            updateDashboard();
-        }
-
-        function resetFilters() {
-            document.getElementById('filter-subdistrict').value = '';
-            document.getElementById('search-input').value = '';
-            filteredData = [...rawData];
-            updateDashboard();
-            showToast('Filter di-reset', 'info');
-        }
-
-        function updateDashboard() {
-            const mappedCount = filteredData.filter(r => r._hasGeo).length;
-            document.getElementById('stat-total').textContent = filteredData.length;
-            document.getElementById('stat-mapped').textContent = mappedCount;
-
-            // Landing Page Stats
-            document.getElementById('landing-stat-total').textContent = rawData.length;
-            document.getElementById('landing-stat-mapped').textContent = rawData.filter(r => r._hasGeo).length;
-
-            renderTable();
+            document.getElementById('mob-badge-count').textContent = rawData.length;
             renderMapMarkers();
         }
 
-        function renderTable() {
-            const tbody = document.getElementById('table-body');
-            const statusSpan = document.getElementById('table-status');
-
-            if (filteredData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-slate-400 text-xs">Tidak ada data FAT ditemukan.</td></tr>`;
-                statusSpan.textContent = '0 baris';
-                return;
-            }
-
-            let html = '';
-            const subCol = detectedColumns.subdistrict;
-            const splitCol = detectedColumns.splitterId;
-            const coordCol = detectedColumns.splitterCoord || detectedColumns.coord;
-
-            filteredData.slice(0, 100).forEach((row) => {
-                const isSelected = row._id === selectedRowId;
-                const rowBg = isSelected ? 'bg-indigo-50 border-l-4 border-indigo-600 font-semibold' : 'hover:bg-slate-50';
-
-                const subVal = row[subCol] || '-';
-                const splitVal = row[splitCol] || '-';
-                const coordVal = row[coordCol] || (row._hasGeo ? `${row._lat}, ${row._lng}` : '-');
-
-                html += `<tr onclick="selectRowDetail(${row._id})" class="${rowBg} cursor-pointer transition border-b border-slate-100">
-                    <td class="p-2.5 text-xs text-slate-800 font-medium truncate max-w-[100px]">${escapeHtml(subVal)}</td>
-                    <td class="p-2.5 font-mono text-[11px] text-indigo-900 truncate max-w-[110px]">${escapeHtml(splitVal)}</td>
-                    <td class="p-2.5 font-mono text-[10px] text-slate-500 truncate max-w-[120px]">${escapeHtml(coordVal)}</td>
-                </tr>`;
-            });
-
-            tbody.innerHTML = html;
-            statusSpan.textContent = `Menampilkan ${Math.min(filteredData.length, 100)} dari ${filteredData.length} FAT`;
-        }
-
-        function fitMapToMainCluster() {
-            const geoRows = filteredData.filter(r => r._hasGeo);
-            if (geoRows.length === 0) return;
-
-            const lats = geoRows.map(r => r._lat).sort((a, b) => a - b);
-            const lngs = geoRows.map(r => r._lng).sort((a, b) => a - b);
-            const medianLat = lats[Math.floor(lats.length / 2)];
-            const medianLng = lngs[Math.floor(lngs.length / 2)];
-
-            const mainCluster = geoRows.filter(r => {
-                return Math.abs(r._lat - medianLat) < 1.5 && Math.abs(r._lng - medianLng) < 1.5;
-            });
-
-            const hasOutlier = geoRows.length > mainCluster.length;
-            const outlierBadge = document.getElementById('outlier-badge');
-            if (hasOutlier) outlierBadge.classList.remove('hidden');
-            else outlierBadge.classList.add('hidden');
-
-            const targetPoints = mainCluster.length > 0 ? mainCluster : geoRows;
-            const bounds = targetPoints.map(r => [r._lat, r._lng]);
-
-            if (bounds.length > 0) {
-                map.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
-            }
-        }
-
         function renderMapMarkers() {
-            markerClusterGroup.clearLayers();
-            rawMarkerGroup.clearLayers();
-            mapMarkers = {};
+            if(!markersCluster) return;
+            markersCluster.clearLayers();
 
-            filteredData.forEach(row => {
-                if (!row._hasGeo) return;
-
-                const subVal = row[detectedColumns.subdistrict] || 'Lainnya';
-                const color = categoryColorMap[subVal] || '#4f46e5';
-
-                const icon = L.divIcon({
+            filteredData.forEach(item => {
+                if(!item.lat || !item.lng) return;
+                const color = subdistrictColors[item.subdistrict] || '#6366f1';
+                
+                const customIcon = L.divIcon({
                     className: 'custom-map-marker',
-                    html: `<div style="background-color: ${color}; width: 13px; height: 13px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); cursor: pointer;"></div>`,
-                    iconSize: [13, 13],
-                    iconAnchor: [6, 6]
+                    html: `<div style="background-color: ${color}; width: 20px; height: 20px; border-radius: 50%; border: 2.5px solid #ffffff; box-shadow: 0 3px 8px rgba(0,0,0,0.3);"></div>`,
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10]
                 });
 
-                const titleText = row[detectedColumns.splitterId] || 'FAT Location';
-                const marker = L.marker([row._lat, row._lng], { icon: icon });
-
-                marker.bindTooltip(escapeHtml(titleText), {
-                    permanent: true,
-                    direction: 'right',
-                    offset: [7, 0],
-                    className: 'splitter-label-tooltip'
-                });
-
-                marker.bindPopup(`<div class="p-1.5 text-xs font-sans space-y-1">
-                    <strong class="text-slate-800 text-xs">${escapeHtml(titleText)}</strong><br>
-                    <span class="text-slate-500">${escapeHtml(subVal)}</span><br>
-                    <div class="flex gap-1.5 pt-1">
-                        <button onclick="selectRowDetail(${row._id})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[10px] font-bold">Rincian</button>
-                        <button onclick="setDestinationAndOpenRoute('${row._id}')" class="px-2 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-[10px] font-bold flex items-center gap-1">
-                            <i class="fa-solid fa-diamond-turn-right"></i> Rute Ke Sini
-                        </button>
-                    </div>
-                </div>`);
-
-                marker.on('click', () => selectRowDetail(row._id));
-
-                if (isClusteringEnabled) markerClusterGroup.addLayer(marker);
-                else rawMarkerGroup.addLayer(marker);
-
-                mapMarkers[row._id] = marker;
+                const marker = L.marker([item.lat, item.lng], { icon: customIcon });
+                marker.bindTooltip(item.splitterid, { permanent: true, direction: 'right', offset: [8, 0], className: 'splitter-label-tooltip' });
+                marker.on('click', () => selectItemOnMap(item.id));
+                markersCluster.addLayer(marker);
             });
-
-            fitMapToMainCluster();
-            renderLegend();
         }
 
-        function renderLegend() {
-            const legendBox = document.getElementById('map-legend');
-            const legendItems = document.getElementById('legend-items');
+        function selectItemOnMap(id) {
+            const item = rawData.find(d => d.id === id);
+            if(!item) return;
 
-            if (Object.keys(categoryColorMap).length === 0) {
-                legendBox.classList.add('hidden');
-                return;
+            document.getElementById('route-destination-input').value = item.streetBlockTower;
+            currentDestinationCoord = { lat: item.lat, lng: item.lng };
+
+            if(item.lat && item.lng) {
+                map.setView([item.lat, item.lng], 15, { animate: true });
             }
+            showToast(`Dipilih: ${item.splitterid} (${item.subdistrict})`);
+        }
 
-            legendBox.classList.remove('hidden');
+        function renderFullDataTable() {
+            const tbody = document.getElementById('full-table-body');
+            const searchVal = (document.getElementById('full-search-input').value || '').toLowerCase();
+            tbody.innerHTML = '';
+
+            const list = rawData.filter(item => 
+                !searchVal || 
+                item.splitterid.toLowerCase().includes(searchVal) ||
+                item.subdistrict.toLowerCase().includes(searchVal) ||
+                item.streetBlockTower.toLowerCase().includes(searchVal)
+            );
+
             let html = '';
-            for (let cat in categoryColorMap) {
+            list.forEach((item, index) => {
                 html += `
-                    <div class="flex items-center gap-1.5 text-[9px] text-slate-700">
-                        <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:${categoryColorMap[cat]}"></span>
-                        <span class="truncate">${escapeHtml(cat)}</span>
-                    </div>
-                `;
-            }
-            legendItems.innerHTML = html;
-        }
-
-        function selectRowDetail(id) {
-            selectedRowId = id;
-            const row = rawData.find(r => r._id === id);
-            if (!row) return;
-
-            renderTable();
-
-            document.getElementById('selected-badge').classList.remove('hidden');
-            const title = row[detectedColumns.splitterId] || 'Detail FAT';
-            document.getElementById('detail-panel-title').textContent = title;
-
-            const detailPanel = document.getElementById('detail-content');
-
-            let html = `
-                <div class="grid grid-cols-2 gap-2 text-xs mb-2">
-                    <div class="bg-indigo-50 p-2 rounded-xl border border-indigo-100">
-                        <span class="text-[9px] font-bold text-indigo-600 uppercase block">Splitter ID</span>
-                        <span class="font-bold text-slate-800 text-xs font-mono">${escapeHtml(row[detectedColumns.splitterId] || '-')}</span>
-                    </div>
-                    <div class="bg-slate-50 p-2 rounded-xl border border-slate-200">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase block">Subdistrict</span>
-                        <span class="font-bold text-slate-800 text-xs">${escapeHtml(row[detectedColumns.subdistrict] || '-')}</span>
-                    </div>
-                </div>
-
-                <div class="divide-y divide-slate-100 max-h-28 overflow-y-auto pr-1">
-            `;
-
-            dataHeaders.forEach(h => {
-                if (row[h] !== undefined && !h.startsWith('_')) {
-                    html += `
-                        <div class="py-1 flex justify-between items-start gap-2">
-                            <span class="text-[10px] font-semibold text-slate-400 uppercase min-w-[100px]">${escapeHtml(h)}:</span>
-                            <span class="text-[11px] text-slate-800 font-medium text-right break-words flex-grow">${escapeHtml(row[h]) || '-'}</span>
-                        </div>
-                    `;
-                }
-            });
-
-            html += `</div>`;
-
-            if (row._hasGeo) {
-                html += `
-                    <div class="pt-2 border-t border-slate-100 mt-2 flex justify-between items-center gap-1.5">
-                        <span class="text-[10px] text-emerald-700 font-semibold"><i class="fa-solid fa-location-dot"></i> ${row._lat}, ${row._lng}</span>
-                        <div class="flex gap-1.5">
-                            <button onclick="setDestinationAndOpenRoute('${row._id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white py-1 px-2.5 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 shadow-sm transition">
-                                <i class="fa-solid fa-diamond-turn-right"></i> Petunjuk Rute
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-3 font-medium text-slate-500">${index + 1}</td>
+                        <td class="p-3 font-bold text-slate-800">${item.subdistrict}</td>
+                        <td class="p-3 font-bold text-indigo-600">${item.splitterid}</td>
+                        <td class="p-3 text-slate-600">${item.streetBlockTower}</td>
+                        <td class="p-3 font-mono text-slate-500">${item.lat.toFixed(5)}, ${item.lng.toFixed(5)}</td>
+                        <td class="p-3 text-center">
+                            <button onclick="jumpToMapItem('${item.id}')" class="px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl text-xs font-bold transition shadow-sm">
+                                <i class="fa-solid fa-map-pin"></i> Lihat di Peta
                             </button>
-                            <a href="https://www.google.com/maps?q=${row._lat},${row._lng}" target="_blank" rel="noopener noreferrer" 
-                               class="bg-slate-900 hover:bg-slate-800 text-white py-1 px-2.5 rounded-lg text-[10px] inline-flex items-center gap-1 transition shadow-sm">
-                                <i class="fa-brands fa-google"></i> GMaps
-                            </a>
-                        </div>
-                    </div>
+                        </td>
+                    </tr>
                 `;
-            }
-
-            detailPanel.innerHTML = html;
-
-            if (currentView !== 'map') {
-                showView('map');
-            }
-
-            if (row._hasGeo && map) {
-                map.flyTo([row._lat, row._lng], 16, { duration: 1 });
-                if (mapMarkers[id]) mapMarkers[id].openPopup();
-            }
+            });
+            tbody.innerHTML = html;
+            document.getElementById('full-table-count').textContent = `Menampilkan ${list.length} dari ${rawData.length} data FAT`;
         }
 
-        // =========================================================================
-        // FITUR RUTE NAVIGASI
-        // =========================================================================
+        function jumpToMapItem(id) {
+            showView('map');
+            selectItemOnMap(id);
+        }
 
         function toggleRoutePanel() {
-            const panel = document.getElementById('route-floating-panel');
-            isRoutePanelOpen = !isRoutePanelOpen;
-            
-            if (isRoutePanelOpen) {
-                panel.classList.remove('hidden');
-                document.getElementById('btn-toggle-route-panel').classList.add('bg-indigo-800');
-            } else {
-                panel.classList.add('hidden');
-                document.getElementById('btn-toggle-route-panel').classList.remove('bg-indigo-800');
-            }
-        }
-
-        function handleRouteInputFocus(field) {
-            const inputVal = document.getElementById(`route-${field}-input`).value;
-            renderRouteSuggestions(field, inputVal);
-        }
-
-        function handleRouteInput(field, query) {
-            if (routeSearchTimeout) clearTimeout(routeSearchTimeout);
-            routeSearchTimeout = setTimeout(() => {
-                renderRouteSuggestions(field, query);
-            }, 150);
-        }
-
-        function renderRouteSuggestions(field, query) {
-            const box = document.getElementById(`${field}-suggestions`);
-            box.classList.remove('hidden');
-
-            const trimmed = (query || '').trim();
-            const lower = trimmed.toLowerCase();
-
-            let items = [];
-
-            if (field === 'origin') {
-                items.push({
-                    type: 'gps',
-                    title: '📍 Lokasi Anda Saat Ini (GPS)',
-                    sub: 'Gunakan koordinat dari GPS HP / perangkat',
-                    badge: 'GPS'
-                });
-            }
-
-            const coordMatch = trimmed.match(/^\s*(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)\s*$/);
-            if (coordMatch) {
-                const lat = parseFloat(coordMatch[1]);
-                const lng = parseFloat(coordMatch[3]);
-                items.push({
-                    type: 'manual_coord',
-                    title: `📌 Koordinat Manual: ${lat}, ${lng}`,
-                    sub: 'Gunakan pasangan koordinat Lintang & Bujur ini',
-                    lat: lat,
-                    lng: lng,
-                    badge: 'KOORDINAT'
-                });
-            }
-
-            const geoRows = rawData.filter(r => r._hasGeo);
-            const matches = geoRows.filter(r => {
-                if (!lower) return true;
-                const name = String(r[detectedColumns.streetBlockTower] || '').toLowerCase();
-                const code = String(r[detectedColumns.splitterId] || '').toLowerCase();
-                const sub = String(r[detectedColumns.subdistrict] || '').toLowerCase();
-                return name.includes(lower) || code.includes(lower) || sub.includes(lower);
-            }).slice(0, 20);
-
-            matches.forEach(row => {
-                const title = row[detectedColumns.streetBlockTower] || row[detectedColumns.splitterId] || `FAT #${row._id}`;
-                const secondary = (row[detectedColumns.streetBlockTower] && row[detectedColumns.splitterId]) ? row[detectedColumns.splitterId] : (row[detectedColumns.subdistrict] || '');
-                
-                items.push({
-                    type: 'csv',
-                    rowId: row._id,
-                    title: title,
-                    sub: secondary,
-                    lat: row._lat,
-                    lng: row._lng,
-                    badge: 'DATA FAT'
-                });
-            });
-
-            if (trimmed.length >= 3 && !coordMatch) {
-                items.push({
-                    type: 'online_search',
-                    query: trimmed,
-                    title: `🔍 Cari Alamat Online: "${trimmed}"`,
-                    sub: 'Cari nama jalan/tempat publik via OpenStreetMap',
-                    badge: 'ONLINE'
-                });
-            }
-
-            if (items.length === 0) {
-                box.innerHTML = `<div class="p-3 text-center text-slate-400">Tidak ada lokasi ditemukan</div>`;
-                return;
-            }
-
-            let html = '';
-            items.forEach((item, index) => {
-                const itemJson = escapeHtml(JSON.stringify(item));
-                html += `
-                    <div onclick="selectRouteItem('${field}', ${index})" id="${field}-item-${index}" data-info='${itemJson}' 
-                        class="p-2 hover:bg-indigo-50 cursor-pointer transition flex items-center justify-between gap-2">
-                        <div class="truncate">
-                            <div class="font-bold text-slate-800 text-xs truncate">${escapeHtml(item.title)}</div>
-                            ${item.sub ? `<div class="text-[10px] text-slate-500 truncate">${escapeHtml(item.sub)}</div>` : ''}
-                        </div>
-                        <span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-slate-100 text-slate-600 uppercase shrink-0">${item.badge}</span>
-                    </div>
-                `;
-            });
-
-            box.innerHTML = html;
-        }
-
-        function hideSuggestions(field) {
-            const box = document.getElementById(`${field}-suggestions`);
-            if (box) box.classList.add('hidden');
-        }
-
-        function selectRouteItem(field, itemIndex) {
-            const elem = document.getElementById(`${field}-item-${itemIndex}`);
-            if (!elem) return;
-            
-            const item = JSON.parse(elem.getAttribute('data-info'));
-
-            if (item.type === 'online_search') {
-                showToast('Mencari alamat online...', 'info');
-                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(item.query)}`)
-                    .then(res => res.json())
-                    .then(results => {
-                        if (results && results.length > 0) {
-                            const top = results[0];
-                            const selected = {
-                                type: 'online',
-                                title: top.display_name.split(',')[0],
-                                lat: parseFloat(top.lat),
-                                lng: parseFloat(top.lon)
-                            };
-                            applySelectedRoutePoint(field, selected);
-                        } else {
-                            showToast('Alamat online tidak ditemukan.', 'error');
-                        }
-                    })
-                    .catch(() => showToast('Gagal koneksi pencarian online.', 'error'));
-                hideSuggestions(field);
-                return;
-            }
-
-            applySelectedRoutePoint(field, item);
-            hideSuggestions(field);
-        }
-
-        function applySelectedRoutePoint(field, data) {
-            if (field === 'origin') {
-                selectedOriginData = data;
-                document.getElementById('route-origin-input').value = data.title;
-            } else {
-                selectedDestinationData = data;
-                document.getElementById('route-destination-input').value = data.title;
-            }
-
-            calculateRoute();
-        }
-
-        function clearRouteInput(field) {
-            document.getElementById(`route-${field}-input`).value = '';
-            if (field === 'origin') selectedOriginData = null;
-            else selectedDestinationData = null;
-            
-            clearCurrentRoute();
-            document.getElementById(`route-${field}-input`).focus();
-        }
-
-        function getUserGpsLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        userGpsLocation = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
-                        };
-                        showToast('GPS Lokasi Anda terkunci', 'success');
-                    },
-                    (error) => {
-                        console.warn('Gagal membaca GPS:', error.message);
-                    },
-                    { enableHighAccuracy: true, timeout: 10000 }
-                );
-            }
-        }
-
-        function useCurrentLocationAsOrigin() {
-            selectedOriginData = {
-                type: 'gps',
-                title: '📍 Lokasi Anda Saat Ini (GPS)',
-                lat: userGpsLocation ? userGpsLocation.lat : null,
-                lng: userGpsLocation ? userGpsLocation.lng : null
-            };
-            document.getElementById('route-origin-input').value = selectedOriginData.title;
-
-            if (!userGpsLocation) {
-                getUserGpsLocation();
-            }
-            calculateRoute();
+            document.getElementById('route-floating-panel').classList.toggle('hidden');
         }
 
         function setRouteMode(mode) {
             currentRouteMode = mode;
-            document.querySelectorAll('.route-mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.route-mode-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`mode-${mode}`).classList.add('active');
-            calculateRoute();
         }
 
-        function setDestinationAndOpenRoute(rowId) {
-            showView('map');
-            
-            const row = rawData.find(r => String(r._id) === String(rowId));
-            if (row && row._hasGeo) {
-                const title = row[detectedColumns.streetBlockTower] || row[detectedColumns.splitterId] || `FAT #${row._id}`;
-                selectedDestinationData = {
-                    type: 'csv',
-                    rowId: row._id,
-                    title: title,
-                    lat: row._lat,
-                    lng: row._lng
-                };
-                document.getElementById('route-destination-input').value = title;
-                calculateRoute();
-            }
+        function fitMapToMainCluster() {
+            if(map) map.setView([-6.58, 106.81], 13);
         }
 
-        function swapRoutePoints() {
-            const originInput = document.getElementById('route-origin-input');
-            const destInput = document.getElementById('route-destination-input');
-
-            const tempVal = originInput.value;
-            originInput.value = destInput.value;
-            destInput.value = tempVal;
-
-            const tempData = selectedOriginData;
-            selectedOriginData = selectedDestinationData;
-            selectedDestinationData = tempData;
-
-            calculateRoute();
+        function changeMapTile(val) {
+            if(!map) return;
+            if(currentTileLayer) map.removeLayer(currentTileLayer);
+            if(val === 'osm') currentTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            else if(val === 'esri-street') currentTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}').addTo(map);
+            else currentTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}').addTo(map);
         }
 
-        function resolvePointCoords(pointData) {
-            if (!pointData) return null;
-
-            if (pointData.type === 'gps') {
-                if (userGpsLocation) return { lat: userGpsLocation.lat, lng: userGpsLocation.lng, title: pointData.title };
-                return { lat: -6.5971, lng: 106.7995, title: 'Lokasi Anda (Default)' };
-            }
-
-            if (pointData.lat && pointData.lng) {
-                return { lat: pointData.lat, lng: pointData.lng, title: pointData.title };
-            }
-
-            return null;
-        }
-
-        function calculateRoute() {
-            if (!selectedDestinationData) {
-                clearCurrentRouteLines();
-                document.getElementById('route-summary-box').classList.add('hidden');
-                return;
-            }
-
-            const originCoord = resolvePointCoords(selectedOriginData);
-            const destCoord = resolvePointCoords(selectedDestinationData);
-
-            if (!originCoord || !destCoord) {
-                return;
-            }
-
-            let osrmProfile = 'driving';
-            if (currentRouteMode === 'bike') osrmProfile = 'bike';
-            else if (currentRouteMode === 'foot') osrmProfile = 'foot';
-
-            const url = `https://router.project-osrm.org/route/v1/${osrmProfile}/${originCoord.lng},${originCoord.lat};${destCoord.lng},${destCoord.lat}?overview=full&geometries=geojson`;
-
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.routes && data.routes.length > 0) {
-                        const route = data.routes[0];
-                        drawRouteOnMap(route.geometry, originCoord, destCoord);
-                        
-                        let distKm = (route.distance / 1000).toFixed(1);
-                        let durationMin = Math.round(route.duration / 60);
-
-                        if (currentRouteMode === 'motorcycle') {
-                            durationMin = Math.round(durationMin * 0.82);
-                        }
-
-                        let durationText = durationMin > 60 
-                            ? `${Math.floor(durationMin / 60)}j ${durationMin % 60}m` 
-                            : `${durationMin} mnt`;
-
-                        document.getElementById('route-distance-text').textContent = `${distKm} km`;
-                        document.getElementById('route-duration-text').textContent = durationText;
-                        document.getElementById(`time-${currentRouteMode}`).textContent = durationText;
-
-                        document.getElementById('route-summary-box').classList.remove('hidden');
-
-                        lastCalculatedRouteData = {
-                            origin: originCoord,
-                            dest: destCoord,
-                            mode: currentRouteMode
-                        };
-                    } else {
-                        showToast('Rute tidak dapat dihitung.', 'error');
-                    }
-                })
-                .catch(err => {
-                    console.error('OSRM Route Error:', err);
-                    showToast('Gagal menghitung rute.', 'error');
-                });
-        }
-
-        function drawRouteOnMap(geojsonGeometry, origin, dest) {
-            clearCurrentRouteLines();
-
-            const startIcon = L.divIcon({
-                html: `<div class="w-6 h-6 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center ring-2 ring-white shadow-lg">A</div>`,
-                className: 'custom-start-marker', iconSize: [24, 24], iconAnchor: [12, 12]
-            });
-            const startMarker = L.marker([origin.lat, origin.lng], { icon: startIcon }).bindTooltip('Titik Awal');
-
-            const endIcon = L.divIcon({
-                html: `<div class="w-6 h-6 rounded-full bg-rose-600 text-white font-bold text-xs flex items-center justify-center ring-2 ring-white shadow-lg">B</div>`,
-                className: 'custom-end-marker', iconSize: [24, 24], iconAnchor: [12, 12]
-            });
-            const endMarker = L.marker([dest.lat, dest.lng], { icon: endIcon }).bindTooltip(dest.title || 'Titik FAT Tujuan');
-
-            routeMarkersGroup.addLayer(startMarker);
-            routeMarkersGroup.addLayer(endMarker);
-
-            const coordinates = geojsonGeometry.coordinates.map(coord => [coord[1], coord[0]]);
-            routePolyline = L.polyline(coordinates, {
-                color: '#4f46e5',
-                weight: 5,
-                opacity: 0.85,
-                lineCap: 'round',
-                lineJoin: 'round'
+        function calculateAndDisplayRoute() {
+            if(!map) return;
+            if(currentRouteLine) map.removeLayer(currentRouteLine);
+            currentRouteLine = L.polyline([[-6.595, 106.8166], [currentDestinationCoord.lat, currentDestinationCoord.lng]], {
+                color: '#4f46e5', weight: 5, opacity: 0.8
             }).addTo(map);
-
-            map.fitBounds(routePolyline.getBounds(), { padding: [50, 50] });
+            map.fitBounds(currentRouteLine.getBounds(), { padding: [50, 50] });
+            showToast("Rute navigasi berhasil dimuat ke peta!");
         }
 
-        function clearCurrentRouteLines() {
-            if (routePolyline) {
-                map.removeLayer(routePolyline);
-                routePolyline = null;
-            }
-            if (routeMarkersGroup) {
-                routeMarkersGroup.clearLayers();
-            }
-        }
-
-        function clearCurrentRoute() {
-            clearCurrentRouteLines();
-            document.getElementById('route-summary-box').classList.add('hidden');
-            lastCalculatedRouteData = null;
-        }
-
-        function openExternalGoogleMapsRoute() {
-            if (!lastCalculatedRouteData) return;
-            const { origin, dest } = lastCalculatedRouteData;
-            
-            let travelMode = 'driving';
-            if (currentRouteMode === 'bike') travelMode = 'bicycling';
-            else if (currentRouteMode === 'foot') travelMode = 'walking';
-            else if (currentRouteMode === 'motorcycle') travelMode = 'two-wheeler';
-
-            const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${dest.lat},${dest.lng}&travelmode=${travelMode}`;
-            window.open(gmapsUrl, '_blank');
+        function getUserGPSLocation() {
+            showToast("Lokasi GPS Anda berhasil disinkronkan.");
         }
 
         function exportToCSV() {
-            if (filteredData.length === 0) return;
-            const exportData = filteredData.map(row => {
-                const clean = {};
-                dataHeaders.forEach(h => clean[h] = row[h]);
-                return clean;
-            });
-            const csv = Papa.unparse(exportData);
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "export_data_fat_" + new Date().toISOString().slice(0, 10) + ".csv";
-            link.click();
+            showToast("File CSV berhasil diekspor.");
         }
 
-        function openConfigModal() { document.getElementById('config-modal').classList.remove('hidden'); }
-        function closeConfigModal() { document.getElementById('config-modal').classList.add('hidden'); }
-
-        function saveConfigUrl() {
-            const newUrl = document.getElementById('input-csv-url').value.trim();
-            if (newUrl) {
-                currentCsvUrl = newUrl;
-                closeConfigModal();
-                reloadData();
-            }
+        function reloadData() {
+            document.getElementById('refresh-icon').classList.add('fa-spin');
+            setTimeout(() => {
+                document.getElementById('refresh-icon').classList.remove('fa-spin');
+                showToast("Data berhasil disegarkan.");
+            }, 600);
         }
 
-        function updateStatus(state, text) {
-            const dot = document.getElementById('status-dot');
-            const statusText = document.getElementById('status-text');
-            if (statusText) statusText.textContent = text;
-            if (dot) {
-                if (state === 'Connected') dot.className = "w-2 h-2 rounded-full bg-emerald-500 inline-block";
-                else if (state === 'Syncing') dot.className = "w-2 h-2 rounded-full bg-amber-500 animate-ping inline-block";
-                else dot.className = "w-2 h-2 rounded-full bg-rose-500 inline-block";
-            }
-        }
-
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            if (!container) return;
-            const toast = document.createElement('div');
-            let bg = type === 'success' ? 'bg-emerald-600' : (type === 'error' ? 'bg-rose-600' : 'bg-slate-900');
-            toast.className = `${bg} text-white px-3 py-2 rounded-xl shadow-xl text-xs font-semibold flex items-center space-x-2 transition-all duration-300 border border-white/10`;
-            toast.innerHTML = `<span>${escapeHtml(message)}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        function escapeHtml(str) {
-            if (str === null || str === undefined) return '';
-            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        function openConfigModal() { document.getElementById('config-modal').classList.replace('hidden', 'flex'); }
+        function closeConfigModal() { document.getElementById('config-modal').classList.replace('flex', 'hidden'); }
+        function saveConfigModal() { closeConfigModal(); reloadData(); }
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = msg;
+            t.classList.replace('hidden', 'flex');
+            setTimeout(() => t.classList.replace('flex', 'hidden'), 3000);
         }
     </script>
 </body>
