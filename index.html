@@ -30,8 +30,8 @@
             background-color: #0b1120;
         }
         #map {
-            height: calc(100vh - 150px);
-            min-height: 520px;
+            height: calc(100vh - 170px);
+            min-height: 540px;
             width: 100%;
             z-index: 10;
         }
@@ -89,17 +89,17 @@
                 </div>
             </button>
 
-            <!-- Navigation Links -->
+            <!-- Navigation Links (3 Separated Tabs) -->
             <nav class="hidden md:flex items-center gap-2 bg-slate-800/80 p-1.5 rounded-xl border border-slate-700/60">
-                <button onclick="showView('landing')" id="nav-btn-landing" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-2">
+                <button onclick="showView('landing')" id="nav-btn-landing" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-2">
                     <i class="fa-solid fa-house text-xs"></i>
                     <span>Muka Depan</span>
                 </button>
-                <button onclick="showView('map')" id="nav-btn-map" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 shadow transition flex items-center gap-2">
+                <button onclick="showView('map')" id="nav-btn-map" class="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 shadow transition flex items-center gap-2">
                     <i class="fa-solid fa-map text-xs"></i>
                     <span>Tampilan Peta</span>
                 </button>
-                <button onclick="showView('data')" id="nav-btn-data" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-2">
+                <button onclick="showView('data')" id="nav-btn-data" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-2">
                     <i class="fa-solid fa-database text-xs"></i>
                     <span>Data FAT</span>
                 </button>
@@ -109,12 +109,12 @@
             <div class="flex items-center space-x-2.5">
                 <div class="hidden sm:flex items-center space-x-1.5 bg-slate-800/90 px-3 py-1.5 rounded-full text-xs border border-slate-700">
                     <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                    <span id="status-text" class="text-[10px] font-semibold text-slate-200">Connected</span>
+                    <span id="status-text" class="text-[10px] font-semibold text-slate-200">Terhubung</span>
                 </div>
 
-                <button onclick="reloadData()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-lg shadow-indigo-600/20">
+                <button onclick="loadCSVData()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-lg shadow-indigo-600/20">
                     <i id="refresh-icon" class="fa-solid fa-rotate"></i>
-                    <span class="hidden sm:inline">Refresh</span>
+                    <span class="hidden sm:inline">Refresh Data</span>
                 </button>
 
                 <button onclick="openConfigModal()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold border border-slate-700 transition" title="Pengaturan URL Data">
@@ -133,7 +133,7 @@
             <i class="fa-solid fa-map"></i> Peta
         </button>
         <button onclick="showView('data')" id="mob-nav-data" class="flex-1 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-database"></i> Data FAT (<span id="mob-badge-count">169</span>)
+            <i class="fa-solid fa-database"></i> Data FAT
         </button>
     </div>
 
@@ -141,7 +141,7 @@
     <main class="flex-grow max-w-[1440px] w-full mx-auto p-3 overflow-hidden flex flex-col justify-center">
 
         <!-- ========================================================================= -->
-        <!-- 1. TAMPILAN MUKA DEPAN / LANDING PAGE -->
+        <!-- 1. TAMPILAN MUKA DEPAN / LANDING PAGE (TAB 1) -->
         <!-- ========================================================================= -->
         <section id="view-landing" class="hidden w-full h-full flex flex-col items-center justify-center py-6 space-y-8 overflow-y-auto">
             <div class="text-center max-w-2xl space-y-3 pt-2">
@@ -149,7 +149,7 @@
                     <i class="fa-solid fa-circle-check text-emerald-400"></i> Sistem Geo Spatial FAT & Splitter Terpadu
                 </span>
                 <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Geo Maps & Rute Navigasi</h2>
-                <p class="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto">Portal terpisah untuk pemetaan geolokasi presisi, navigasi rute perjalanan, serta manajemen spreadsheet data FAT lengkap.</p>
+                <p class="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto">Portal terpisah untuk pemetaan geolokasi presisi, navigasi rute perjalanan, serta manajemen spreadsheet data FAT lengkap dari Google Sheets.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl px-2">
@@ -159,8 +159,8 @@
                         <div class="w-14 h-14 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition shadow-lg">
                             <i class="fa-solid fa-map-location-dot text-2xl"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-white group-hover:text-indigo-300 transition">2. Tampilan Peta</h3>
-                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Peta interaktif layar penuh dengan fitur filter kecamatan, pencarian splitter, serta navigasi rute presisi.</p>
+                        <h3 class="text-xl font-bold text-white group-hover:text-indigo-300 transition">Tampilan Peta</h3>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Peta interaktif layar penuh dengan filter kecamatan, pencarian splitter, serta navigasi rute perjalanan presisi.</p>
                     </div>
                     <div class="mt-6 pt-4 border-t border-slate-700/80 flex items-center justify-between text-xs sm:text-sm text-indigo-400 font-extrabold">
                         <span>Buka Tampilan Peta</span>
@@ -174,8 +174,8 @@
                         <div class="w-14 h-14 rounded-2xl bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition shadow-lg">
                             <i class="fa-solid fa-database text-2xl"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-white group-hover:text-emerald-300 transition">3. Data FAT</h3>
-                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Tabel data spreadsheet komprehensif seluruh titik FAT dengan pencarian instan dan ekspor CSV.</p>
+                        <h3 class="text-xl font-bold text-white group-hover:text-emerald-300 transition">Data FAT</h3>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Tabel spreadsheet komprehensif seluruh titik FAT yang terintegrasi langsung dari database Google Sheets.</p>
                     </div>
                     <div class="mt-6 pt-4 border-t border-slate-700/80 flex items-center justify-between text-xs sm:text-sm text-emerald-400 font-extrabold">
                         <span>Buka Tabel Data FAT</span>
@@ -186,7 +186,7 @@
         </section>
 
         <!-- ========================================================================= -->
-        <!-- 2. TAMPILAN PETA / MAP VIEW (FULLSCREEN IMMERSIVE) -->
+        <!-- 2. TAMPILAN PETA / MAP VIEW (FULLSCREEN IMMERSIVE - TAB 2) -->
         <!-- ========================================================================= -->
         <section id="view-map" class="h-full w-full flex flex-col gap-2.5 overflow-hidden">
             
@@ -251,7 +251,7 @@
                         <button onclick="setRouteMode('motorcycle')" id="mode-motorcycle" class="route-mode-btn active flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
                             <i class="fa-solid fa-motorcycle text-xs mb-0.5"></i>
                             <span>Motor</span>
-                            <span id="time-motorcycle" class="text-[9px] font-mono text-indigo-600 font-bold">22 mnt</span>
+                            <span id="time-motorcycle" class="text-[9px] font-mono text-indigo-600 font-bold">15 mnt</span>
                         </button>
                         <button onclick="setRouteMode('bike')" id="mode-bike" class="route-mode-btn flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
                             <i class="fa-solid fa-bicycle text-xs mb-0.5"></i>
@@ -304,7 +304,7 @@
         </section>
 
         <!-- ========================================================================= -->
-        <!-- 3. DATA FAT VIEW (FULLSCREEN SPREADSHEET TABLE) -->
+        <!-- 3. DATA FAT VIEW (FULLSCREEN SPREADSHEET TABLE - TAB 3) -->
         <!-- ========================================================================= -->
         <section id="view-data" class="hidden w-full h-full flex flex-col bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden p-4 space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 shrink-0">
@@ -312,7 +312,7 @@
                     <h2 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
                         <i class="fa-solid fa-database text-emerald-600"></i> Manajemen Data Lengkap FAT
                     </h2>
-                    <p class="text-xs text-slate-500">Daftar seluruh titik splitter dan informasi geospasial database.</p>
+                    <p class="text-xs text-slate-500">Daftar seluruh titik splitter dan informasi geospasial database Google Sheets.</p>
                 </div>
                 <div class="flex items-center gap-2.5">
                     <div class="relative">
@@ -331,9 +331,9 @@
                         <tr>
                             <th class="p-3">No</th>
                             <th class="p-3">Subdistrict</th>
-                            <th class="p-3">Splitter ID</th>
-                            <th class="p-3">Street / Block / Tower</th>
-                            <th class="p-3">Koordinat (Lat, Lng)</th>
+                            <th class="p-3">Street/Block/Tower / Jalan/Blok/Menara</th>
+                            <th class="p-3">SplitterID</th>
+                            <th class="p-3">SplitterDistributionCoordinate</th>
                             <th class="p-3 text-center">Aksi di Peta</th>
                         </tr>
                     </thead>
@@ -344,7 +344,7 @@
             </div>
 
             <div class="flex items-center justify-between text-xs text-slate-500 pt-1 shrink-0">
-                <span id="full-table-count">Menampilkan seluruh data FAT</span>
+                <span id="full-table-count">Memuat data FAT dari Google Sheets...</span>
                 <button onclick="showView('map')" class="text-indigo-600 font-bold hover:underline flex items-center gap-1.5">
                     <i class="fa-solid fa-map"></i> Lihat di Tampilan Peta
                 </button>
@@ -363,9 +363,9 @@
                 <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-700 text-base"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-3">
-                <label class="block text-xs font-semibold text-slate-700">URL CSV Google Sheets atau GitHub:</label>
-                <input type="text" id="csv-url-input" class="w-full text-xs p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv">
-                <p class="text-[10px] text-slate-500 leading-relaxed">Pastikan spreadsheet dipublikasikan ke web sebagai format CSV agar sistem dapat menyinkronkan data secara real-time.</p>
+                <label class="block text-xs font-semibold text-slate-700">URL CSV Google Sheets:</label>
+                <input type="text" id="csv-url-input" class="w-full text-xs p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none" value="https://docs.google.com/spreadsheets/d/e/2PACX-1vRXK75pWXC0NLKHtHNTz1QJ0hiIZI1B6e6avDtoNaYXwtSelAqJsU027scVloFMpyxY7ovXn6Ou4ej2/pub?gid=711552085&single=true&output=csv">
+                <p class="text-[10px] text-slate-500 leading-relaxed">URL terintegrasi langsung dengan database Google Sheets publik Anda.</p>
             </div>
             <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                 <button onclick="closeConfigModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
@@ -382,19 +382,17 @@
 
     <!-- APPLICATION JAVASCRIPT -->
     <script>
-        let csvDataUrl = localStorage.getItem('fat_csv_url') || '';
+        const DEFAULT_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRXK75pWXC0NLKHtHNTz1QJ0hiIZI1B6e6avDtoNaYXwtSelAqJsU027scVloFMpyxY7ovXn6Ou4ej2/pub?gid=711552085&single=true&output=csv';
+        let csvDataUrl = localStorage.getItem('fat_csv_url') || DEFAULT_CSV_URL;
         
         let rawData = [];
         let filteredData = [];
         let map = null;
         let markersCluster = null;
         let currentTileLayer = null;
-        let selectedRowId = null;
-        
-        let userPosition = { lat: -6.595, lng: 106.8166 };
         let currentRouteLine = null;
         let currentRouteMode = 'motorcycle';
-        let currentDestinationCoord = { lat: -6.5612, lng: 106.8021 };
+        let currentDestinationCoord = { lat: -6.58, lng: 106.81 };
 
         const subdistrictColors = {
             'CIBINONG': '#3b82f6',
@@ -404,19 +402,10 @@
             'BOGOR UTARA': '#6366f1'
         };
 
-        const sampleCSV = `subdistrict,splitterid,streetBlockTower,koordinat
-BOGOR UTARA,BGR01 D008 M14 S1,Jl. Kemang Raya,-6.5612,106.8021
-CIBINONG,CBI-04-D016,Perum Cikaret,-6.4712,106.8323
-SUKMAJAYA,SKJ-01-D002,Jl. Juanda,-6.4050,106.8366
-CILODONG,CLD-01-D001,Jl. Grand Depok,-6.4180,106.8485
-PANCORAN MAS,PCM-03-D008,Jl. Margonda,-6.3934,106.8251
-BOGOR UTARA,D4 M14 S1,Perumahan Indraprasta,-6.5723,106.8134
-BOGOR UTARA,B02 M14 S2,Jl. Pajajaran Indah,-6.5680,106.8090
-BOGOR UTARA,D7 M14 S7,Jl. A. Yani,-6.5640,106.8050`;
-
         document.addEventListener('DOMContentLoaded', () => {
             initMap();
             loadCSVData();
+            document.getElementById('csv-url-input').value = csvDataUrl;
         });
 
         function showView(viewName) {
@@ -431,7 +420,7 @@ BOGOR UTARA,D7 M14 S7,Jl. A. Yani,-6.5640,106.8050`;
             ['landing', 'map', 'data'].forEach(name => {
                 const btn = document.getElementById(`nav-btn-${name}`);
                 if(btn) {
-                    btn.className = "px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-2";
+                    btn.className = "px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-2";
                 }
                 const mobBtn = document.getElementById(`mob-nav-${name}`);
                 if(mobBtn) {
@@ -456,7 +445,7 @@ BOGOR UTARA,D7 M14 S7,Jl. A. Yani,-6.5640,106.8050`;
         function setActiveNav(name) {
             const btn = document.getElementById(`nav-btn-${name}`);
             if(btn) {
-                btn.className = "px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 shadow transition flex items-center gap-2";
+                btn.className = "px-4 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 shadow transition flex items-center gap-2";
             }
             const mobBtn = document.getElementById(`mob-nav-${name}`);
             if(mobBtn) {
@@ -507,11 +496,43 @@ BOGOR UTARA,D7 M14 S7,Jl. A. Yani,-6.5640,106.8050`;
         }
 
         function loadCSVData() {
+            document.getElementById('refresh-icon').classList.add('fa-spin');
+            
+            Papa.parse(csvDataUrl, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    document.getElementById('refresh-icon').classList.remove('fa-spin');
+                    if(results.data && results.data.length > 0) {
+                        processParsedData(results.data);
+                        showToast("Data FAT berhasil dimuat dari Google Sheets!");
+                    } else {
+                        loadFallbackData();
+                    }
+                },
+                error: function(err) {
+                    console.warn("Gagal memuat langsung dari URL, menggunakan sampel data lokal:", err);
+                    loadFallbackData();
+                }
+            });
+        }
+
+        function loadFallbackData() {
+            document.getElementById('refresh-icon').classList.remove('fa-spin');
+            const sampleCSV = `subdistrict,streetBlockTower,splitterid,koordinat
+BOGOR UTARA,Jl. Kemang Raya,BGR01 D008 M14 S1,-6.5612,106.8021
+CIBINONG,Perum Cikaret,CBI-04-D016,-6.4712,106.8323
+SUKMAJAYA,Jl. Juanda,SKJ-01-D002,-6.4050,106.8366
+CILODONG,Jl. Grand Depok,CLD-01-D001,-6.4180,106.8485
+PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
+            
             Papa.parse(sampleCSV, {
                 header: true,
                 skipEmptyLines: true,
                 complete: function(results) {
                     processParsedData(results.data);
+                    showToast("Dimuat menggunakan data cadangan.");
                 }
             });
         }
@@ -519,36 +540,33 @@ BOGOR UTARA,D7 M14 S7,Jl. A. Yani,-6.5640,106.8050`;
         function processParsedData(rows) {
             rawData = [];
             rows.forEach((row, index) => {
-                const sub = (row.subdistrict || '').trim().toUpperCase();
-                const split = (row.splitterid || '').trim();
-                const street = (row.streetBlockTower || '').trim();
-                let lat = parseFloat(row.koordinat ? row.koordinat.split(',')[0] : 0);
-                let lng = parseFloat(row.koordinat ? row.koordinat.split(',')[1] : 0);
+                const sub = (row.subdistrict || row.SUBDISTRICT || '').trim().toUpperCase();
+                const street = (row.streetBlockTower || row.STREETBLOCKTOWER || row['Street/Block/Tower / Jalan/Blok/Menara'] || row['Street / Block / Tower'] || '').trim();
+                const split = (row.splitterid || row.SPLITTERID || row['Splitter ID'] || row['SplitterID'] || '').trim();
+                
+                let latVal = 0;
+                let lngVal = 0;
+                const coordStr = row.koordinat || row.KOORDINAT || row['SplitterDistributionCoordinate'] || row['Koordinat (Lat, Lng)'] || '';
+                if(coordStr.includes(',')) {
+                    const parts = coordStr.split(',');
+                    latVal = parseFloat(parts[0]);
+                    lngVal = parseFloat(parts[1]);
+                }
 
                 rawData.push({
                     id: 'fat_' + index,
                     subdistrict: sub || 'BOGOR UTARA',
-                    splitterid: split || 'SPLITTER-' + index,
                     streetBlockTower: street || '-',
-                    lat: isNaN(lat) ? -6.56 : lat,
-                    lng: isNaN(lng) ? 106.80 : lng
+                    splitterid: split || 'SPLITTER-' + index,
+                    lat: isNaN(latVal) ? -6.56 + (Math.random() * 0.04) : latVal,
+                    lng: isNaN(lngVal) ? 106.80 + (Math.random() * 0.04) : lngVal
                 });
             });
-
-            for(let i=9; i<=169; i++) {
-                rawData.push({
-                    id: 'fat_' + i,
-                    subdistrict: i % 2 === 0 ? 'BOGOR UTARA' : 'CIBINONG',
-                    splitterid: `BGR01 D${i} M14 S1`,
-                    streetBlockTower: 'Jl. Pemuda No. ' + i,
-                    lat: -6.5600 + (Math.random() * 0.05),
-                    lng: 106.8000 + (Math.random() * 0.05)
-                });
-            }
 
             filteredData = [...rawData];
             populateSubdistrictDropdown();
             applyMapFilters();
+            renderFullDataTable();
         }
 
         function populateSubdistrictDropdown() {
@@ -569,13 +587,10 @@ BOGOR UTARA,D7 M14 S7,Jl. A. Yani,-6.5640,106.8050`;
 
         function applyMapFilters() {
             const subdistrictVal = document.getElementById('map-filter-subdistrict').value.toUpperCase();
-
             filteredData = rawData.filter(item => {
                 const matchSub = !subdistrictVal || item.subdistrict === subdistrictVal;
                 return matchSub;
             });
-
-            document.getElementById('mob-badge-count').textContent = rawData.length;
             renderMapMarkers();
         }
 
@@ -605,7 +620,7 @@ BOGOR UTARA,D7 M14 S7,Jl. A. Yani,-6.5640,106.8050`;
             const item = rawData.find(d => d.id === id);
             if(!item) return;
 
-            document.getElementById('route-destination-input').value = item.streetBlockTower;
+            document.getElementById('route-destination-input').value = item.streetBlockTower + ' (' + item.splitterid + ')';
             currentDestinationCoord = { lat: item.lat, lng: item.lng };
 
             if(item.lat && item.lng) {
@@ -628,13 +643,14 @@ BOGOR UTARA,D7 M14 S7,Jl. A. Yani,-6.5640,106.8050`;
 
             let html = '';
             list.forEach((item, index) => {
+                const coordStr = `${item.lat.toFixed(5)}, ${item.lng.toFixed(5)}`;
                 html += `
                     <tr class="hover:bg-slate-50 transition">
                         <td class="p-3 font-medium text-slate-500">${index + 1}</td>
                         <td class="p-3 font-bold text-slate-800">${item.subdistrict}</td>
-                        <td class="p-3 font-bold text-indigo-600">${item.splitterid}</td>
                         <td class="p-3 text-slate-600">${item.streetBlockTower}</td>
-                        <td class="p-3 font-mono text-slate-500">${item.lat.toFixed(5)}, ${item.lng.toFixed(5)}</td>
+                        <td class="p-3 font-bold text-indigo-600">${item.splitterid}</td>
+                        <td class="p-3 font-mono text-slate-500">${coordStr}</td>
                         <td class="p-3 text-center">
                             <button onclick="jumpToMapItem('${item.id}')" class="px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl text-xs font-bold transition shadow-sm">
                                 <i class="fa-solid fa-map-pin"></i> Lihat di Peta
@@ -689,20 +705,33 @@ BOGOR UTARA,D7 M14 S7,Jl. A. Yani,-6.5640,106.8050`;
         }
 
         function exportToCSV() {
-            showToast("File CSV berhasil diekspor.");
-        }
-
-        function reloadData() {
-            document.getElementById('refresh-icon').classList.add('fa-spin');
-            setTimeout(() => {
-                document.getElementById('refresh-icon').classList.remove('fa-spin');
-                showToast("Data berhasil disegarkan.");
-            }, 600);
+            let csvContent = "data:text/csv;charset=utf-8,Subdistrict,Street/Block/Tower / Jalan/Blok/Menara,SplitterID,SplitterDistributionCoordinate\n";
+            rawData.forEach(item => {
+                csvContent += `"${item.subdistrict}","${item.streetBlockTower}","${item.splitterid}","${item.lat},${item.lng}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "data_fat_export.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("File CSV berhasil diekspor!");
         }
 
         function openConfigModal() { document.getElementById('config-modal').classList.replace('hidden', 'flex'); }
         function closeConfigModal() { document.getElementById('config-modal').classList.replace('flex', 'hidden'); }
-        function saveConfigModal() { closeConfigModal(); reloadData(); }
+        
+        function saveConfigModal() {
+            const val = document.getElementById('csv-url-input').value.trim();
+            if(val) {
+                csvDataUrl = val;
+                localStorage.setItem('fat_csv_url', csvDataUrl);
+            }
+            closeConfigModal();
+            loadCSVData();
+        }
+
         function showToast(msg) {
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').textContent = msg;
