@@ -74,7 +74,6 @@
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col text-slate-800 bg-[#0b1120]">
 
-    <!-- HEADER BAR -->
     <header class="bg-[#0f172a] border-b border-slate-800 text-white shadow-lg shrink-0 z-40">
         <div class="max-w-[1440px] w-full mx-auto px-4 py-3 flex items-center justify-between">
             
@@ -160,7 +159,7 @@
                             <i class="fa-solid fa-map-location-dot text-2xl"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white group-hover:text-indigo-300 transition">Tampilan Peta</h3>
-                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Peta interaktif layar penuh dengan filter kecamatan, pencarian splitter, serta navigasi rute perjalanan presisi.</p>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Peta interaktif layar penuh dengan filter kecamatan, pencarian lokasi Street/Block/Tower, serta navigasi rute perjalanan presisi.</p>
                     </div>
                     <div class="mt-6 pt-4 border-t border-slate-700/80 flex items-center justify-between text-xs sm:text-sm text-indigo-400 font-extrabold">
                         <span>Buka Tampilan Peta</span>
@@ -175,7 +174,7 @@
                             <i class="fa-solid fa-database text-2xl"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white group-hover:text-emerald-300 transition">Data FAT</h3>
-                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Tabel spreadsheet komprehensif seluruh titik FAT yang terintegrasi langsung dari database Google Sheets.</p>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Tabel spreadsheet komprehensif seluruh titik FAT dengan urutan Subdistrict, Street/Block/Tower, SplitterID, dan Koordinat.</p>
                     </div>
                     <div class="mt-6 pt-4 border-t border-slate-700/80 flex items-center justify-between text-xs sm:text-sm text-emerald-400 font-extrabold">
                         <span>Buka Tabel Data FAT</span>
@@ -198,7 +197,7 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-slate-900 text-xs sm:text-sm">Peta Geolokasi & Rute Navigasi</h3>
-                        <p class="text-[10px] text-slate-500">Klik marker FAT pada peta atau pilih dari filter untuk melihat rute.</p>
+                        <p class="text-[10px] text-slate-500">Pilih lokasi Street/Block/Tower pada panel rute atau klik marker di peta.</p>
                     </div>
                 </div>
 
@@ -229,8 +228,7 @@
             <!-- Immersive Map & Floating Routing Container -->
             <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden flex flex-col relative flex-grow">
                 
-                <!-- FLOATING ROUTING NAVIGATION PANEL -->
-                <div id="route-floating-panel" class="absolute top-4 left-4 z-[1000] w-[92%] max-w-[360px] bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 p-4 transition-all duration-300">
+                <div id="route-floating-panel" class="absolute top-4 left-4 z-[1000] w-[92%] max-w-[380px] bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 p-4 transition-all duration-300">
                     <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100">
                         <div class="flex items-center gap-1.5 font-bold text-xs text-slate-800">
                             <i class="fa-solid fa-diamond-turn-right text-indigo-600"></i>
@@ -283,10 +281,11 @@
                                 </button>
                             </div>
 
+                            <!-- Dropdown dari Header Street/Block/Tower / Jalan/Blok/Menara -->
                             <div class="relative">
-                                <input type="text" id="route-destination-input" autocomplete="off"
-                                    placeholder="Pilih lokasi FAT / tujuan..." 
-                                    class="w-full text-xs p-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none truncate font-medium">
+                                <select id="route-destination-select" onchange="onRouteDestinationChange(this.value)" class="w-full text-xs p-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none font-medium truncate">
+                                    <option value="">-- Pilih Lokasi Street/Block/Tower --</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -312,7 +311,7 @@
                     <h2 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
                         <i class="fa-solid fa-database text-emerald-600"></i> Manajemen Data Lengkap FAT
                     </h2>
-                    <p class="text-xs text-slate-500">Daftar seluruh titik splitter dan informasi geospasial database Google Sheets.</p>
+                    <p class="text-xs text-slate-500">Daftar seluruh titik splitter sesuai urutan header data dari Google Sheets.</p>
                 </div>
                 <div class="flex items-center gap-2.5">
                     <div class="relative">
@@ -325,16 +324,16 @@
                 </div>
             </div>
 
-            <div class="flex-grow overflow-y-auto border border-slate-200 rounded-xl">
+            <div class="flex-grow overflow-y-auto border border-slate-200 rounded-xl relative">
                 <table class="w-full text-left border-collapse text-xs">
-                    <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[10px] sticky top-0 z-10 border-b border-slate-200">
+                    <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[10px] sticky top-0 z-20 border-b border-slate-200 shadow-sm">
                         <tr>
-                            <th class="p-3">No</th>
-                            <th class="p-3">Subdistrict</th>
-                            <th class="p-3">Street/Block/Tower / Jalan/Blok/Menara</th>
-                            <th class="p-3">SplitterID</th>
-                            <th class="p-3">SplitterDistributionCoordinate</th>
-                            <th class="p-3 text-center">Aksi di Peta</th>
+                            <th class="p-3 bg-slate-100">No</th>
+                            <th class="p-3 bg-slate-100">Subdistrict</th>
+                            <th class="p-3 bg-slate-100">Street/Block/Tower / Jalan/Blok/Menara</th>
+                            <th class="p-3 bg-slate-100">SplitterID</th>
+                            <th class="p-3 bg-slate-100">SplitterDistributionCoordinate</th>
+                            <th class="p-3 bg-slate-100 text-center">Aksi di Peta</th>
                         </tr>
                     </thead>
                     <tbody id="full-table-body" class="divide-y divide-slate-100 text-slate-800 font-medium">
@@ -540,17 +539,18 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
         function processParsedData(rows) {
             rawData = [];
             rows.forEach((row, index) => {
-                const sub = (row.subdistrict || row.SUBDISTRICT || '').trim().toUpperCase();
-                const street = (row.streetBlockTower || row.STREETBLOCKTOWER || row['Street/Block/Tower / Jalan/Blok/Menara'] || row['Street / Block / Tower'] || '').trim();
+                // Support multiple key variations for robust mapping
+                const sub = (row.subdistrict || row.SUBDISTRICT || row['Subdistrict'] || '').trim().toUpperCase();
+                const street = (row.streetBlockTower || row.STREETBLOCKTOWER || row['Street/Block/Tower / Jalan/Blok/Menara'] || row['Street / Block / Tower'] || row['StreetBlockTower'] || '').trim();
                 const split = (row.splitterid || row.SPLITTERID || row['Splitter ID'] || row['SplitterID'] || '').trim();
                 
                 let latVal = 0;
                 let lngVal = 0;
                 const coordStr = row.koordinat || row.KOORDINAT || row['SplitterDistributionCoordinate'] || row['Koordinat (Lat, Lng)'] || '';
-                if(coordStr.includes(',')) {
+                if(coordStr && coordStr.includes(',')) {
                     const parts = coordStr.split(',');
-                    latVal = parseFloat(parts[0]);
-                    lngVal = parseFloat(parts[1]);
+                    latVal = parseFloat(parts[0].trim());
+                    lngVal = parseFloat(parts[1].trim());
                 }
 
                 rawData.push({
@@ -565,6 +565,7 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
 
             filteredData = [...rawData];
             populateSubdistrictDropdown();
+            populateDestinationDropdown();
             applyMapFilters();
             renderFullDataTable();
         }
@@ -579,6 +580,22 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
                 opt.textContent = sub;
                 select.appendChild(opt);
             });
+        }
+
+        function populateDestinationDropdown() {
+            const select = document.getElementById('route-destination-select');
+            select.innerHTML = '<option value="">-- Pilih Lokasi Street/Block/Tower --</option>';
+            rawData.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.id;
+                opt.textContent = `${item.streetBlockTower} (${item.splitterid} - ${item.subdistrict})`;
+                select.appendChild(opt);
+            });
+        }
+
+        function onRouteDestinationChange(id) {
+            if(!id) return;
+            selectItemOnMap(id);
         }
 
         function onMapFilterChange() {
@@ -620,13 +637,15 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
             const item = rawData.find(d => d.id === id);
             if(!item) return;
 
-            document.getElementById('route-destination-input').value = item.streetBlockTower + ' (' + item.splitterid + ')';
+            const selectElem = document.getElementById('route-destination-select');
+            if(selectElem) selectElem.value = item.id;
+
             currentDestinationCoord = { lat: item.lat, lng: item.lng };
 
             if(item.lat && item.lng) {
                 map.setView([item.lat, item.lng], 15, { animate: true });
             }
-            showToast(`Dipilih: ${item.splitterid} (${item.subdistrict})`);
+            showToast(`Dipilih: ${item.streetBlockTower} (${item.splitterid})`);
         }
 
         function renderFullDataTable() {
@@ -648,7 +667,7 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
                     <tr class="hover:bg-slate-50 transition">
                         <td class="p-3 font-medium text-slate-500">${index + 1}</td>
                         <td class="p-3 font-bold text-slate-800">${item.subdistrict}</td>
-                        <td class="p-3 text-slate-600">${item.streetBlockTower}</td>
+                        <td class="p-3 text-slate-700 font-medium">${item.streetBlockTower}</td>
                         <td class="p-3 font-bold text-indigo-600">${item.splitterid}</td>
                         <td class="p-3 font-mono text-slate-500">${coordStr}</td>
                         <td class="p-3 text-center">
