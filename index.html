@@ -31,7 +31,7 @@
         }
         #map {
             height: calc(100vh - 170px);
-            min-height: 540px;
+            min-height: 520px;
             width: 100%;
             z-index: 10;
         }
@@ -174,7 +174,7 @@
                             <i class="fa-solid fa-database text-2xl"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white group-hover:text-emerald-300 transition">Data FAT</h3>
-                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Tabel spreadsheet komprehensif seluruh titik FAT dengan urutan Subdistrict, Street/Block/Tower, SplitterID, dan Koordinat.</p>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Tabel spreadsheet komprehensif seluruh titik FAT dengan urutan Subdistrict, Street/Block/Tower, SplitterID, dan SplitterDistributionCoordinate.</p>
                     </div>
                     <div class="mt-6 pt-4 border-t border-slate-700/80 flex items-center justify-between text-xs sm:text-sm text-emerald-400 font-extrabold">
                         <span>Buka Tabel Data FAT</span>
@@ -197,7 +197,7 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-slate-900 text-xs sm:text-sm">Peta Geolokasi & Rute Navigasi</h3>
-                        <p class="text-[10px] text-slate-500">Pilih lokasi Street/Block/Tower pada panel rute atau klik marker di peta.</p>
+                        <p class="text-[10px] text-slate-500">Pilih Subdistrict untuk memuat area Street/Block/Tower secara otomatis.</p>
                     </div>
                 </div>
 
@@ -249,7 +249,7 @@
                         <button onclick="setRouteMode('motorcycle')" id="mode-motorcycle" class="route-mode-btn active flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
                             <i class="fa-solid fa-motorcycle text-xs mb-0.5"></i>
                             <span>Motor</span>
-                            <span id="time-motorcycle" class="text-[9px] font-mono text-indigo-600 font-bold">15 mnt</span>
+                            <span id="time-motorcycle" class="text-[9px] font-mono text-indigo-600 font-bold">--</span>
                         </button>
                         <button onclick="setRouteMode('bike')" id="mode-bike" class="route-mode-btn flex flex-col items-center justify-center py-1.5 rounded-lg text-[10px] border border-transparent transition">
                             <i class="fa-solid fa-bicycle text-xs mb-0.5"></i>
@@ -263,7 +263,7 @@
                         </button>
                     </div>
 
-                    <!-- Route Input Form -->
+                    <!-- Route Input Form with Manual Text Typing for Street/Block/Tower -->
                     <div class="flex items-center gap-2 relative">
                         <div class="flex flex-col items-center justify-between h-16 py-2 shrink-0">
                             <div class="w-2.5 h-2.5 rounded-full border-2 border-indigo-600 bg-white"></div>
@@ -281,19 +281,37 @@
                                 </button>
                             </div>
 
-                            <!-- Dropdown dari Header Street/Block/Tower / Jalan/Blok/Menara -->
+                            <!-- Manual Text Input for Street/Block/Tower -->
                             <div class="relative">
-                                <select id="route-destination-select" onchange="onRouteDestinationChange(this.value)" class="w-full text-xs p-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none font-medium truncate">
-                                    <option value="">-- Pilih Lokasi Street/Block/Tower --</option>
-                                </select>
+                                <input type="text" id="route-destination-input" autocomplete="off"
+                                    placeholder="Ketik Street/Block/Tower..." 
+                                    oninput="onDestinationInputType(this.value)"
+                                    class="w-full text-xs p-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none font-medium truncate">
+                                
+                                <!-- Suggestion Box -->
+                                <div id="destination-suggestions" class="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-xl max-h-48 overflow-y-auto z-50 hidden">
+                                    <!-- Populated via JS -->
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <button onclick="calculateAndDisplayRoute()" class="w-full mt-3 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center justify-center gap-2">
                         <i class="fa-solid fa-route"></i>
-                        <span>Mulai Navigasi Rute</span>
+                        <span>Tampilkan Rute & Jaraknya</span>
                     </button>
+
+                    <!-- Route Distance & Info Summary -->
+                    <div id="route-summary-box" class="mt-3 pt-3 border-t border-slate-100 hidden text-xs flex justify-between items-center text-slate-700">
+                        <div class="flex items-center gap-1.5">
+                            <i class="fa-solid fa-road text-indigo-600"></i>
+                            <span class="font-medium text-[11px]">Jarak: <strong id="route-distance-val" class="font-bold text-slate-900">--</strong></span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <i class="fa-solid fa-clock text-indigo-600"></i>
+                            <span class="font-medium text-[11px]">Waktu: <strong id="route-duration-val" class="font-bold text-slate-900">--</strong></span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- LEAFLET MAP ELEMENT -->
@@ -379,7 +397,6 @@
         <span id="toast-msg">Notifikasi sukses</span>
     </div>
 
-    <!-- APPLICATION JAVASCRIPT -->
     <script>
         const DEFAULT_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRXK75pWXC0NLKHtHNTz1QJ0hiIZI1B6e6avDtoNaYXwtSelAqJsU027scVloFMpyxY7ovXn6Ou4ej2/pub?gid=711552085&single=true&output=csv';
         let csvDataUrl = localStorage.getItem('fat_csv_url') || DEFAULT_CSV_URL;
@@ -390,21 +407,37 @@
         let markersCluster = null;
         let currentTileLayer = null;
         let currentRouteLine = null;
+        let originMarker = null;
+        let destMarker = null;
         let currentRouteMode = 'motorcycle';
+        let currentOriginCoord = { lat: -6.5950, lng: 106.8166 };
         let currentDestinationCoord = { lat: -6.58, lng: 106.81 };
+        let selectedTargetItemId = null;
 
         const subdistrictColors = {
             'CIBINONG': '#3b82f6',
             'SUKMAJAYA': '#8b5cf6',
             'CILODONG': '#ef4444',
             'PANCORAN MAS': '#f59e0b',
-            'BOGOR UTARA': '#6366f1'
+            'BOGOR UTARA': '#6366f1',
+            'BOGOR BARAT': '#10b981',
+            'BOGOR SELATAN': '#f97316',
+            'BOGOR TENGAH': '#ec4899',
+            'BOGOR TIMUR': '#14b8a6'
         };
 
         document.addEventListener('DOMContentLoaded', () => {
             initMap();
             loadCSVData();
             document.getElementById('csv-url-input').value = csvDataUrl;
+
+            document.addEventListener('click', (e) => {
+                const box = document.getElementById('destination-suggestions');
+                const input = document.getElementById('route-destination-input');
+                if (box && input && !input.contains(e.target) && !box.contains(e.target)) {
+                    box.classList.add('hidden');
+                }
+            });
         });
 
         function showView(viewName) {
@@ -433,7 +466,7 @@
             } else if(viewName === 'map') {
                 vMap.classList.remove('hidden');
                 setActiveNav('map');
-                setTimeout(() => { if(map) map.invalidateSize(); }, 200);
+                setTimeout(() => { if(map) map.invalidateSize(); }, 250);
             } else if(viewName === 'data') {
                 vData.classList.remove('hidden');
                 setActiveNav('data');
@@ -539,7 +572,6 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
         function processParsedData(rows) {
             rawData = [];
             rows.forEach((row, index) => {
-                // Support multiple key variations for robust mapping
                 const sub = (row.subdistrict || row.SUBDISTRICT || row['Subdistrict'] || '').trim().toUpperCase();
                 const street = (row.streetBlockTower || row.STREETBLOCKTOWER || row['Street/Block/Tower / Jalan/Blok/Menara'] || row['Street / Block / Tower'] || row['StreetBlockTower'] || '').trim();
                 const split = (row.splitterid || row.SPLITTERID || row['Splitter ID'] || row['SplitterID'] || '').trim();
@@ -565,7 +597,6 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
 
             filteredData = [...rawData];
             populateSubdistrictDropdown();
-            populateDestinationDropdown();
             applyMapFilters();
             renderFullDataTable();
         }
@@ -582,24 +613,19 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
             });
         }
 
-        function populateDestinationDropdown() {
-            const select = document.getElementById('route-destination-select');
-            select.innerHTML = '<option value="">-- Pilih Lokasi Street/Block/Tower --</option>';
-            rawData.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item.id;
-                opt.textContent = `${item.streetBlockTower} (${item.splitterid} - ${item.subdistrict})`;
-                select.appendChild(opt);
-            });
-        }
-
-        function onRouteDestinationChange(id) {
-            if(!id) return;
-            selectItemOnMap(id);
-        }
-
         function onMapFilterChange() {
             applyMapFilters();
+            const subdistrictVal = document.getElementById('map-filter-subdistrict').value.toUpperCase();
+            if (subdistrictVal && markersCluster) {
+                const subMarkers = filteredData.filter(d => d.lat && d.lng);
+                if (subMarkers.length > 0) {
+                    const group = new L.featureGroup(subMarkers.map(m => L.marker([m.lat, m.lng])));
+                    map.fitBounds(group.getBounds().pad(0.1), { animate: true });
+                    showToast(`Peta menampilkan wilayah ${subdistrictVal}`);
+                }
+            } else if (map) {
+                fitMapToMainCluster();
+            }
         }
 
         function applyMapFilters() {
@@ -633,19 +659,68 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
             });
         }
 
+        function onDestinationInputType(query) {
+            const box = document.getElementById('destination-suggestions');
+            if(!query || query.trim().length === 0) {
+                box.classList.add('hidden');
+                return;
+            }
+
+            const q = query.toLowerCase();
+            const matches = rawData.filter(item => 
+                item.streetBlockTower.toLowerCase().includes(q) || 
+                item.splitterid.toLowerCase().includes(q) ||
+                item.subdistrict.toLowerCase().includes(q)
+            ).slice(0, 15);
+
+            if(matches.length === 0) {
+                box.innerHTML = `<div class="p-2.5 text-xs text-slate-400">Tidak ditemukan lokasi yang cocok.</div>`;
+                box.classList.remove('hidden');
+                return;
+            }
+
+            let html = '';
+            matches.forEach(item => {
+                html += `
+                    <div onclick="selectDestinationSuggestion('${item.id}', '${item.streetBlockTower.replace(/'/g, "\\'")}')" class="p-2.5 hover:bg-indigo-50 cursor-pointer border-b border-slate-100 text-xs transition">
+                        <div class="font-bold text-slate-800">${item.streetBlockTower}</div>
+                        <div class="text-[10px] text-indigo-600 font-semibold">${item.splitterid} • <span class="text-slate-500">${item.subdistrict}</span></div>
+                    </div>
+                `;
+            });
+            box.innerHTML = html;
+            box.classList.remove('hidden');
+        }
+
+        function selectDestinationSuggestion(id, label) {
+            document.getElementById('route-destination-input').value = label;
+            document.getElementById('destination-suggestions').classList.add('hidden');
+            selectItemOnMap(id);
+        }
+
         function selectItemOnMap(id) {
             const item = rawData.find(d => d.id === id);
             if(!item) return;
 
-            const selectElem = document.getElementById('route-destination-select');
-            if(selectElem) selectElem.value = item.id;
-
+            selectedTargetItemId = item.id;
+            document.getElementById('route-destination-input').value = `${item.streetBlockTower} (${item.splitterid})`;
             currentDestinationCoord = { lat: item.lat, lng: item.lng };
 
             if(item.lat && item.lng) {
-                map.setView([item.lat, item.lng], 15, { animate: true });
+                map.setView([item.lat, item.lng], 16, { animate: true });
+                
+                if(destMarker) map.removeLayer(destMarker);
+                destMarker = L.marker([item.lat, item.lng], {
+                    icon: L.divIcon({
+                        className: 'custom-dest-marker',
+                        html: `<div style="background-color: #e11d48; width: 24px; height: 24px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; color:white; font-size:10px;"><i class="fa-solid fa-bullseye"></i></div>`,
+                        iconSize: [24, 24],
+                        iconAnchor: [12, 12]
+                    })
+                }).addTo(map).bindPopup(`<b>${item.streetBlockTower}</b><br>SplitterID: ${item.splitterid}<br>Subdistrict: ${item.subdistrict}`);
             }
             showToast(`Dipilih: ${item.streetBlockTower} (${item.splitterid})`);
+            calculateAndDisplayRoute();
         }
 
         function renderFullDataTable() {
@@ -695,6 +770,9 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
             currentRouteMode = mode;
             document.querySelectorAll('.route-mode-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`mode-${mode}`).classList.add('active');
+            if(currentDestinationCoord) {
+                calculateAndDisplayRoute();
+            }
         }
 
         function fitMapToMainCluster() {
@@ -709,18 +787,119 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251`;
             else currentTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}').addTo(map);
         }
 
-        function calculateAndDisplayRoute() {
+        async function calculateAndDisplayRoute() {
             if(!map) return;
+
+            const originLat = currentOriginCoord.lat;
+            const originLng = currentOriginCoord.lng;
+            const destLat = currentDestinationCoord.lat;
+            const destLng = currentDestinationCoord.lng;
+
+            if(!destLat || !destLng) {
+                showToast("Pilih atau ketik Street/Block/Tower terlebih dahulu!");
+                return;
+            }
+
+            let osrmProfile = 'driving';
+            if(currentRouteMode === 'foot') osrmProfile = 'foot';
+            else if(currentRouteMode === 'bike') osrmProfile = 'bike';
+            else osrmProfile = 'driving';
+
+            const url = `https://router.project-osrm.org/route/v1/${osrmProfile}/${originLng},${originLat};${destLng},${destLat}?overview=full&geometries=geojson`;
+
+            try {
+                showToast("Menghitung rute di peta...");
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if(data.code === 'Ok' && data.routes && data.routes.length > 0) {
+                    const route = data.routes[0];
+                    const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
+                    const distanceKm = (route.distance / 1000).toFixed(2);
+                    let durationSec = route.duration;
+
+                    if(currentRouteMode === 'motorcycle') {
+                        durationSec = durationSec * 0.85;
+                    }
+
+                    const mins = Math.round(durationSec / 60);
+                    const timeFormatted = mins < 60 ? `${mins} mnt` : `${(mins/60).toFixed(1)} jam`;
+
+                    document.getElementById(`time-${currentRouteMode}`).textContent = timeFormatted;
+                    document.getElementById('route-distance-val').textContent = `${distanceKm} km`;
+                    document.getElementById('route-duration-val').textContent = timeFormatted;
+                    document.getElementById('route-summary-box').classList.remove('hidden');
+
+                    if(currentRouteLine) map.removeLayer(currentRouteLine);
+                    currentRouteLine = L.polyline(coords, {
+                        color: '#4f46e5',
+                        weight: 6,
+                        opacity: 0.9,
+                        lineCap: 'round',
+                        lineJoin: 'round'
+                    }).addTo(map);
+
+                    if(originMarker) map.removeLayer(originMarker);
+                    originMarker = L.marker([originLat, originLng], {
+                        icon: L.divIcon({
+                            className: 'custom-origin-marker',
+                            html: `<div style="background-color: #4f46e5; width: 22px; height: 22px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; color:white; font-size:10px;"><i class="fa-solid fa-location-crosshairs"></i></div>`,
+                            iconSize: [22, 22],
+                            iconAnchor: [11, 11]
+                        })
+                    }).addTo(map).bindPopup("<b>Lokasi Anda (GPS / Asal)</b>");
+
+                    map.fitBounds(currentRouteLine.getBounds(), { padding: [60, 60], animate: true });
+                    showToast(`Rute berhasil ditampilkan (${distanceKm} km)`);
+                } else {
+                    fallbackDirectLineRouting(originLat, originLng, destLat, destLng);
+                }
+            } catch(err) {
+                console.warn("Routing network error:", err);
+                fallbackDirectLineRouting(originLat, originLng, destLat, destLng);
+            }
+        }
+
+        function fallbackDirectLineRouting(oLat, oLng, dLat, dLng) {
             if(currentRouteLine) map.removeLayer(currentRouteLine);
-            currentRouteLine = L.polyline([[-6.595, 106.8166], [currentDestinationCoord.lat, currentDestinationCoord.lng]], {
-                color: '#4f46e5', weight: 5, opacity: 0.8
+            currentRouteLine = L.polyline([[oLat, oLng], [dLat, dLng]], {
+                color: '#4f46e5', weight: 5, opacity: 0.8, dashArray: '8, 8'
             }).addTo(map);
+
+            const R = 6371;
+            const dLatVal = (dLng - oLng) * Math.PI / 180;
+            const dLonVal = (dLat) * Math.PI / 180;
+            const a = Math.sin(dLatVal/2) * Math.sin(dLatVal/2) + Math.cos(oLat * Math.PI / 180) * Math.cos(dLat * Math.PI / 180) * Math.sin(dLonVal/2) * Math.sin(dLonVal/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const dist = (R * c * 1.3).toFixed(2);
+            const mins = Math.round((dist / 30) * 60);
+
+            document.getElementById('route-distance-val').textContent = `${dist} km`;
+            document.getElementById('route-duration-val').textContent = `${mins} mnt`;
+            document.getElementById(`time-${currentRouteMode}`).textContent = `${mins} mnt`;
+            document.getElementById('route-summary-box').classList.remove('hidden');
+
             map.fitBounds(currentRouteLine.getBounds(), { padding: [50, 50] });
-            showToast("Rute navigasi berhasil dimuat ke peta!");
+            showToast("Rute garis langsung berhasil dirender!");
         }
 
         function getUserGPSLocation() {
-            showToast("Lokasi GPS Anda berhasil disinkronkan.");
+            if (navigator.geolocation) {
+                showToast("Mendapatkan posisi GPS Anda...");
+                navigator.geolocation.getCurrentPosition((position) => {
+                    currentOriginCoord = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    document.getElementById('route-origin-input').value = `GPS: ${currentOriginCoord.lat.toFixed(4)}, ${currentOriginCoord.lng.toFixed(4)}`;
+                    showToast("GPS berhasil dikunci!");
+                    calculateAndDisplayRoute();
+                }, (error) => {
+                    showToast("Gagal mendeteksi GPS, menggunakan default Bogor.");
+                }, { timeout: 10000 });
+            } else {
+                showToast("Geolocation tidak didukung browser ini.");
+            }
         }
 
         function exportToCSV() {
