@@ -94,13 +94,17 @@
                     <i class="fa-solid fa-house text-xs"></i>
                     <span>Muka Depan</span>
                 </button>
-                <button onclick="showView('map')" id="nav-btn-map" class="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 shadow transition flex items-center gap-2">
+                <button onclick="showView('map')" id="nav-btn-map" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-2">
                     <i class="fa-solid fa-map text-xs"></i>
                     <span>Tampilan Peta</span>
                 </button>
                 <button onclick="showView('data')" id="nav-btn-data" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-2">
                     <i class="fa-solid fa-database text-xs"></i>
                     <span>Data FAT</span>
+                </button>
+                <button onclick="showView('visits')" id="nav-btn-visits" class="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-user text-xs"></i>
+                    <span>Data Kunjungan</span>
                 </button>
             </nav>
 
@@ -124,15 +128,18 @@
     </header>
 
     <!-- MOBILE NAVIGATION TAB SWITCHER -->
-    <div class="md:hidden flex bg-slate-900 px-3 py-2 border-b border-slate-800 gap-2 shrink-0 z-30">
-        <button onclick="showView('landing')" id="mob-nav-landing" class="flex-1 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-house"></i> Muka Depan
+    <div class="md:hidden flex bg-slate-900 px-3 py-2 border-b border-slate-800 gap-1.5 shrink-0 z-30 overflow-x-auto">
+        <button onclick="showView('landing')" id="mob-nav-landing" class="py-2 px-3 text-[11px] font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1 shrink-0">
+            <i class="fa-solid fa-house"></i> Muka
         </button>
-        <button onclick="showView('map')" id="mob-nav-map" class="flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white flex items-center justify-center gap-1.5 shadow">
+        <button onclick="showView('map')" id="mob-nav-map" class="py-2 px-3 text-[11px] font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1 shrink-0">
             <i class="fa-solid fa-map"></i> Peta
         </button>
-        <button onclick="showView('data')" id="mob-nav-data" class="flex-1 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-database"></i> Data FAT
+        <button onclick="showView('data')" id="mob-nav-data" class="py-2 px-3 text-[11px] font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1 shrink-0">
+            <i class="fa-solid fa-database"></i> FAT
+        </button>
+        <button onclick="showView('visits')" id="mob-nav-visits" class="py-2 px-3 text-[11px] font-bold rounded-lg bg-indigo-600 text-white flex items-center justify-center gap-1 shrink-0 shadow">
+            <i class="fa-solid fa-clipboard-user"></i> Kunjungan
         </button>
     </div>
 
@@ -142,42 +149,57 @@
         <!-- ========================================================================= -->
         <!-- 1. TAMPILAN MUKA DEPAN / LANDING PAGE (TAB 1) -->
         <!-- ========================================================================= -->
-        <section id="view-landing" class="hidden w-full h-full flex flex-col items-center justify-center py-6 space-y-8 overflow-y-auto">
-            <div class="text-center max-w-2xl space-y-3 pt-2">
+        <section id="view-landing" class="hidden w-full h-full flex flex-col items-center justify-center py-6 space-y-6 overflow-y-auto">
+            <div class="text-center max-w-2xl space-y-2 pt-1">
                 <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                    <i class="fa-solid fa-circle-check text-emerald-400"></i> Sistem Geo Spatial FAT & Splitter Terpadu
+                    <i class="fa-solid fa-circle-check text-emerald-400"></i> Sistem Geo Spatial FAT & Kunjungan Sales Terpadu
                 </span>
-                <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Geo Maps & Rute Navigasi</h2>
-                <p class="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto">Portal terpisah untuk pemetaan geolokasi presisi, navigasi rute perjalanan, serta manajemen spreadsheet data FAT lengkap dari Google Sheets.</p>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Geo Maps & Rute Navigasi</h2>
+                <p class="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto">Portal terpadu untuk pemetaan geolokasi presisi, navigasi rute perjalanan, manajemen data FAT, serta pencatatan Data Kunjungan Sales.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl px-2">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-5xl px-2">
                 <!-- Card Tampilan Peta -->
-                <div onclick="showView('map')" class="group bg-slate-800/90 hover:bg-slate-800 border border-slate-700 hover:border-indigo-500 rounded-3xl p-8 transition cursor-pointer shadow-2xl flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="w-14 h-14 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition shadow-lg">
-                            <i class="fa-solid fa-map-location-dot text-2xl"></i>
+                <div onclick="showView('map')" class="group bg-slate-800/90 hover:bg-slate-800 border border-slate-700 hover:border-indigo-500 rounded-3xl p-6 transition cursor-pointer shadow-xl flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition shadow">
+                            <i class="fa-solid fa-map-location-dot text-xl"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-white group-hover:text-indigo-300 transition">Tampilan Peta</h3>
-                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Peta interaktif layar penuh dengan filter kecamatan, pencarian SplitterID instan, serta navigasi rute perjalanan presisi.</p>
+                        <h3 class="text-lg font-bold text-white group-hover:text-indigo-300 transition">Tampilan Peta</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">Peta interaktif layar penuh dengan filter kecamatan, pencarian SplitterID instan, serta navigasi rute perjalanan.</p>
                     </div>
-                    <div class="mt-6 pt-4 border-t border-slate-700/80 flex items-center justify-between text-xs sm:text-sm text-indigo-400 font-extrabold">
-                        <span>Buka Tampilan Peta</span>
+                    <div class="mt-4 pt-3 border-t border-slate-700/80 flex items-center justify-between text-xs text-indigo-400 font-extrabold">
+                        <span>Buka Peta</span>
                         <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
                     </div>
                 </div>
 
                 <!-- Card Data FAT -->
-                <div onclick="showView('data')" class="group bg-slate-800/90 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-3xl p-8 transition cursor-pointer shadow-2xl flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="w-14 h-14 rounded-2xl bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition shadow-lg">
-                            <i class="fa-solid fa-database text-2xl"></i>
+                <div onclick="showView('data')" class="group bg-slate-800/90 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-3xl p-6 transition cursor-pointer shadow-xl flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition shadow">
+                            <i class="fa-solid fa-database text-xl"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-white group-hover:text-emerald-300 transition">Data FAT</h3>
-                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">Tabel spreadsheet komprehensif seluruh titik FAT dengan urutan Subdistrict, Street/Block/Tower, SplitterID, dan SplitterDistributionCoordinate.</p>
+                        <h3 class="text-lg font-bold text-white group-hover:text-emerald-300 transition">Data FAT</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">Tabel spreadsheet komprehensif seluruh titik FAT dengan urutan Subdistrict, Street/Block/Tower, dan SplitterID.</p>
                     </div>
-                    <div class="mt-6 pt-4 border-t border-slate-700/80 flex items-center justify-between text-xs sm:text-sm text-emerald-400 font-extrabold">
-                        <span>Buka Tabel Data FAT</span>
+                    <div class="mt-4 pt-3 border-t border-slate-700/80 flex items-center justify-between text-xs text-emerald-400 font-extrabold">
+                        <span>Buka Data FAT</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                    </div>
+                </div>
+
+                <!-- Card Data Kunjungan -->
+                <div onclick="showView('visits')" class="group bg-slate-800/90 hover:bg-slate-800 border border-slate-700 hover:border-amber-500 rounded-3xl p-6 transition cursor-pointer shadow-xl flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-600/20 border border-amber-500/30 text-amber-400 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition shadow">
+                            <i class="fa-solid fa-clipboard-user text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-amber-300 transition">Data Kunjungan</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">Formulir popup lengkap untuk mencatat kunjungan sales, foto selfie, NPK, nama calang, alamat usaha, PIC, dan ekosistem.</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-700/80 flex items-center justify-between text-xs text-amber-400 font-extrabold">
+                        <span>Buka Data Kunjungan</span>
                         <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
                     </div>
                 </div>
@@ -392,6 +414,56 @@
             </div>
         </section>
 
+        <!-- ========================================================================= -->
+        <!-- 4. DATA KUNJUNGAN VIEW (TAB 4) -->
+        <!-- ========================================================================= -->
+        <section id="view-visits" class="hidden w-full h-full flex flex-col bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden p-4 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 shrink-0">
+                <div>
+                    <h2 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-user text-amber-600"></i> Data Kunjungan Sales
+                    </h2>
+                    <p class="text-xs text-slate-500">Kelola dan catat laporan kunjungan lapangan lengkap dengan swafoto & detail ekosistem.</p>
+                </div>
+                <div class="flex items-center gap-2.5">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="visit-search-input" onkeyup="renderVisitsTable()" placeholder="Cari NPK / Sales / Calang..." class="text-xs pl-8 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl w-60 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium">
+                    </div>
+                    <button type="button" onclick="openVisitModal()" class="px-4 py-2.5 text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow transition flex items-center gap-2 cursor-pointer z-30 pointer-events-auto relative">
+                        <i class="fa-solid fa-plus"></i> Tambah Kunjungan
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-grow overflow-y-auto border border-slate-200 rounded-xl relative">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[10px] sticky top-0 z-20 border-b border-slate-200 shadow-sm">
+                        <tr>
+                            <th class="p-3 bg-slate-100">Selfie</th>
+                            <th class="p-3 bg-slate-100">Tanggal</th>
+                            <th class="p-3 bg-slate-100">NPK / Sales / Aktivitas</th>
+                            <th class="p-3 bg-slate-100">Nama Calang</th>
+                            <th class="p-3 bg-slate-100">Alamat Usaha</th>
+                            <th class="p-3 bg-slate-100">PIC / No HP</th>
+                            <th class="p-3 bg-slate-100">Ekosistem & Hasil Visit</th>
+                            <th class="p-3 bg-slate-100 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="visits-table-body" class="divide-y divide-slate-100 text-slate-800 font-medium">
+                        <!-- Populated via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-slate-500 pt-1 shrink-0">
+                <span id="visits-table-count">Menampilkan 0 data kunjungan</span>
+                <button type="button" onclick="openVisitModal()" class="text-amber-600 font-bold hover:underline flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-circle-plus"></i> Buat Input Kunjungan Baru
+                </button>
+            </div>
+        </section>
+
     </main>
 
     <!-- CONFIG MODAL -->
@@ -409,8 +481,139 @@
                 <p class="text-[10px] text-slate-500 leading-relaxed">URL terintegrasi langsung dengan database Google Sheets publik Anda.</p>
             </div>
             <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-                <button onclick="closeConfigModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
-                <button onclick="saveConfigModal()" class="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow">Simpan & Muat Ulang</button>
+            <button onclick="closeConfigModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Batal</button>
+            <button onclick="saveConfigModal()" class="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow">Simpan & Muat Ulang</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISIT FORM POPUP MODAL -->
+    <div id="visit-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[9999] hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-lg w-full p-6 space-y-4 my-auto max-h-[90vh] overflow-y-auto relative">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3 sticky top-0 bg-white z-10">
+                <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-user text-amber-600"></i> Form Data Kunjungan Sales
+                </h3>
+                <button type="button" onclick="closeVisitModal()" class="text-slate-400 hover:text-slate-700 text-base p-2 cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="visit-form" onsubmit="saveVisitForm(event)" class="space-y-3.5 text-xs">
+                <input type="hidden" id="visit-edit-id">
+
+                <!-- FOTO SELFIES (URL / UPLOAD / KAMERA) -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">FOTO SELFIES (URL / Upload / Kamera):</label>
+                    <div class="space-y-2">
+                        <div class="flex gap-2">
+                            <input type="text" id="visit-photo-url" placeholder="Masukkan URL Foto atau pilih opsi di bawah..." class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white focus:outline-none text-xs">
+                        </div>
+                        <div class="flex flex-wrap gap-2 items-center">
+                            <label class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold cursor-pointer text-[11px] inline-flex items-center gap-1.5 border border-slate-300 transition">
+                                <i class="fa-solid fa-upload text-amber-600"></i> Upload File
+                                <input type="file" id="visit-photo-file" accept="image/*" onchange="handlePhotoUpload(this)" class="hidden">
+                            </label>
+                            <button type="button" onclick="openCameraModal()" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl font-bold text-[11px] inline-flex items-center gap-1.5 border border-indigo-200 transition cursor-pointer">
+                                <i class="fa-solid fa-camera"></i> Buka Kamera
+                            </button>
+                        </div>
+                        <!-- Preview Thumbnail -->
+                        <div id="visit-photo-preview-container" class="hidden mt-2">
+                            <img id="visit-photo-preview" src="" alt="Selfie Preview" class="w-20 h-20 object-cover rounded-xl border border-slate-300 shadow-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TANGGAL -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">TANGGAL:</label>
+                    <input type="date" id="visit-date" required class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white focus:outline-none">
+                </div>
+
+                <!-- NPK & NAMA SALES (Grid) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">NPK:</label>
+                        <input type="text" id="visit-npk" required placeholder="Contoh: 12345678" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">NAMA SALES:</label>
+                        <input type="text" id="visit-sales-name" required placeholder="Nama lengkap sales" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- AKTIVITAS (Posisi dibawah NPK / Nama Sales) -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">AKTIVITAS:</label>
+                    <input type="text" id="visit-activity" required placeholder="Contoh: Kanvasing / Penawaran / Validasi FAT" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white focus:outline-none">
+                </div>
+
+                <!-- NAMA CALANG -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">NAMA CALANG (Calon Pelanggan):</label>
+                    <input type="text" id="visit-calang-name" required placeholder="Nama pelanggan / pemilik usaha" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white focus:outline-none">
+                </div>
+
+                <!-- ALAMAT USAHA -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ALAMAT USAHA:</label>
+                    <textarea id="visit-address" rows="2" required placeholder="Detail alamat lokasi usaha..." class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white focus:outline-none"></textarea>
+                </div>
+
+                <!-- PIC / NO HP -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">PIC / NO HP:</label>
+                    <input type="text" id="visit-pic-phone" required placeholder="Nama PIC & Nomor WhatsApp / HP" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white focus:outline-none">
+                </div>
+
+                <!-- EKOSISTEM Dropdown -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">EKOSISTEM:</label>
+                    <select id="visit-ecosystem" required class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white focus:outline-none font-semibold">
+                        <option value="">-- Pilih Ekosistem --</option>
+                        <option value="Rumah">Rumah</option>
+                        <option value="Kantor">Kantor</option>
+                        <option value="Toko/Ruko">Toko/Ruko</option>
+                        <option value="Mesjid">Mesjid</option>
+                        <option value="Sekolah">Sekolah</option>
+                    </select>
+                </div>
+
+                <!-- HASIL VISIT Dropdown (Posisi di bawah Ekosistem) -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">HASIL VISIT:</label>
+                    <select id="visit-result" required class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:bg-white focus:outline-none font-semibold">
+                        <option value="">-- Pilih Hasil Visit --</option>
+                        <option value="Blm ada FAT">Blm ada FAT</option>
+                        <option value="FAT sdh Penuh">FAT sdh Penuh</option>
+                        <option value="Jarak ke FAT Jauh">Jarak ke FAT Jauh</option>
+                        <option value="Follow up Kembali">Follow up Kembali</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 sticky bottom-0 bg-white py-2">
+                    <button type="button" onclick="closeVisitModal()" class="px-4 py-2 font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl cursor-pointer">Batal</button>
+                    <button type="submit" class="px-5 py-2 font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-xl shadow cursor-pointer">Simpan Kunjungan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CAMERA CAPTURE MODAL -->
+    <div id="camera-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[160] hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-md w-full text-white space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h4 class="font-bold text-sm"><i class="fa-solid fa-camera text-amber-500 mr-2"></i> Ambil Foto Selfie Kunjungan</h4>
+                <button type="button" onclick="closeCameraModal()" class="text-slate-400 hover:text-white p-1 cursor-pointer"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+            <div class="relative rounded-2xl overflow-hidden bg-black aspect-video flex items-center justify-center border border-slate-700">
+                <video id="camera-video" autoplay playsinline class="w-full h-full object-cover"></video>
+                <canvas id="camera-canvas" class="hidden"></canvas>
+            </div>
+            <div class="flex items-center justify-between pt-2">
+                <button type="button" onclick="closeCameraModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-semibold cursor-pointer">Tutup</button>
+                <button type="button" onclick="captureCameraPhoto()" class="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold shadow flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-camera-retro"></i> Ambil Foto
+                </button>
             </div>
         </div>
     </div>
@@ -427,6 +630,7 @@
         
         let rawData = [];
         let filteredData = [];
+        let visitsData = JSON.parse(localStorage.getItem('fat_visits_data') || '[]');
         let map = null;
         let markersCluster = null;
         let currentTileLayer = null;
@@ -438,6 +642,7 @@
         let currentDestinationCoord = { lat: -6.58, lng: 106.81 };
         let selectedTargetItemId = null;
         let activeSearchMarker = null;
+        let cameraStream = null;
 
         const subdistrictColors = {
             'CIBINONG': '#3b82f6',
@@ -454,7 +659,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             initMap();
             loadCSVData();
+            renderVisitsTable();
             document.getElementById('csv-url-input').value = csvDataUrl;
+
+            // Set today date default
+            const todayStr = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('visit-date');
+            if(dateInput) dateInput.value = todayStr;
 
             document.addEventListener('click', (e) => {
                 const box = document.getElementById('destination-suggestions');
@@ -475,19 +686,21 @@
             const vLanding = document.getElementById('view-landing');
             const vMap = document.getElementById('view-map');
             const vData = document.getElementById('view-data');
+            const vVisits = document.getElementById('view-visits');
 
             vLanding.classList.add('hidden');
             vMap.classList.add('hidden');
             vData.classList.add('hidden');
+            vVisits.classList.add('hidden');
 
-            ['landing', 'map', 'data'].forEach(name => {
+            ['landing', 'map', 'data', 'visits'].forEach(name => {
                 const btn = document.getElementById(`nav-btn-${name}`);
                 if(btn) {
                     btn.className = "px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/60 transition flex items-center gap-2";
                 }
                 const mobBtn = document.getElementById(`mob-nav-${name}`);
                 if(mobBtn) {
-                    mobBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1.5";
+                    mobBtn.className = "py-2 px-3 text-[11px] font-bold rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center gap-1 shrink-0";
                 }
             });
 
@@ -502,6 +715,10 @@
                 vData.classList.remove('hidden');
                 setActiveNav('data');
                 renderFullDataTable();
+            } else if(viewName === 'visits') {
+                vVisits.classList.remove('hidden');
+                setActiveNav('visits');
+                renderVisitsTable();
             }
         }
 
@@ -512,7 +729,7 @@
             }
             const mobBtn = document.getElementById(`mob-nav-${name}`);
             if(mobBtn) {
-                mobBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white flex items-center justify-center gap-1.5 shadow";
+                mobBtn.className = "py-2 px-3 text-[11px] font-bold rounded-lg bg-indigo-600 text-white flex items-center justify-center gap-1 shrink-0 shadow";
             }
         }
 
@@ -908,6 +1125,239 @@ PANCORAN MAS,Jl. Margonda,PCM-03-D008,-6.3934,106.8251,-6.3938,106.8255`;
         function jumpToMapItem(id) {
             showView('map');
             selectItemOnMap(id);
+        }
+
+        // =========================================================================
+        // DATA KUNJUNGAN FUNCTIONS
+        // =========================================================================
+        function openVisitModal(editId = null) {
+            const modal = document.getElementById('visit-modal');
+            const form = document.getElementById('visit-form');
+            if (form) form.reset();
+            const editIdInput = document.getElementById('visit-edit-id');
+            if (editIdInput) editIdInput.value = '';
+            
+            const prevContainer = document.getElementById('visit-photo-preview-container');
+            if (prevContainer) prevContainer.classList.add('hidden');
+            
+            const todayStr = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('visit-date');
+            if(dateInput) dateInput.value = todayStr;
+
+            if (editId) {
+                const visit = visitsData.find(v => v.id === editId);
+                if (visit) {
+                    if (editIdInput) editIdInput.value = visit.id;
+                    document.getElementById('visit-photo-url').value = visit.photo || '';
+                    if (dateInput) dateInput.value = visit.date || todayStr;
+                    document.getElementById('visit-npk').value = visit.npk || '';
+                    document.getElementById('visit-sales-name').value = visit.salesName || '';
+                    document.getElementById('visit-activity').value = visit.activity || '';
+                    document.getElementById('visit-calang-name').value = visit.calangName || '';
+                    document.getElementById('visit-address').value = visit.address || '';
+                    document.getElementById('visit-pic-phone').value = visit.picPhone || '';
+                    document.getElementById('visit-ecosystem').value = visit.ecosystem || '';
+                    document.getElementById('visit-result').value = visit.result || '';
+
+                    if(visit.photo) {
+                        const prev = document.getElementById('visit-photo-preview');
+                        if (prev) prev.src = visit.photo;
+                        if (prevContainer) prevContainer.classList.remove('hidden');
+                    }
+                }
+            }
+
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeVisitModal() {
+            const modal = document.getElementById('visit-modal');
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        }
+
+        function handlePhotoUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64 = e.target.result;
+                    document.getElementById('visit-photo-url').value = base64;
+                    const prev = document.getElementById('visit-photo-preview');
+                    prev.src = base64;
+                    document.getElementById('visit-photo-preview-container').classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function openCameraModal() {
+            const camModal = document.getElementById('camera-modal');
+            if (camModal) {
+                camModal.classList.remove('hidden');
+                camModal.classList.add('flex');
+                camModal.style.display = 'flex';
+            }
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+                const video = document.getElementById('camera-video');
+                if (video) video.srcObject = cameraStream;
+            } catch (err) {
+                console.warn("Kamera tidak dapat diakses:", err);
+                showToast("Gagal membuka kamera perangkat.");
+                closeCameraModal();
+            }
+        }
+
+        function closeCameraModal() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            const camModal = document.getElementById('camera-modal');
+            if (camModal) {
+                camModal.classList.remove('flex');
+                camModal.classList.add('hidden');
+                camModal.style.display = 'none';
+            }
+        }
+
+        function captureCameraPhoto() {
+            const video = document.getElementById('camera-video');
+            const canvas = document.getElementById('camera-canvas');
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg');
+
+            document.getElementById('visit-photo-url').value = dataUrl;
+            const prev = document.getElementById('visit-photo-preview');
+            if(prev) prev.src = dataUrl;
+            const prevContainer = document.getElementById('visit-photo-preview-container');
+            if(prevContainer) prevContainer.classList.remove('hidden');
+
+            closeCameraModal();
+            showToast("Foto selfie berhasil diambil!");
+        }
+
+        function saveVisitForm(e) {
+            e.preventDefault();
+            const editId = document.getElementById('visit-edit-id').value;
+            const photo = document.getElementById('visit-photo-url').value.trim() || 'https://placehold.co/150x150/4f46e5/ffffff?text=Selfie';
+            const date = document.getElementById('visit-date').value;
+            const npk = document.getElementById('visit-npk').value.trim();
+            const salesName = document.getElementById('visit-sales-name').value.trim();
+            const activity = document.getElementById('visit-activity').value.trim();
+            const calangName = document.getElementById('visit-calang-name').value.trim();
+            const address = document.getElementById('visit-address').value.trim();
+            const picPhone = document.getElementById('visit-pic-phone').value.trim();
+            const ecosystem = document.getElementById('visit-ecosystem').value;
+            const result = document.getElementById('visit-result').value;
+
+            if (editId) {
+                const index = visitsData.findIndex(v => v.id === editId);
+                if (index !== -1) {
+                    visitsData[index] = { id: editId, photo, date, npk, salesName, activity, calangName, address, picPhone, ecosystem, result };
+                }
+                showToast("Data kunjungan berhasil diperbarui!");
+            } else {
+                const newVisit = {
+                    id: 'visit_' + Date.now(),
+                    photo, date, npk, salesName, activity, calangName, address, picPhone, ecosystem, result
+                };
+                visitsData.unshift(newVisit);
+                showToast("Data kunjungan baru berhasil disimpan!");
+            }
+
+            localStorage.setItem('fat_visits_data', JSON.stringify(visitsData));
+            closeVisitModal();
+            renderVisitsTable();
+        }
+
+        function renderVisitsTable() {
+            const tbody = document.getElementById('visits-table-body');
+            const searchVal = (document.getElementById('visit-search-input').value || '').toLowerCase();
+            tbody.innerHTML = '';
+
+            const list = visitsData.filter(item => 
+                !searchVal || 
+                item.npk.toLowerCase().includes(searchVal) ||
+                item.salesName.toLowerCase().includes(searchVal) ||
+                (item.activity && item.activity.toLowerCase().includes(searchVal)) ||
+                item.calangName.toLowerCase().includes(searchVal) ||
+                item.address.toLowerCase().includes(searchVal) ||
+                item.ecosystem.toLowerCase().includes(searchVal) ||
+                (item.result && item.result.toLowerCase().includes(searchVal))
+            );
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400 font-medium">Belum ada data kunjungan sales yang tercatat.</td></tr>`;
+                document.getElementById('visits-table-count').textContent = `Menampilkan 0 data kunjungan`;
+                return;
+            }
+
+            let html = '';
+            list.forEach((item) => {
+                const ecosystemColor = {
+                    'Rumah': 'bg-blue-50 text-blue-700 border-blue-200',
+                    'Kantor': 'bg-purple-50 text-purple-700 border-purple-200',
+                    'Toko/Ruko': 'bg-amber-50 text-amber-700 border-amber-200',
+                    'Mesjid': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                    'Sekolah': 'bg-rose-50 text-rose-700 border-rose-200'
+                }[item.ecosystem] || 'bg-slate-100 text-slate-700 border-slate-200';
+
+                const resultColor = {
+                    'Blm ada FAT': 'bg-rose-50 text-rose-700 border-rose-200',
+                    'FAT sdh Penuh': 'bg-orange-50 text-orange-700 border-orange-200',
+                    'Jarak ke FAT Jauh': 'bg-amber-50 text-amber-700 border-amber-200',
+                    'Follow up Kembali': 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                }[item.result] || 'bg-slate-100 text-slate-700 border-slate-200';
+
+                html += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-3">
+                            <img src="${item.photo}" alt="Selfie" onerror="this.src='https://placehold.co/100x100/4f46e5/ffffff?text=Selfie'" class="w-10 h-10 object-cover rounded-xl border border-slate-200 shadow-sm">
+                        </td>
+                        <td class="p-3 font-mono text-slate-600">${item.date}</td>
+                        <td class="p-3">
+                            <div class="font-extrabold text-slate-900">${item.salesName}</div>
+                            <div class="text-[10px] font-mono text-indigo-600">NPK: ${item.npk}</div>
+                            ${item.activity ? `<div class="text-[10px] font-semibold text-slate-600 mt-0.5"><i class="fa-solid fa-bolt text-amber-500 mr-1"></i>${item.activity}</div>` : ''}
+                        </td>
+                        <td class="p-3 font-bold text-slate-800">${item.calangName}</td>
+                        <td class="p-3 text-slate-600 max-w-xs truncate" title="${item.address}">${item.address}</td>
+                        <td class="p-3 font-medium text-slate-700">${item.picPhone}</td>
+                        <td class="p-3 space-y-1">
+                            <div><span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${ecosystemColor}">${item.ecosystem || '-'}</span></div>
+                            <div><span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${resultColor}">${item.result || '-'}</span></div>
+                        </td>
+                        <td class="p-3 text-center space-x-1">
+                            <button onclick="openVisitModal('${item.id}')" class="p-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl text-xs font-bold transition shadow-sm" title="Edit">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteVisitItem('${item.id}')" class="p-2 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-xl text-xs font-bold transition shadow-sm" title="Hapus">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+            document.getElementById('visits-table-count').textContent = `Menampilkan ${list.length} dari ${visitsData.length} data kunjungan`;
+        }
+
+        function deleteVisitItem(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus data kunjungan ini?")) {
+                visitsData = visitsData.filter(v => v.id !== id);
+                localStorage.setItem('fat_visits_data', JSON.stringify(visitsData));
+                renderVisitsTable();
+                showToast("Data kunjungan berhasil dihapus.");
+            }
         }
 
         function toggleRoutePanel() {
