@@ -630,7 +630,26 @@
         
         let rawData = [];
         let filteredData = [];
-        let visitsData = JSON.parse(localStorage.getItem('fat_visits_data') || '[]');
+        let visitsData = JSON.parse(localStorage.getItem('fat_visits_data') || 'null');
+        if (!visitsData) {
+            visitsData = [
+                {
+                    id: 'visit_sample_1',
+                    photo: 'https://placehold.co/150x150/4f46e5/ffffff?text=Sales+1',
+                    date: new Date().toISOString().split('T')[0],
+                    npk: '10928374',
+                    salesName: 'Budi Santoso',
+                    activity: 'Kanvasing & Penawaran Paket',
+                    calangName: 'Toko Berkah Jaya',
+                    address: 'Jl. Margonda Raya No. 45, Depok',
+                    picPhone: 'Pak Budi (08123456789)',
+                    ecosystem: 'Toko/Ruko',
+                    result: 'Follow up Kembali'
+                }
+            ];
+            localStorage.setItem('fat_visits_data', JSON.stringify(visitsData));
+        }
+
         let map = null;
         let markersCluster = null;
         let currentTileLayer = null;
