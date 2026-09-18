@@ -140,11 +140,17 @@
                         <i data-lucide="file-text" class="w-4 h-4"></i>
                         <span>Berkas Input</span>
                     </button>
+
+                    <button onclick="switchTab('tabMonitoringBerkas')" id="navTabMonitoringBerkas" class="tab-btn inactive-tab inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap cursor-pointer">
+                        <i data-lucide="table" class="w-4 h-4"></i>
+                        <span>Tabel Berkas Input</span>
+                        <span id="badgeBerkas" class="ml-1 px-2 py-0.5 text-[10px] rounded-full bg-emerald-500 text-white font-bold">0</span>
+                    </button>
                     
                     <button onclick="switchTab('tabKelengkapan')" id="navTabKelengkapan" class="tab-btn inactive-tab inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap cursor-pointer">
                         <i data-lucide="clipboard-check" class="w-4 h-4"></i>
                         <span>Kelengkapan Berkas</span>
-                        <span class="ml-1 px-2 py-0.5 text-[10px] rounded-full bg-rose-500/20 text-rose-400 font-bold">0</span>
+                        <span id="badgeKelengkapan" class="ml-1 px-2 py-0.5 text-[10px] rounded-full bg-rose-500/20 text-rose-400 font-bold">0</span>
                     </button>
                 </nav>
             </div>
@@ -461,6 +467,52 @@
             </div>
         </div>
 
+        <!-- TAB: TABEL MONITORING BERKAS INPUT -->
+        <div id="tabMonitoringBerkas" class="tab-content hidden space-y-6">
+            <div class="glass-panel p-4 rounded-xl flex flex-wrap gap-3 items-center justify-between">
+                <div class="relative flex-grow max-w-md">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                    <input type="text" id="searchBerkasInput" oninput="filterBerkasInput()" placeholder="Cari Pelanggan, Sales, NIK, Paket, Alamat..." 
+                           class="w-full pl-9 pr-4 py-2 bg-slate-900 border border-[#2a3a5a] rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportBerkasExcel()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-950/50 hover:bg-emerald-900 text-emerald-400 border border-emerald-800/50 font-medium text-sm transition-colors cursor-pointer">
+                        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                        <span>Export Excel Berkas</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Berkas -->
+            <div class="glass-panel rounded-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm whitespace-nowrap" id="tableBerkasElement">
+                        <thead class="bg-slate-900/50 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-[#2a3a5a]">
+                            <tr>
+                                <th class="px-4 py-4">TANGGAL INPUT</th>
+                                <th class="px-4 py-4">SALES / NPK</th>
+                                <th class="px-4 py-4">NAMA PELANGGAN</th>
+                                <th class="px-4 py-4">NO. KTP</th>
+                                <th class="px-4 py-4">NO. HP</th>
+                                <th class="px-4 py-4">ALAMAT PEMASANGAN</th>
+                                <th class="px-4 py-4">USERNAME LAYANAN</th>
+                                <th class="px-4 py-4">PAKET LAYANAN</th>
+                                <th class="px-4 py-4 text-center">AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#2a3a5a] text-slate-200" id="berkasTableBody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Empty state -->
+                <div id="berkasEmptyState" class="hidden p-12 text-center">
+                    <i data-lucide="inbox" class="w-10 h-10 text-slate-600 mx-auto mb-2"></i>
+                    <p class="text-slate-400 text-sm font-medium">Belum ada data Berkas Input / Pendaftaran tercatat.</p>
+                </div>
+            </div>
+        </div>
+
         <!-- TAB 3: KELENGKAPAN BERKAS -->
         <div id="tabKelengkapan" class="tab-content hidden space-y-6">
              <div class="flex justify-between items-center mb-2">
@@ -598,6 +650,16 @@
                             <input type="text" id="kNamaPelanggan" required placeholder="Nama Lengkap Pelanggan" class="custom-input w-full px-4 py-2.5 rounded-xl border text-sm">
                         </div>
                         <div class="space-y-1.5 md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-300 uppercase">Status Order <span class="text-rose-500">*</span></label>
+                            <select id="kStatusOrder" required class="custom-input w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none appearance-none">
+                                <option value="Menunggu">Menunggu</option>
+                                <option value="Terverifikasi">Terverifikasi</option>
+                                <option value="Jadwal Terbit">Jadwal Terbit</option>
+                                <option value="Terpasang">Terpasang</option>
+                                <option value="Dibatalkan">Dibatalkan</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1.5 md:col-span-2">
                             <label class="block text-xs font-bold text-slate-300 uppercase">Titik Koordinat Rumah <span class="text-rose-500">*</span></label>
                             <div class="flex gap-2">
                                 <input type="text" id="kKoordinat" required placeholder="-6.595038, 106.816635" class="custom-input flex-1 px-4 py-2.5 rounded-xl border text-sm">
@@ -672,6 +734,103 @@
         </div>
     </div>
 
+    <!-- MODAL EDIT BERKAS INPUT -->
+    <div id="modalEditBerkas" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-[#0a1128]/80 backdrop-blur-sm transition-opacity" onclick="closeModalEditBerkas()"></div>
+        <div class="flex min-h-full items-center justify-center p-4 py-10 z-10 relative">
+            <div class="w-full max-w-3xl bg-[#151f32] border border-[#2a3a5a] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-[#2a3a5a] bg-[#0f172a]">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i data-lucide="square-pen" class="w-5 h-5 text-amber-500"></i>
+                        Edit Berkas Pendaftaran Pelanggan
+                    </h3>
+                    <button onclick="closeModalEditBerkas()" class="text-slate-400 hover:text-white transition-colors bg-slate-800/50 p-1.5 rounded-lg cursor-pointer">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <form id="editBerkasForm" onsubmit="updateBerkasInputData(event)" class="p-6 overflow-y-auto flex-1 space-y-6">
+                    <input type="hidden" id="editBerkasId">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-bold text-slate-300 uppercase">Kode Sales <span class="text-rose-500">*</span></label>
+                            <input type="text" id="editKodeSales" required class="custom-input w-full px-4 py-2.5 rounded-xl border text-sm">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-bold text-slate-300 uppercase">Nama Sales <span class="text-rose-500">*</span></label>
+                            <input type="text" id="editNamaSales" required class="custom-input w-full px-4 py-2.5 rounded-xl border text-sm">
+                        </div>
+                        <div class="space-y-1.5 md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-300 uppercase">Nama Pelanggan <span class="text-rose-500">*</span></label>
+                            <input type="text" id="editNamaPelanggan" required class="custom-input w-full px-4 py-2.5 rounded-xl border text-sm">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-bold text-slate-300 uppercase">No. KTP <span class="text-rose-500">*</span></label>
+                            <input type="text" id="editKtp" required class="custom-input w-full px-4 py-2.5 rounded-xl border text-sm">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-bold text-slate-300 uppercase">No. HP <span class="text-rose-500">*</span></label>
+                            <input type="tel" id="editHp" required class="custom-input w-full px-4 py-2.5 rounded-xl border text-sm">
+                        </div>
+                        <div class="space-y-1.5 md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-300 uppercase">Alamat Pemasangan <span class="text-rose-500">*</span></label>
+                            <textarea id="editAlamat" rows="2" required class="custom-input w-full px-4 py-2.5 rounded-xl border text-sm"></textarea>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-bold text-slate-300 uppercase">Username Layanan <span class="text-rose-500">*</span></label>
+                            <input type="text" id="editUsernameLayanan" required class="custom-input w-full px-4 py-2.5 rounded-xl border text-sm">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-bold text-slate-300 uppercase">Paket Layanan <span class="text-rose-500">*</span></label>
+                            <select id="editPaket" required class="custom-input w-full px-4 py-2.5 rounded-xl border text-sm">
+                                <option value="Fiber 20 Mbps">Fiber 20 Mbps</option>
+                                <option value="Fiber 50 Mbps">Fiber 50 Mbps</option>
+                                <option value="Fiber 100 Mbps">Fiber 100 Mbps</option>
+                                <option value="Fiber 150 Mbps">Fiber 150 Mbps</option>
+                                <option value="Fiber 200 Mbps">Fiber 200 Mbps</option>
+                                <option value="Fiber 250 Mbps">Fiber 250 Mbps</option>
+                                <option value="Fiber 300 Mbps">Fiber 300 Mbps</option>
+                                <option value="Fiber 350 Mbps">Fiber 350 Mbps</option>
+                                <option value="Fiber 400 Mbps">Fiber 400 Mbps</option>
+                                <option value="Fiber 500 Mbps">Fiber 500 Mbps</option>
+                                <option value="Fiber 600 Mbps">Fiber 600 Mbps</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-[#2a3a5a] flex justify-end gap-3">
+                        <button type="button" onclick="closeModalEditBerkas()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium transition-colors cursor-pointer">Batal</button>
+                        <button type="submit" class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-sm font-bold transition-colors shadow-lg shadow-amber-900/40 flex items-center gap-2 cursor-pointer">
+                            <i data-lucide="save" class="w-4 h-4"></i> Perbarui Berkas
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETAIL BERKAS INPUT -->
+    <div id="modalDetailBerkas" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-[#0a1128]/80 backdrop-blur-sm transition-opacity" onclick="closeModalDetailBerkas()"></div>
+        <div class="flex min-h-full items-center justify-center p-4 py-10 z-10 relative">
+            <div class="w-full max-w-2xl bg-[#151f32] border border-[#2a3a5a] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-[#2a3a5a] bg-[#0f172a]">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-5 h-5 text-emerald-500"></i>
+                        Detail Berkas Pendaftaran Pelanggan
+                    </h3>
+                    <button onclick="closeModalDetailBerkas()" class="text-slate-400 hover:text-white transition-colors bg-slate-800/50 p-1.5 rounded-lg cursor-pointer">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div id="detailBerkasContent" class="p-6 overflow-y-auto flex-1 space-y-4 text-sm">
+                    <!-- Populated dynamically -->
+                </div>
+                <div class="px-6 py-4 border-t border-[#2a3a5a] bg-[#0f172a] flex justify-end">
+                    <button onclick="closeModalDetailBerkas()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium transition-colors cursor-pointer">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- CUSTOM NOTIFICATION MODAL -->
     <div id="customModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-[#0a1128]/80 backdrop-blur-sm" onclick="closeCustomModal()"></div>
@@ -689,6 +848,7 @@
         let db, auth, userId;
         let visitsData = [];
         let kelengkapanData = [];
+        let pendaftaranData = [];
 
         window.addEventListener('load', async () => {
             lucide.createIcons();
@@ -760,6 +920,17 @@
             }, (error) => {
                 console.error("Kelengkapan sync error:", error);
             });
+
+            const pendaftaranRef = collection(db, 'artifacts', appId, 'public', 'data', 'pendaftaran');
+            onSnapshot(pendaftaranRef, (snapshot) => {
+                pendaftaranData = [];
+                snapshot.forEach((docSnap) => {
+                    pendaftaranData.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                renderBerkasTable();
+            }, (error) => {
+                console.error("Pendaftaran sync error:", error);
+            });
         }
 
         function switchTab(tabId) {
@@ -802,23 +973,24 @@
                     ekosistem: 'Rumah',
                     hasil: 'FollowUp',
                     foto: ''
-                },
+                }
+            ];
+            pendaftaranData = [
                 {
-                    id: 'sample-2',
-                    tanggal: '2026-09-17',
-                    npk: 'SLS-001',
-                    namaSales: 'Budi Santoso',
-                    aktivitas: 'Edukasi Produk & Penawaran',
-                    calang: 'Bpk. Hendra Wijaya',
-                    alamat: 'Jl. Pajajaran No. 45, Bogor',
-                    keterangan: 'Sudah di-closing paket 50Mbps',
+                    id: 'sample-reg-1',
+                    kodeSales: 'SLS-001',
+                    namaSalesInput: 'Budi Santoso',
+                    namaPelanggan: 'Hendra Wijaya',
+                    ktp: '3201123456780001',
                     hp: '081298765432',
-                    ekosistem: 'Perumahan',
-                    hasil: 'Closing',
-                    foto: ''
+                    alamat: 'Jl. Pajajaran No. 45, Bogor',
+                    usernameLayanan: 'hendrawijaya',
+                    paket: 'Fiber 50 Mbps',
+                    createdAt: new Date().toISOString()
                 }
             ];
             renderVisitsTable();
+            renderBerkasTable();
             updateKPIs();
         }
 
@@ -1076,13 +1248,248 @@
                     const { collection, addDoc } = window.firebaseModules;
                     const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'pendaftaran');
                     await addDoc(colRef, data);
+                } else {
+                    pendaftaranData.unshift({ id: 'local-' + Date.now(), ...data });
+                    renderBerkasTable();
                 }
+
                 document.getElementById('inputForm').reset();
-                showCustomModal('Pendaftaran Tersimpan', 'Berkas pendaftaran pelanggan berhasil dikirim ke database.', 'success');
-                switchTab('tabMonitoring');
+                showCustomModal('Pendaftaran Tersimpan', 'Berkas pendaftaran pelanggan berhasil disimpan & masuk ke Tabel Berkas Input.', 'success');
+                switchTab('tabMonitoringBerkas');
             } catch (err) {
                 console.error("Error saving pendaftaran:", err);
                 showCustomModal('Gagal', 'Gagal menyimpan pendaftaran.', 'error');
+            }
+        }
+
+        function filterBerkasInput() {
+            renderBerkasTable();
+        }
+
+        function renderBerkasTable() {
+            const tbody = document.getElementById('berkasTableBody');
+            const emptyState = document.getElementById('berkasEmptyState');
+            if (!tbody) return;
+
+            const searchVal = (document.getElementById('searchBerkasInput')?.value || '').toLowerCase();
+
+            const filtered = pendaftaranData.filter(item => {
+                return !searchVal || 
+                    (item.namaPelanggan && item.namaPelanggan.toLowerCase().includes(searchVal)) ||
+                    (item.namaSalesInput && item.namaSalesInput.toLowerCase().includes(searchVal)) ||
+                    (item.kodeSales && item.kodeSales.toLowerCase().includes(searchVal)) ||
+                    (item.ktp && item.ktp.toLowerCase().includes(searchVal)) ||
+                    (item.paket && item.paket.toLowerCase().includes(searchVal)) ||
+                    (item.alamat && item.alamat.toLowerCase().includes(searchVal));
+            });
+
+            const badgeBerkas = document.getElementById('badgeBerkas');
+            if (badgeBerkas) badgeBerkas.textContent = pendaftaranData.length;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                if (emptyState) emptyState.classList.remove('hidden');
+                return;
+            }
+
+            if (emptyState) emptyState.classList.add('hidden');
+
+            tbody.innerHTML = filtered.map(item => {
+                const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleDateString('id-ID') : '-';
+                return `
+                    <tr class="hover:bg-slate-800/35 transition-colors group">
+                        <td class="px-4 py-3 font-medium text-slate-300">${dateStr}</td>
+                        <td class="px-4 py-3">
+                            <div class="font-semibold text-white">${item.namaSalesInput || '-'}</div>
+                            <div class="text-xs text-slate-400">Kode: ${item.kodeSales || '-'}</div>
+                        </td>
+                        <td class="px-4 py-3 font-bold text-white">${item.namaPelanggan || '-'}</td>
+                        <td class="px-4 py-3 text-slate-300">${item.ktp || '-'}</td>
+                        <td class="px-4 py-3">
+                            <a href="tel:${item.hp}" class="flex items-center gap-1.5 text-emerald-400 text-xs font-medium hover:underline">
+                                <i data-lucide="phone" class="w-3.5 h-3.5"></i>
+                                <span>${item.hp || '-'}</span>
+                            </a>
+                        </td>
+                        <td class="px-4 py-3 text-slate-400 truncate max-w-[220px]" title="${item.alamat || ''}">${item.alamat || '-'}</td>
+                        <td class="px-4 py-3 text-emerald-400 font-medium">${item.usernameLayanan || '-'}</td>
+                        <td class="px-4 py-3">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                                ${item.paket || '-'}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <button onclick="viewBerkasDetail('${item.id}')" class="p-1.5 rounded-lg bg-emerald-900/20 hover:bg-emerald-900/40 text-emerald-400 transition-colors border border-emerald-900/30 cursor-pointer" title="Detail">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="openEditBerkas('${item.id}')" class="p-1.5 rounded-lg bg-amber-900/20 hover:bg-amber-900/40 text-amber-500 transition-colors border border-amber-900/30 cursor-pointer" title="Edit">
+                                    <i data-lucide="square-pen" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="deleteBerkas('${item.id}')" class="p-1.5 rounded-lg bg-rose-900/20 hover:bg-rose-900/40 text-rose-500 transition-colors border border-rose-900/30 cursor-pointer" title="Hapus Berkas">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function viewBerkasDetail(id) {
+            const item = pendaftaranData.find(v => v.id === id);
+            if (!item) return;
+
+            const content = document.getElementById('detailBerkasContent');
+            content.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-900/50 p-4 rounded-xl border border-[#2a3a5a]">
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-bold">Tanggal Input</span>
+                        <p class="text-white font-medium">${item.createdAt ? new Date(item.createdAt).toLocaleString('id-ID') : '-'}</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-bold">Sales / Kode</span>
+                        <p class="text-white font-medium">${item.namaSalesInput || '-'} (${item.kodeSales || '-'})</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-bold">Nama Pelanggan</span>
+                        <p class="text-white font-bold">${item.namaPelanggan || '-'}</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-bold">No. KTP</span>
+                        <p class="text-white font-medium">${item.ktp || '-'}</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-bold">Tempat / Tanggal Lahir</span>
+                        <p class="text-white font-medium">${item.tempatLahir || '-'}, ${item.tglLahir || '-'}</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-bold">Jenis Kelamin</span>
+                        <p class="text-white font-medium">${item.gender === 'L' ? 'Laki-laki' : item.gender === 'P' ? 'Perempuan' : '-'}</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-bold">No. HP / Selular</span>
+                        <p class="text-emerald-400 font-medium">${item.hp || '-'}</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-bold">Email</span>
+                        <p class="text-white font-medium">${item.email || '-'}</p>
+                    </div>
+                    <div class="md:col-span-2">
+                        <span class="text-xs text-slate-400 uppercase font-bold">Alamat Pemasangan</span>
+                        <p class="text-white font-medium">${item.alamat || '-'} (RT ${item.rt || '-'}/RW ${item.rw || '-'}), Kode Pos: ${item.kodepos || '-'}</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-bold">Status Kepemilikan</span>
+                        <p class="text-white font-medium">${item.kepemilikan || '-'}</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-bold">Username Layanan</span>
+                        <p class="text-emerald-400 font-bold">${item.usernameLayanan || '-'}</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-bold">Paket Layanan</span>
+                        <p class="text-white font-semibold">${item.paket || '-'}</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-bold">Perangkat Tambahan</span>
+                        <p class="text-white font-medium">Router: ${item.router || 0} unit, Smartbox: ${item.smartbox || 0} unit, Addon: ${item.addon || 'Tidak Ada'}</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modalDetailBerkas').classList.remove('hidden');
+        }
+
+        function closeModalDetailBerkas() {
+            document.getElementById('modalDetailBerkas').classList.add('hidden');
+        }
+
+        function openEditBerkas(id) {
+            const item = pendaftaranData.find(v => v.id === id);
+            if (!item) return;
+
+            document.getElementById('editBerkasId').value = item.id;
+            document.getElementById('editKodeSales').value = item.kodeSales || '';
+            document.getElementById('editNamaSales').value = item.namaSalesInput || '';
+            document.getElementById('editNamaPelanggan').value = item.namaPelanggan || '';
+            document.getElementById('editKtp').value = item.ktp || '';
+            document.getElementById('editHp').value = item.hp || '';
+            document.getElementById('editAlamat').value = item.alamat || '';
+            document.getElementById('editUsernameLayanan').value = item.usernameLayanan || '';
+            document.getElementById('editPaket').value = item.paket || 'Fiber 50 Mbps';
+
+            document.getElementById('modalEditBerkas').classList.remove('hidden');
+        }
+
+        function closeModalEditBerkas() {
+            document.getElementById('modalEditBerkas').classList.add('hidden');
+        }
+
+        async function updateBerkasInputData(e) {
+            e.preventDefault();
+            const id = document.getElementById('editBerkasId').value;
+            const updatedData = {
+                kodeSales: document.getElementById('editKodeSales').value,
+                namaSalesInput: document.getElementById('editNamaSales').value,
+                namaPelanggan: document.getElementById('editNamaPelanggan').value,
+                ktp: document.getElementById('editKtp').value,
+                hp: document.getElementById('editHp').value,
+                alamat: document.getElementById('editAlamat').value,
+                usernameLayanan: document.getElementById('editUsernameLayanan').value,
+                paket: document.getElementById('editPaket').value,
+                updatedAt: new Date().toISOString()
+            };
+
+            try {
+                if (db && auth && auth.currentUser && !id.startsWith('sample-')) {
+                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'monitoring-kunjungan-sales';
+                    const { doc, updateDoc } = window.firebaseModules;
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pendaftaran', id);
+                    await updateDoc(docRef, updatedData);
+                } else {
+                    const idx = pendaftaranData.findIndex(v => v.id === id);
+                    if (idx !== -1) {
+                        pendaftaranData[idx] = { ...pendaftaranData[idx], ...updatedData };
+                    }
+                    renderBerkasTable();
+                }
+
+                closeModalEditBerkas();
+                showCustomModal('Berhasil', 'Berkas pendaftaran berhasil diperbarui.', 'success');
+            } catch (err) {
+                console.error("Error updating pendaftaran:", err);
+                showCustomModal('Gagal', 'Terjadi kesalahan saat memperbarui berkas.', 'error');
+            }
+        }
+
+        async function deleteBerkas(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus data berkas pendaftaran ini?')) return;
+            try {
+                if (db && auth && auth.currentUser && !id.startsWith('sample-')) {
+                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'monitoring-kunjungan-sales';
+                    const { doc, deleteDoc } = window.firebaseModules;
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'pendaftaran', id));
+                } else {
+                    pendaftaranData = pendaftaranData.filter(v => v.id !== id);
+                    renderBerkasTable();
+                }
+                showCustomModal('Terhapus', 'Berkas pendaftaran berhasil dihapus.', 'success');
+            } catch (err) {
+                console.error("Error deleting pendaftaran:", err);
+                showCustomModal('Gagal', 'Gagal menghapus berkas.', 'error');
+            }
+        }
+
+        function exportBerkasExcel() {
+            try {
+                var table = document.getElementById("tableBerkasElement");
+                var wb = XLSX.utils.table_to_book(table, {sheet: "Data Berkas Input"});
+                XLSX.writeFile(wb, "Data_Berkas_Input_Pelanggan.xlsx");
+            } catch (error) {
+                console.error("Export failed", error);
+                showCustomModal("Gagal Ekspor", "Gagal mengekspor data berkas ke Excel.", "error");
             }
         }
 
@@ -1128,6 +1535,7 @@
                 kodeSales: document.getElementById('kKodeSales').value,
                 namaSales: document.getElementById('kNamaSales').value,
                 namaPelanggan: document.getElementById('kNamaPelanggan').value,
+                statusOrder: document.getElementById('kStatusOrder').value,
                 koordinat: document.getElementById('kKoordinat').value,
                 upFotoRumah: document.getElementById('upFotoRumah').value,
                 upFotoFat: document.getElementById('upFotoFat').value,
@@ -1161,6 +1569,9 @@
             const emptyState = document.getElementById('kelengkapanEmptyState');
             if (!container) return;
 
+            const badgeKelengkapan = document.getElementById('badgeKelengkapan');
+            if (badgeKelengkapan) badgeKelengkapan.textContent = kelengkapanData.length;
+
             if (kelengkapanData.length === 0) {
                 container.innerHTML = '';
                 if (emptyState) emptyState.classList.remove('hidden');
@@ -1173,6 +1584,13 @@
                 const docs = [item.upFotoRumah, item.upFotoFat, item.upVideoFat, item.upFotoBerkas, item.upFotoKtp];
                 const totalUploaded = docs.filter(Boolean).length;
                 const percent = Math.round((totalUploaded / 5) * 100);
+                const statusOrder = item.statusOrder || 'Menunggu';
+                
+                let statusBadgeColor = 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+                if (statusOrder === 'Terverifikasi') statusBadgeColor = 'bg-blue-500/10 text-blue-400 border-blue-500/30';
+                if (statusOrder === 'Jadwal Terbit') statusBadgeColor = 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30';
+                if (statusOrder === 'Terpasang') statusBadgeColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+                if (statusOrder === 'Dibatalkan') statusBadgeColor = 'bg-rose-500/10 text-rose-400 border-rose-500/30';
 
                 return `
                     <div class="glass-panel p-5 rounded-xl space-y-4 border border-[#2a3a5a]">
@@ -1181,9 +1599,14 @@
                                 <h3 class="font-bold text-white text-base">${item.namaPelanggan || 'Pelanggan'}</h3>
                                 <p class="text-xs text-slate-400">Sales: ${item.namaSales} (${item.kodeSales})</p>
                             </div>
-                            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${percent === 100 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'}">
-                                ${percent}% Lengkap (${totalUploaded}/5)
-                            </span>
+                            <div class="flex flex-col items-end gap-1.5">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-bold border ${statusBadgeColor}">
+                                    ${statusOrder}
+                                </span>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${percent === 100 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-400 border border-slate-700'}">
+                                    ${percent}% Lengkap (${totalUploaded}/5)
+                                </span>
+                            </div>
                         </div>
                         <div class="text-xs text-slate-300 flex items-center gap-1.5">
                             <i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-400"></i>
