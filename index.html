@@ -315,10 +315,15 @@
                     </div>
                     <div class="flex items-center space-x-2 w-full sm:w-auto">
                         <div class="relative flex-1 sm:flex-initial">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-emerald-200">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-emerald-200 z-10">
                                 <i class="fa-solid fa-filter text-xs"></i>
                             </span>
-                            <input type="text" id="filterCompletenessSales" placeholder="Filter Nama Sales..." oninput="renderCompletenessList()" class="w-full sm:w-48 pl-8 pr-3 py-2 bg-emerald-950/80 border border-emerald-700/50 text-white placeholder-emerald-300/60 text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400">
+                            <select id="filterCompletenessSales" onchange="renderCompletenessList()" class="w-full sm:w-56 pl-8 pr-8 py-2 bg-emerald-950/80 border border-emerald-700/50 text-white text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 appearance-none cursor-pointer">
+                                <option value="">Semua Nama Sales</option>
+                            </select>
+                            <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-emerald-200">
+                                <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                            </span>
                         </div>
                         <button onclick="fetchLiveCompletenessFromSheet()" class="text-xs bg-emerald-500/25 hover:bg-emerald-500/35 text-emerald-200 border border-emerald-500/40 px-3.5 py-2 rounded-xl transition-all font-semibold whitespace-nowrap">
                             <i class="fa-solid fa-rotate mr-1"></i> Refresh
@@ -563,6 +568,7 @@
                 const row = parseCSVRow(lines[i]);
                 if (row.length > 0) state.completenessRows.push(row);
             }
+            populateCompletenessSalesDropdown();
             renderCompletenessList();
             updateStats();
         }
@@ -690,9 +696,30 @@
             if (!selectEl) return;
             
             const currentSelected = selectEl.value;
-            // Sales Name is typically in index 1 (NAMA SALES)
             let uniqueSales = new Set();
             state.inputRows.forEach(row => {
+                if (row[1] && row[1].trim() !== '-') {
+                    uniqueSales.add(row[1].trim());
+                }
+            });
+
+            let optionsHtml = `<option value="">Semua Nama Sales</option>`;
+            Array.from(uniqueSales).sort().forEach(salesName => {
+                const isSelected = salesName === currentSelected ? 'selected' : '';
+                optionsHtml += `<option value="${salesName}" ${isSelected}>${salesName}</option>`;
+            });
+
+            selectEl.innerHTML = optionsHtml;
+        }
+
+        function populateCompletenessSalesDropdown() {
+            const selectEl = document.getElementById('filterCompletenessSales');
+            if (!selectEl) return;
+            
+            const currentSelected = selectEl.value;
+            let uniqueSales = new Set();
+            // Sales Name is at index 1 in completeness sheet rows
+            state.completenessRows.forEach(row => {
                 if (row[1] && row[1].trim() !== '-') {
                     uniqueSales.add(row[1].trim());
                 }
@@ -751,10 +778,8 @@
             const filterVal = (document.getElementById('filterCompletenessSales')?.value || '').toLowerCase();
             const filteredRows = state.completenessRows.filter(row => {
                 if (!filterVal) return true;
-                const codeSales = (row[0] || '').toLowerCase();
-                const salesName = (row[1] || '').toLowerCase();
-                const customer = (row[2] || '').toLowerCase();
-                return salesName.includes(filterVal) || codeSales.includes(filterVal) || customer.includes(filterVal);
+                const salesName = row[1] ? row[1].toLowerCase() : '';
+                return salesName === filterVal;
             });
 
             if (filteredRows.length === 0) {
