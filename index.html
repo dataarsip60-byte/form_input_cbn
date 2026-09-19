@@ -917,6 +917,17 @@
                 const ktp = renderUploadThumbnail(row[7], 'KTP Pelanggan');
                 const currentStatus = row[8] || 'Menunggu';
 
+                // Function to determine text color class based on status
+                const getStatusColorClass = (status) => {
+                    const s = (status || '').toLowerCase();
+                    if (s === 'menunggu') return 'text-amber-400 bg-amber-500/10 border-amber-500/30';
+                    if (s === 'terverifikasi') return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30';
+                    if (s === 'terpasang') return 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30';
+                    if (s === 'jadwal terbit') return 'text-purple-400 bg-purple-500/10 border-purple-500/30';
+                    if (s === 'dibatalkan') return 'text-rose-400 bg-rose-500/10 border-rose-500/30';
+                    return 'text-slate-300 bg-slate-800 border-slate-700';
+                };
+
                 return `
                     <tr class="hover:bg-slate-800/40 transition-colors">
                         <td class="px-4 py-3.5 whitespace-nowrap font-semibold text-white">${codeSales}</td>
@@ -928,11 +939,12 @@
                         <td class="px-4 py-3.5 whitespace-nowrap">${berkas}</td>
                         <td class="px-4 py-3.5 whitespace-nowrap">${ktp}</td>
                         <td class="px-4 py-3.5 whitespace-nowrap">
-                            <select onchange="updateRowStatus(${realIdx}, this.value)" class="bg-slate-800 border border-slate-700 text-xs rounded-xl px-3 py-1.5 text-white font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                <option value="Menunggu" ${currentStatus.toLowerCase() === 'menunggu' ? 'selected' : ''}>Menunggu</option>
-                                <option value="Terverifikasi" ${currentStatus.toLowerCase() === 'terverifikasi' ? 'selected' : ''}>Terverifikasi</option>
-                                <option value="Jadwal Terbit" ${currentStatus.toLowerCase() === 'jadwal terbit' ? 'selected' : ''}>Jadwal Terbit</option>
-                                <option value="Dibatalkan" ${currentStatus.toLowerCase() === 'dibatalkan' ? 'selected' : ''}>Dibatalkan</option>
+                            <select id="status_select_${realIdx}" onchange="updateRowStatus(${realIdx}, this.value)" class="border text-xs rounded-xl px-3 py-1.5 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all cursor-pointer ${getStatusColorClass(currentStatus)}">
+                                <option value="Menunggu" class="bg-slate-900 text-amber-400 font-semibold" ${currentStatus.toLowerCase() === 'menunggu' ? 'selected' : ''}>Menunggu</option>
+                                <option value="Terverifikasi" class="bg-slate-900 text-emerald-400 font-semibold" ${currentStatus.toLowerCase() === 'terverifikasi' ? 'selected' : ''}>Terverifikasi</option>
+                                <option value="Terpasang" class="bg-slate-900 text-cyan-400 font-semibold" ${currentStatus.toLowerCase() === 'terpasang' ? 'selected' : ''}>Terpasang</option>
+                                <option value="Jadwal Terbit" class="bg-slate-900 text-purple-400 font-semibold" ${currentStatus.toLowerCase() === 'jadwal terbit' ? 'selected' : ''}>Jadwal Terbit</option>
+                                <option value="Dibatalkan" class="bg-slate-900 text-rose-400 font-semibold" ${currentStatus.toLowerCase() === 'dibatalkan' ? 'selected' : ''}>Dibatalkan</option>
                             </select>
                         </td>
                     </tr>
@@ -943,6 +955,19 @@
         function updateRowStatus(idx, newStatus) {
             if (state.completenessRows[idx]) {
                 state.completenessRows[idx][8] = newStatus;
+                
+                // Dynamically update class colors on select element without full re-render for smooth UX
+                const selectEl = document.getElementById(`status_select_${idx}`);
+                if (selectEl) {
+                    selectEl.className = `border text-xs rounded-xl px-3 py-1.5 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all cursor-pointer `;
+                    const s = newStatus.toLowerCase();
+                    if (s === 'menunggu') selectEl.classList.add('text-amber-400', 'bg-amber-500/10', 'border-amber-500/30');
+                    else if (s === 'terverifikasi') selectEl.classList.add('text-emerald-400', 'bg-emerald-500/10', 'border-emerald-500/30');
+                    else if (s === 'terpasang') selectEl.classList.add('text-cyan-400', 'bg-cyan-500/10', 'border-cyan-500/30');
+                    else if (s === 'jadwal terbit') selectEl.classList.add('text-purple-400', 'bg-purple-500/10', 'border-purple-500/30');
+                    else if (s === 'dibatalkan') selectEl.classList.add('text-rose-400', 'bg-rose-500/10', 'border-rose-500/30');
+                }
+
                 showToast(`Status diperbarui ke: ${newStatus}`);
             }
         }
