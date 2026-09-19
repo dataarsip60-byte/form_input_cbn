@@ -377,6 +377,7 @@
                 }
             }
             renderCompletenessList();
+            updateStats();
         }
 
         function parseInputCSVToTable(csvText) {
@@ -392,6 +393,7 @@
                 }
             }
             renderInputListTable();
+            updateStats();
         }
 
         function renderInputListTable() {
@@ -610,11 +612,26 @@
         }
 
         function updateStats() {
-            const visitTotal = state.sheetRows.length > 0 ? state.sheetRows.length : 24;
+            const visitTotal = state.sheetRows.length;
+            const inputTotal = state.inputRows.length;
+            const completeTotal = state.completenessRows.length;
+            
+            // Calculate pending or default if needed
+            let pendingTotal = 0;
+            state.completenessRows.forEach(row => {
+                const status = (row[8] || '').toLowerCase();
+                if (!status.includes('terverifikasi') && !status.includes('lengkap')) {
+                    pendingTotal++;
+                }
+            });
+            if (pendingTotal === 0 && state.completenessRows.length === 0) {
+                pendingTotal = 0;
+            }
+
             document.getElementById('statVisitCount').innerText = visitTotal;
-            document.getElementById('statInputCount').innerText = state.inputRows.length > 0 ? state.inputRows.length + 10 : 12;
-            document.getElementById('statCompleteCount').innerText = state.completenessRows.length > 0 ? state.completenessRows.length : 9;
-            document.getElementById('statPendingCount').innerText = '3';
+            document.getElementById('statInputCount').innerText = inputTotal;
+            document.getElementById('statCompleteCount').innerText = completeTotal;
+            document.getElementById('statPendingCount').innerText = pendingTotal;
         }
 
         function openFilePreview(url, title) {
