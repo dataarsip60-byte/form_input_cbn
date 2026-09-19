@@ -93,6 +93,22 @@
             </div>
         </div>
 
+        <!-- Image Preview Modal -->
+        <div id="imagePreviewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md hidden">
+            <div class="bg-slate-900 border border-white/10 rounded-3xl p-6 max-w-2xl w-full mx-4 shadow-2xl space-y-4 text-center">
+                <div class="flex items-center justify-between">
+                    <h3 id="previewModalTitle" class="font-bold text-sm text-white">Pratinjau Foto</h3>
+                    <button onclick="closeImagePreviewModal()" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="flex justify-center bg-slate-950/80 p-4 rounded-2xl border border-slate-800 overflow-hidden">
+                    <img id="previewModalImage" src="" alt="Pratinjau Foto" class="max-h-[70vh] max-w-full rounded-xl object-contain shadow-lg" onerror="this.src='https://placehold.co/600x400/1e293b/94a3b8?text=Gagal+Memuat+Gambar'">
+                </div>
+                <div class="flex justify-end">
+                    <button onclick="closeImagePreviewModal()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold">Tutup</button>
+                </div>
+            </div>
+        </div>
+
         <!-- ==================== MENU 1: TAMPILAN AWAL (ICON GRID) ==================== -->
         <section id="menu-home" class="space-y-8 animate-fadeIn">
             <!-- Welcome Banner -->
@@ -662,9 +678,43 @@
             } else {
                 state.sheetRows.slice().reverse().forEach(row => {
                     html += `<tr class="hover:bg-slate-800/40 transition-colors">`;
-                    headers.forEach((_, idx) => {
-                        const cellVal = row[idx] !== undefined && row[idx] !== '' ? row[idx] : '-';
-                        html += `<td class="px-4 py-3.5 whitespace-nowrap max-w-xs truncate" title="${cellVal}">${cellVal}</td>`;
+                    headers.forEach((h, idx) => {
+                        let cellVal = row[idx] !== undefined && row[idx] !== '' ? row[idx] : '-';
+                        const headerLower = h.toLowerCase();
+                        
+                        // Check if column is a photo/image column or cell value is a URL
+                        if (headerLower.includes('poto') || headerLower.includes('foto') || headerLower.includes('image') || headerLower.includes('seli') || headerLower.includes('selfi') || cellVal.includes('http://') || cellVal.includes('https://')) {
+                            if (cellVal === '-' || cellVal === '') {
+                                html += `<td class="px-4 py-3.5 whitespace-nowrap text-slate-500">-</td>`;
+                            } else {
+                                // Convert Google Drive link format if applicable
+                                if (cellVal.includes('drive.google.com')) {
+                                    if (cellVal.includes('/file/d/')) {
+                                        const match = cellVal.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                                        if (match && match[1]) {
+                                            cellVal = `https://lh3.googleusercontent.com/d/${match[1]}=s400`;
+                                        }
+                                    } else if (cellVal.includes('id=')) {
+                                        const match = cellVal.match(/id=([a-zA-Z0-9_-]+)/);
+                                        if (match && match[1]) {
+                                            cellVal = `https://lh3.googleusercontent.com/d/${match[1]}=s400`;
+                                        }
+                                    }
+                                }
+
+                                const isUrl = cellVal.startsWith('http://') || cellVal.startsWith('https://');
+                                const displayUrl = isUrl ? cellVal : 'https://placehold.co/100x100/1e293b/94a3b8?text=Foto';
+                                html += `
+                                    <td class="px-4 py-3.5 whitespace-nowrap">
+                                        <div onclick="openFilePreview('${displayUrl}', '${h}')" class="w-12 h-12 rounded-xl overflow-hidden border border-slate-700 bg-slate-800 cursor-pointer hover:scale-105 transition-transform shadow-sm flex items-center justify-center">
+                                            <img src="${displayUrl}" alt="${h}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1e293b/94a3b8?text=Foto';">
+                                        </div>
+                                    </td>
+                                `;
+                            }
+                        } else {
+                            html += `<td class="px-4 py-3.5 whitespace-nowrap max-w-xs truncate" title="${cellVal}">${cellVal}</td>`;
+                        }
                     });
                     html += `</tr>`;
                 });
@@ -756,9 +806,41 @@
             } else {
                 filteredRows.slice().reverse().forEach(row => {
                     html += `<tr class="hover:bg-slate-800/40 transition-colors">`;
-                    headers.forEach((_, idx) => {
-                        const cellVal = row[idx] !== undefined && row[idx] !== '' ? row[idx] : '-';
-                        html += `<td class="px-4 py-3.5 whitespace-nowrap max-w-xs truncate" title="${cellVal}">${cellVal}</td>`;
+                    headers.forEach((h, idx) => {
+                        let cellVal = row[idx] !== undefined && row[idx] !== '' ? row[idx] : '-';
+                        const headerLower = h.toLowerCase();
+                        
+                        if (headerLower.includes('poto') || headerLower.includes('foto') || headerLower.includes('image') || headerLower.includes('seli') || headerLower.includes('selfi') || cellVal.includes('http://') || cellVal.includes('https://')) {
+                            if (cellVal === '-' || cellVal === '') {
+                                html += `<td class="px-4 py-3.5 whitespace-nowrap text-slate-500">-</td>`;
+                            } else {
+                                if (cellVal.includes('drive.google.com')) {
+                                    if (cellVal.includes('/file/d/')) {
+                                        const match = cellVal.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                                        if (match && match[1]) {
+                                            cellVal = `https://lh3.googleusercontent.com/d/${match[1]}=s400`;
+                                        }
+                                    } else if (cellVal.includes('id=')) {
+                                        const match = cellVal.match(/id=([a-zA-Z0-9_-]+)/);
+                                        if (match && match[1]) {
+                                            cellVal = `https://lh3.googleusercontent.com/d/${match[1]}=s400`;
+                                        }
+                                    }
+                                }
+
+                                const isUrl = cellVal.startsWith('http://') || cellVal.startsWith('https://');
+                                const displayUrl = isUrl ? cellVal : 'https://placehold.co/100x100/1e293b/94a3b8?text=Foto';
+                                html += `
+                                    <td class="px-4 py-3.5 whitespace-nowrap">
+                                        <div onclick="openFilePreview('${displayUrl}', '${h}')" class="w-12 h-12 rounded-xl overflow-hidden border border-slate-700 bg-slate-800 cursor-pointer hover:scale-105 transition-transform shadow-sm flex items-center justify-center">
+                                            <img src="${displayUrl}" alt="${h}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1e293b/94a3b8?text=Foto';">
+                                        </div>
+                                    </td>
+                                `;
+                            }
+                        } else {
+                            html += `<td class="px-4 py-3.5 whitespace-nowrap max-w-xs truncate" title="${cellVal}">${cellVal}</td>`;
+                        }
                     });
                     html += `</tr>`;
                 });
@@ -793,25 +875,46 @@
                 const salesName = row[1] || '-';
                 const customer = row[2] || '-';
                 
-                const renderUploadBadge = (cellVal, typeLabel, iconClass, colorClass) => {
+                const renderUploadThumbnail = (cellVal, typeLabel) => {
                     if (!cellVal || cellVal === '-' || cellVal === '') {
                         return `<span class="text-slate-500 text-[11px]">-</span>`;
                     }
+                    if (cellVal.includes('drive.google.com')) {
+                        if (cellVal.includes('/file/d/')) {
+                            const match = cellVal.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                            if (match && match[1]) {
+                                cellVal = `https://lh3.googleusercontent.com/d/${match[1]}=s400`;
+                            }
+                        } else if (cellVal.includes('id=')) {
+                            const match = cellVal.match(/id=([a-zA-Z0-9_-]+)/);
+                            if (match && match[1]) {
+                                cellVal = `https://lh3.googleusercontent.com/d/${match[1]}=s400`;
+                            }
+                        }
+                    }
+
                     const isUrl = cellVal.startsWith('http://') || cellVal.startsWith('https://');
-                    const displayUrl = isUrl ? cellVal : '#';
+                    const displayUrl = isUrl ? cellVal : 'https://placehold.co/100x100/1e293b/94a3b8?text=File';
+                    if (cellVal.toLowerCase().includes('vidio') || cellVal.toLowerCase().includes('video') || cellVal.endsWith('.mp4')) {
+                        return `
+                            <button onclick="openFilePreview('${displayUrl}', '${typeLabel}')" class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 text-[11px] font-semibold transition-all shadow-sm">
+                                <i class="fa-solid fa-video"></i>
+                                <span>Video</span>
+                            </button>
+                        `;
+                    }
                     return `
-                        <button onclick="openFilePreview('${displayUrl}', '${typeLabel}')" class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 ${colorClass} border border-slate-700 text-[11px] font-semibold transition-all shadow-sm" title="${cellVal}">
-                            <i class="${iconClass}"></i>
-                            <span>POTO / VIDIO</span>
-                        </button>
+                        <div onclick="openFilePreview('${displayUrl}', '${typeLabel}')" class="w-12 h-12 rounded-xl overflow-hidden border border-slate-700 bg-slate-800 cursor-pointer hover:scale-105 transition-transform shadow-sm flex items-center justify-center" title="${typeLabel}">
+                            <img src="${displayUrl}" alt="${typeLabel}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1e293b/94a3b8?text=Foto';">
+                        </div>
                     `;
                 };
 
-                const fotoRumah = renderUploadBadge(row[3], 'Foto Rumah', 'fa-solid fa-image', 'text-indigo-400');
-                const fotoFat = renderUploadBadge(row[4], 'Foto FAT (ODP)', 'fa-solid fa-image', 'text-indigo-400');
-                const videoLokasi = renderUploadBadge(row[5], 'Video Lokasi', 'fa-solid fa-video', 'text-amber-400');
-                const berkas = renderUploadBadge(row[6], 'Berkas Pendukung', 'fa-solid fa-file-pdf', 'text-emerald-400');
-                const ktp = renderUploadBadge(row[7], 'KTP Pelanggan', 'fa-solid fa-id-card', 'text-emerald-400');
+                const fotoRumah = renderUploadThumbnail(row[3], 'Foto Rumah');
+                const fotoFat = renderUploadThumbnail(row[4], 'Foto FAT (ODP)');
+                const videoLokasi = renderUploadThumbnail(row[5], 'Video Lokasi');
+                const berkas = renderUploadThumbnail(row[6], 'Berkas Pendukung');
+                const ktp = renderUploadThumbnail(row[7], 'KTP Pelanggan');
                 const currentStatus = row[8] || 'Menunggu';
 
                 return `
@@ -945,7 +1048,6 @@
             document.getElementById('statCompleteCount').innerText = state.completenessRows.length;
             document.getElementById('statDbCount').innerText = state.databaseRows.length;
             
-            // Prod Sales stat calculated from Visits + (Inputs * 2) or total productivity sum
             const calculatedProd = state.sheetRows.length + (state.inputRows.length * 2);
             document.getElementById('statProdCount').innerText = calculatedProd > 0 ? calculatedProd : state.prodRows.length;
         }
@@ -955,7 +1057,17 @@
                 showToast('Tautan file tidak tersedia.', false);
                 return;
             }
-            window.open(url, '_blank');
+            if (url.toLowerCase().includes('vidio') || url.toLowerCase().includes('video') || url.endsWith('.mp4')) {
+                window.open(url, '_blank');
+                return;
+            }
+            document.getElementById('previewModalTitle').innerText = title || 'Pratinjau Foto';
+            document.getElementById('previewModalImage').src = url;
+            document.getElementById('imagePreviewModal').classList.remove('hidden');
+        }
+
+        function closeImagePreviewModal() {
+            document.getElementById('imagePreviewModal').classList.add('hidden');
         }
 
         window.onload = function() {
